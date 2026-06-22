@@ -298,7 +298,37 @@ body{background:var(--bg-primary);color:var(--text-primary);font-family:'Inter',
 .toast.info{background:var(--accent);color:#fff}
 .toast.warning{background:var(--warning);color:#07041A}
 
-/* ═══════════════ STREAK ═══════════════ */
+/* ═══════════════ TAGS FIXAS ═══════════════ */
+.tags-fixas{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.tag-fixa{padding:5px 12px;border:1.5px solid var(--border);border-radius:99px;background:transparent;color:var(--text-secondary);font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;user-select:none}
+.tag-fixa.selected{background:var(--accent);border-color:var(--accent);color:#fff}
+.tag-fixa:hover:not(.selected){border-color:var(--accent-light);color:var(--accent-light)}
+
+/* ═══════════════ TEMPO H:MM ═══════════════ */
+.tempo-hm{display:flex;gap:6px;align-items:center}
+.tempo-hm input{text-align:center}
+.tempo-hm span{color:var(--text-secondary);font-size:13px;font-weight:600}
+
+/* ═══════════════ PLANO PANORÂMICO ═══════════════ */
+.plano-semana{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden}
+.plano-semana-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(168,85,247,.08);cursor:pointer;user-select:none}
+.plano-semana-titulo{font-size:12px;font-weight:600;color:var(--accent-light)}
+.plano-semana-periodo{font-size:10px;color:var(--text-dim)}
+.plano-semana-body{padding:10px 14px;border-top:1px solid var(--border)}
+.plano-dia{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(168,85,247,.08)}
+.plano-dia:last-child{border-bottom:none}
+.plano-dia-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .2s}
+.plano-dia-check.done{background:var(--success);border-color:var(--success)}
+.plano-dia-check.done::after{content:'✓';font-size:10px;color:#07041A;font-weight:700}
+.plano-dia-info{flex:1}
+.plano-dia-data{font-size:10px;color:var(--accent);font-weight:600;margin-bottom:2px}
+.plano-dia-conteudo{font-size:12px;color:var(--text-primary);line-height:1.5}
+.plano-dia-mat{font-size:10px;color:var(--text-secondary);margin-top:2px}
+
+/* ═══════════════ ZERAR MATÉRIA ═══════════════ */
+.zerar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:1rem}
+.zerar-btn{padding:10px;border:1px solid var(--danger);border-radius:8px;background:rgba(248,113,113,.08);color:var(--danger);font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;transition:all .2s}
+.zerar-btn:hover{background:rgba(248,113,113,.2)}
 .streak-card{background:linear-gradient(135deg,rgba(168,85,247,.15),rgba(251,191,36,.08));border:1px solid rgba(168,85,247,.3);border-radius:12px;padding:1.2rem;margin-bottom:1rem}
 .streak-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
 .streak-main{display:flex;align-items:center;gap:10px}
@@ -340,6 +370,8 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
 @media(max-width:640px){
   .nav{display:none}
   .bottom-nav{display:flex!important}
+  .app{padding-bottom:80px}
+  footer{margin-bottom:70px}
 }
 .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:50;background:var(--bg-card-solid);border-top:1px solid var(--border);padding:6px 4px;gap:2px;backdrop-filter:blur(12px)}
 .bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;font-family:'Inter',sans-serif;font-size:9px;border-radius:8px;transition:all .2s}
@@ -371,12 +403,13 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
   </div>
 
   <nav class="nav">
-    <button class="nav-btn active" onclick="showSection('dashboard',this)">✦ Dashboard</button>
-    <button class="nav-btn" onclick="showSection('cronograma',this)">Cronograma</button>
+    <button class="nav-btn active" onclick="showSection('dashboard',this)">✦ Dash</button>
+    <button class="nav-btn" onclick="showSection('cronograma',this)">Horário</button>
     <button class="nav-btn" onclick="showSection('ciclos',this)">Ciclos</button>
     <button class="nav-btn" onclick="showSection('lancar',this)">Lançar</button>
     <button class="nav-btn" onclick="showSection('historico',this)">Histórico</button>
     <button class="nav-btn" onclick="showSection('revisoes',this)">Revisões</button>
+    <button class="nav-btn" onclick="showSection('plano',this)">📅 Plano</button>
     <button class="nav-btn" onclick="showSection('metas',this)">Metas</button>
   </nav>
 
@@ -547,24 +580,17 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
         <label class="form-label">Descreva o assunto</label>
         <input type="text" class="form-control" id="f-outro" placeholder="Outro assunto...">
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Banca (opcional)</label>
-          <select class="form-control" id="f-banca">
-            <option value="">Sem banca</option>
-            <option>CESPE</option><option>FGV</option><option>FCC</option>
-            <option>IBFC</option><option>FUNCERN</option><option>Outra</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" style="display:flex;align-items:center;gap:6px">
-            Tempo (min)
-            <span id="timer-badge" style="display:none;font-size:9px;background:rgba(168,85,247,.25);color:var(--accent-light);padding:1px 6px;border-radius:99px">✦ CRONÔMETRO</span>
-          </label>
-          <div style="display:flex;gap:6px">
-            <input type="number" class="form-control" id="f-minutos" placeholder="Ex: 45" min="0">
-            <button type="button" onclick="usarCronometro()" class="btn-secondary" style="white-space:nowrap;font-size:10px">⏱ Usar</button>
-          </div>
+      <div class="form-group" style="margin-bottom:10px">
+        <label class="form-label" style="display:flex;align-items:center;gap:6px">
+          Tempo estudado
+          <span id="timer-badge" style="display:none;font-size:9px;background:rgba(168,85,247,.25);color:var(--accent-light);padding:1px 6px;border-radius:99px">✦ CRONÔMETRO</span>
+        </label>
+        <div class="tempo-hm">
+          <input type="number" class="form-control" id="f-horas" placeholder="0" min="0" max="23" style="width:70px">
+          <span>h</span>
+          <input type="number" class="form-control" id="f-mins" placeholder="00" min="0" max="59" style="width:70px">
+          <span>min</span>
+          <button type="button" onclick="usarCronometro()" class="btn-secondary" style="font-size:10px;padding:7px 10px">⏱ Usar</button>
         </div>
       </div>
       <div class="form-row">
@@ -578,9 +604,16 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
         </div>
       </div>
       <div class="form-group" style="margin-bottom:10px">
-        <label class="form-label">Tags (Enter para adicionar)</label>
-        <div class="tags-input" id="tags-input" onclick="document.getElementById('tags-field').focus()">
-          <input type="text" id="tags-field" placeholder="revisão, simulado..." onkeydown="handleTagKey(event)">
+        <label class="form-label">Tipo de estudo <span style="color:var(--danger)">*</span></label>
+        <div class="tags-fixas" id="tags-fixas">
+          <button type="button" class="tag-fixa" onclick="toggleTagFixa(this,'teoria')">📖 Teoria</button>
+          <button type="button" class="tag-fixa" onclick="toggleTagFixa(this,'questões')">❓ Questões</button>
+          <button type="button" class="tag-fixa" onclick="toggleTagFixa(this,'revisão')">🔁 Revisão</button>
+          <button type="button" class="tag-fixa" onclick="toggleTagFixa(this,'simulado')">📝 Simulado</button>
+          <button type="button" class="tag-fixa" onclick="toggleTagFixa(this,'leitura')">📚 Leitura</button>
+          <button type="button" class="tag-fixa" onclick="toggleTagFixa(this,'resumo')">✍️ Resumo</button>
+          <button type="button" class="tag-fixa" onclick="toggleTagFixa(this,'prova')">🎯 Prova</button>
+          <button type="button" class="tag-fixa" onclick="toggleTagFixa(this,'reforço')">💪 Reforço</button>
         </div>
       </div>
       <div class="form-group" style="margin-bottom:10px">
@@ -618,6 +651,15 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
     <div id="revisoes-list"></div>
   </div>
 
+  <!-- PLANO PANORÂMICO -->
+  <div id="sec-plano" class="section">
+    <div class="card" style="margin-bottom:1rem">
+      <div class="card-title">✦ Plano de estudos · até 20/12</div>
+      <p style="font-size:12px;color:var(--text-secondary);line-height:1.7">Visão panorâmica semana a semana baseada no edital do IFPE. Marque cada dia ao concluir.</p>
+    </div>
+    <div id="plano-list"></div>
+  </div>
+
   <!-- METAS -->
   <div id="sec-metas" class="section">
     <div class="card">
@@ -639,6 +681,17 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
       <button class="btn-primary" onclick="salvarMetas()">✦ Salvar metas</button>
     </div>
     <div id="metas-progress"></div>
+    <div class="card" style="margin-top:1rem">
+      <div class="card-title">⚠️ Zerar dados por matéria</div>
+      <p style="font-size:11px;color:var(--text-secondary);margin-bottom:.5rem;line-height:1.6">Remove todas as sessões de uma matéria permanentemente. Use com cuidado.</p>
+      <div class="zerar-grid">
+        <button class="zerar-btn" onclick="zerarMateria('Português')">🗑 Português</button>
+        <button class="zerar-btn" onclick="zerarMateria('Matemática')">🗑 Matemática</button>
+        <button class="zerar-btn" onclick="zerarMateria('Ciências da Natureza')">🗑 Ciências</button>
+        <button class="zerar-btn" onclick="zerarMateria('História')">🗑 História</button>
+        <button class="zerar-btn" onclick="zerarMateria('Geografia')">🗑 Geografia</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -716,8 +769,8 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
 
 <nav class="bottom-nav" id="bottom-nav">
   <button class="bnav-btn active" onclick="showSection('dashboard',this,true)"><span class="bnav-icon">✦</span>Dash</button>
-  <button class="bnav-btn" onclick="showSection('cronograma',this,true)"><span class="bnav-icon">📅</span>Horário</button>
   <button class="bnav-btn" onclick="showSection('lancar',this,true)"><span class="bnav-icon">➕</span>Lançar</button>
+  <button class="bnav-btn" onclick="showSection('plano',this,true)"><span class="bnav-icon">📅</span>Plano</button>
   <button class="bnav-btn" onclick="showSection('historico',this,true)"><span class="bnav-icon">📋</span>Histórico</button>
   <button class="bnav-btn" onclick="showSection('revisoes',this,true)"><span class="bnav-icon">🔁</span>Revisões</button>
 </nav>
@@ -988,6 +1041,7 @@ function showSection(id, btn, isMobile=false) {
   if (id==='historico') renderHistorico();
   if (id==='revisoes') renderRevisoes();
   if (id==='metas') renderMetas();
+  if (id==='plano') renderPlano();
 }
 
 // ═══════════════════════════════════════
@@ -1027,7 +1081,8 @@ function irParaLancar(){
   timerStop();
   const m=Math.round(timerSec/60);
   if(m>0){
-    document.getElementById('f-minutos').value=m;
+    document.getElementById('f-horas').value=Math.floor(m/60);
+    document.getElementById('f-mins').value=m%60;
     document.getElementById('timer-badge').style.display='inline';
   }
   showSection('lancar', document.querySelector('.nav-btn:nth-child(4)'));
@@ -1041,26 +1096,20 @@ function cancelarTimer(){
   timerReset();
   showToast('Cronômetro cancelado.','info');
 }
-function usarCronometro(){if(timerSec===0){showToast('Cronômetro está zerado!','error');return;}const m=Math.round(timerSec/60);document.getElementById('f-minutos').value=m;document.getElementById('timer-badge').style.display='inline';showToast('Tempo preenchido: '+m+'min ✦','success')}
-
-// ═══════════════════════════════════════
-//  TAGS
-// ═══════════════════════════════════════
-function handleTagKey(e) {
-  if (e.key==='Enter'||e.key===',') {
-    e.preventDefault();
-    const val = e.target.value.trim().replace(',','');
-    if (val && !currentTags.includes(val)) { currentTags.push(val); renderTagsInput(); }
-    e.target.value='';
-  }
+function usarCronometro(){
+  if(timerSec===0){showToast('Cronômetro está zerado!','error');return;}
+  const totalMin=Math.round(timerSec/60);
+  document.getElementById('f-horas').value=Math.floor(totalMin/60);
+  document.getElementById('f-mins').value=totalMin%60;
+  document.getElementById('timer-badge').style.display='inline';
+  showToast('Tempo preenchido: '+Math.floor(totalMin/60)+'h'+totalMin%60+'min ✦','success');
 }
-function removeTag(t) { currentTags=currentTags.filter(x=>x!==t); renderTagsInput(); }
-function renderTagsInput() {
-  const wrap = document.getElementById('tags-input');
-  const input = document.getElementById('tags-field');
-  wrap.innerHTML='';
-  currentTags.forEach(t=>{ const chip=document.createElement('div');chip.className='tag-chip';chip.innerHTML=`${t}<button onclick="removeTag('${t}')">×</button>`;wrap.appendChild(chip); });
-  wrap.appendChild(input);
+
+function toggleTagFixa(btn, tag) {
+  btn.classList.toggle('selected');
+}
+function getTagsFixasSelecionadas() {
+  return [...document.querySelectorAll('.tag-fixa.selected')].map(b => b.getAttribute('onclick').match(/'([^']+)'\)/)?.[1]).filter(Boolean);
 }
 
 // ═══════════════════════════════════════
@@ -1081,24 +1130,28 @@ async function lancarSessao(){
   const data=document.getElementById('f-data').value;
   const acertos=parseInt(document.getElementById('f-acertos').value)||0;
   const erros=parseInt(document.getElementById('f-erros').value)||0;
-  const minutos=parseInt(document.getElementById('f-minutos').value)||Math.round(timerSec/60);
+  const horas=parseInt(document.getElementById('f-horas').value)||0;
+  const mins=parseInt(document.getElementById('f-mins').value)||0;
+  const minutos=horas*60+mins || Math.round(timerSec/60);
   const obs=document.getElementById('f-obs').value.trim();
-  const banca=document.getElementById('f-banca').value;
+  const tags=getTagsFixasSelecionadas();
 
   if(!materia){showToast('Selecione a matéria!','error');return}
   if(!topico){showToast('Selecione o tópico!','error');return}
   if(!sub){showToast('Selecione o subtópico!','error');return}
   if(sub==='Outro'&&!outro){showToast('Descreva o assunto!','error');return}
+  if(tags.length===0){showToast('Selecione pelo menos um tipo de estudo!','error');return}
 
   const assunto=sub==='Outro'?outro:sub;
   const localId='local_'+Date.now();
-  const sess={localId,id:null,materia,topico,assunto,data:data||new Date().toISOString().slice(0,10),acertos,erros,minutos,obs,banca,tags:[...currentTags],archived:false};
+  const sess={localId,id:null,materia,topico,assunto,data:data||new Date().toISOString().slice(0,10),acertos,erros,minutos,obs,banca:'',tags,archived:false};
   sessions.unshift(sess);
   saveLocal();
 
   // Reset form
-  ['f-materia','f-banca','f-obs'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-minutos').value='';
+  ['f-materia','f-obs'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('f-horas').value='';
+  document.getElementById('f-mins').value='';
   document.getElementById('f-acertos').value='';
   document.getElementById('f-erros').value='';
   document.getElementById('f-topico').innerHTML='<option>Selecione a matéria primeiro</option>';
@@ -1107,7 +1160,8 @@ async function lancarSessao(){
   document.getElementById('f-subtopico').disabled=true;
   document.getElementById('outro-group').style.display='none';
   document.getElementById('timer-badge').style.display='none';
-  currentTags=[];renderTagsInput();timerReset();
+  document.querySelectorAll('.tag-fixa').forEach(b=>b.classList.remove('selected'));
+  timerReset();
 
   showToast('Sessão registrada! ✦','success');
 
@@ -1237,7 +1291,7 @@ function renderRevisoes(){
         <div class="review-sub">${sess?.materia||''} · ${sess?.topico||''}</div>
       </div>
       <span class="review-status status-${r.status}">${r.status}</span>
-      ${r.status==='pendente'?`<button class="review-btn" onclick="concluirRevisao(${r.id})">✓ Feita</button>`:''}
+      ${r.status==='pendente'?'<button class="review-btn" onclick="concluirRevisao('+r.id+')">✓ Feita</button>':'<button class="review-btn" style="color:var(--warning);border-color:var(--warning)" onclick="reabrirRevisao('+r.id+')">↩ Reabrir</button>'}
     </div>`;
   }).join('');
 
@@ -1256,6 +1310,306 @@ async function concluirRevisao(id){
   reviews[idx].status='concluida';
   saveLocal();renderRevisoes();showToast('Revisão concluída! ✦','success');
   try{await sbPatch('reviews',id,{status:'concluida'});}catch(e){}
+}
+async function reabrirRevisao(id){
+  const idx=reviews.findIndex(r=>r.id===id);
+  if(idx<0) return;
+  reviews[idx].status='pendente';
+  saveLocal();renderRevisoes();showToast('Revisão reaberta.','info');
+  try{await sbPatch('reviews',id,{status:'pendente'});}catch(e){}
+}
+
+// ═══════════════════════════════════════
+//  ZERAR MATÉRIA
+// ═══════════════════════════════════════
+async function zerarMateria(mat){
+  const count=sessions.filter(s=>s.materia===mat).length;
+  if(!confirm('Zerar '+mat+'?\n\nIsso vai deletar '+count+' sessão(ões) permanentemente.\nEssa ação não pode ser desfeita!')) return;
+  const ids=sessions.filter(s=>s.materia===mat&&s.id).map(s=>s.id);
+  sessions=sessions.filter(s=>s.materia!==mat);
+  saveLocal();renderDashboard();renderHistorico();
+  showToast(mat+' zerada!','success');
+  for(const id of ids){
+    try{await sbDelete('sessions',id);}catch(e){}
+  }
+}
+
+// ═══════════════════════════════════════
+//  PLANO PANORÂMICO
+// ═══════════════════════════════════════
+const PLANO_DATA = [
+  {semana:'1',periodo:'23/06–29/06',dias:[
+    {data:'2026-06-23',dia:'Seg',conteudo:'Diagnóstico: 10 questões de Português (interpretação)',mat:'Português'},
+    {data:'2026-06-24',dia:'Ter',conteudo:'Diagnóstico: 10 questões de Matemática (operações)',mat:'Matemática'},
+    {data:'2026-06-25',dia:'Qua',conteudo:'Mapear Ciências: listar tópicos que sabe e não sabe',mat:'Ciências da Natureza'},
+    {data:'2026-06-26',dia:'Qui',conteudo:'Revisão do diagnóstico + listar lacunas',mat:'Geral'},
+    {data:'2026-06-27',dia:'Sex',conteudo:'Diagnóstico: 10 questões de Matemática (frações)',mat:'Matemática'},
+    {data:'2026-06-28',dia:'Sáb',conteudo:'Simulado misto: 10 questões (Port + Mat + CG)',mat:'Geral'},
+  ]},
+  {semana:'2',periodo:'30/06–06/07',dias:[
+    {data:'2026-06-30',dia:'Seg',conteudo:'Montar lista de prioridades baseada no diagnóstico',mat:'Geral'},
+    {data:'2026-07-01',dia:'Ter',conteudo:'Português: Informações explícitas e implícitas',mat:'Português'},
+    {data:'2026-07-02',dia:'Qua',conteudo:'História: Mapeamento — Segunda Guerra Mundial',mat:'História'},
+    {data:'2026-07-03',dia:'Qui',conteudo:'Revisão: Português (interpretação)',mat:'Português'},
+    {data:'2026-07-04',dia:'Sex',conteudo:'Matemática: Operações básicas e MMC/MDC',mat:'Matemática'},
+    {data:'2026-07-05',dia:'Sáb',conteudo:'Simulado: 10 questões de Português',mat:'Português'},
+  ]},
+  {semana:'3',periodo:'07/07–13/07',dias:[
+    {data:'2026-07-07',dia:'Ter',conteudo:'Português: Intenção comunicativa e fato × opinião',mat:'Português'},
+    {data:'2026-07-08',dia:'Qua',conteudo:'Ciências: Componentes do ecossistema e cadeias alimentares',mat:'Ciências da Natureza'},
+    {data:'2026-07-09',dia:'Qui',conteudo:'Revisão: Ciências (ecossistema)',mat:'Ciências da Natureza'},
+    {data:'2026-07-10',dia:'Sex',conteudo:'Matemática: Frações — operações e problemas',mat:'Matemática'},
+    {data:'2026-07-11',dia:'Sáb',conteudo:'Simulado: 10 questões de Matemática (frações)',mat:'Matemática'},
+    {data:'2026-07-12',dia:'Dom',conteudo:'Revisão geral da semana + correção de erros',mat:'Geral'},
+  ]},
+  {semana:'4',periodo:'14/07–20/07',dias:[
+    {data:'2026-07-14',dia:'Ter',conteudo:'Português: Gêneros textuais — literário, científico, jornalístico',mat:'Português'},
+    {data:'2026-07-15',dia:'Qua',conteudo:'História: Fascismo, Nazismo e Holocausto',mat:'História'},
+    {data:'2026-07-16',dia:'Qui',conteudo:'Revisão: História (totalitarismos)',mat:'História'},
+    {data:'2026-07-17',dia:'Sex',conteudo:'Matemática: Números decimais e porcentagem',mat:'Matemática'},
+    {data:'2026-07-18',dia:'Sáb',conteudo:'Simulado misto: 15 questões (Port + Mat + Hist)',mat:'Geral'},
+    {data:'2026-07-19',dia:'Dom',conteudo:'Revisão geral + caderno de erros',mat:'Geral'},
+  ]},
+  {semana:'5',periodo:'21/07–27/07',dias:[
+    {data:'2026-07-21',dia:'Ter',conteudo:'Português: Coerência textual — causa, consequência, contraste',mat:'Português'},
+    {data:'2026-07-22',dia:'Qua',conteudo:'Geografia: Elementos do mapa — escala, coordenadas, orientação',mat:'Geografia'},
+    {data:'2026-07-23',dia:'Qui',conteudo:'Revisão: Geografia (cartografia)',mat:'Geografia'},
+    {data:'2026-07-24',dia:'Sex',conteudo:'Matemática: Potenciação e raiz quadrada',mat:'Matemática'},
+    {data:'2026-07-25',dia:'Sáb',conteudo:'Simulado: 10 questões de Geografia',mat:'Geografia'},
+    {data:'2026-07-26',dia:'Dom',conteudo:'Revisão + correção de erros',mat:'Geral'},
+  ]},
+  {semana:'6',periodo:'28/07–03/08',dias:[
+    {data:'2026-07-28',dia:'Ter',conteudo:'Português: Coesão — pronomes, conjunções, advérbios',mat:'Português'},
+    {data:'2026-07-29',dia:'Qua',conteudo:'Ciências: Teias alimentares e relações ecológicas',mat:'Ciências da Natureza'},
+    {data:'2026-07-30',dia:'Qui',conteudo:'Revisão: Ciências (ecologia)',mat:'Ciências da Natureza'},
+    {data:'2026-07-31',dia:'Sex',conteudo:'Matemática: Expressões numéricas com reais',mat:'Matemática'},
+    {data:'2026-08-01',dia:'Sáb',conteudo:'Simulado misto: 15 questões',mat:'Geral'},
+    {data:'2026-08-02',dia:'Dom',conteudo:'Revisão geral + atualizar caderno de erros',mat:'Geral'},
+  ]},
+  {semana:'7',periodo:'04/08–10/08',dias:[
+    {data:'2026-08-04',dia:'Ter',conteudo:'Português: Figuras de linguagem — metáfora, ironia, hipérbole',mat:'Português'},
+    {data:'2026-08-05',dia:'Qua',conteudo:'História: Segunda Guerra Mundial — causas, alianças e etapas',mat:'História'},
+    {data:'2026-08-06',dia:'Qui',conteudo:'Revisão: História (2ª Guerra)',mat:'História'},
+    {data:'2026-08-07',dia:'Sex',conteudo:'Matemática: Razão e proporção',mat:'Matemática'},
+    {data:'2026-08-08',dia:'Sáb',conteudo:'Simulado: 10 questões de Português',mat:'Português'},
+    {data:'2026-08-09',dia:'Dom',conteudo:'Revisão geral da semana',mat:'Geral'},
+  ]},
+  {semana:'8',periodo:'11/08–17/08',dias:[
+    {data:'2026-08-11',dia:'Ter',conteudo:'Português: Sinonímia, antonímia, polissemia e ambiguidade',mat:'Português'},
+    {data:'2026-08-12',dia:'Qua',conteudo:'Geografia: Projeções cartográficas e movimentos da Terra',mat:'Geografia'},
+    {data:'2026-08-13',dia:'Qui',conteudo:'Revisão: Geografia (cartografia avançada)',mat:'Geografia'},
+    {data:'2026-08-14',dia:'Sex',conteudo:'Matemática: Divisão proporcional e regra de três simples',mat:'Matemática'},
+    {data:'2026-08-15',dia:'Sáb',conteudo:'Simulado misto: 20 questões',mat:'Geral'},
+    {data:'2026-08-16',dia:'Dom',conteudo:'Revisão + foco nos erros recorrentes',mat:'Geral'},
+  ]},
+  {semana:'9',periodo:'18/08–24/08',dias:[
+    {data:'2026-08-18',dia:'Ter',conteudo:'Português: Gramática — concordância nominal e verbal',mat:'Português'},
+    {data:'2026-08-19',dia:'Qua',conteudo:'Ciências: Vírus, vacinas e Reino Monera',mat:'Ciências da Natureza'},
+    {data:'2026-08-20',dia:'Qui',conteudo:'Revisão: Ciências (microbiologia)',mat:'Ciências da Natureza'},
+    {data:'2026-08-21',dia:'Sex',conteudo:'Matemática: Regra de três composta e porcentagem',mat:'Matemática'},
+    {data:'2026-08-22',dia:'Sáb',conteudo:'Simulado: 15 questões de Matemática',mat:'Matemática'},
+    {data:'2026-08-23',dia:'Dom',conteudo:'Revisão geral + caderno de erros',mat:'Geral'},
+  ]},
+  {semana:'10',periodo:'25/08–31/08',dias:[
+    {data:'2026-08-25',dia:'Ter',conteudo:'Português: Regência verbal e nominal',mat:'Português'},
+    {data:'2026-08-26',dia:'Qua',conteudo:'História: ONU, Direitos Humanos e Guerra Fria',mat:'História'},
+    {data:'2026-08-27',dia:'Qui',conteudo:'Revisão: História (pós-guerra)',mat:'História'},
+    {data:'2026-08-28',dia:'Sex',conteudo:'Matemática: Médias aritmética, ponderada e geométrica',mat:'Matemática'},
+    {data:'2026-08-29',dia:'Sáb',conteudo:'Simulado misto: 20 questões',mat:'Geral'},
+    {data:'2026-08-30',dia:'Dom',conteudo:'Revisão geral da semana',mat:'Geral'},
+  ]},
+  {semana:'11',periodo:'01/09–07/09',dias:[
+    {data:'2026-09-01',dia:'Ter',conteudo:'Português: Interpretação avançada — inferências e intertextualidade',mat:'Português'},
+    {data:'2026-09-02',dia:'Qua',conteudo:'Ciências: Sistema respiratório e circulatório',mat:'Ciências da Natureza'},
+    {data:'2026-09-03',dia:'Qui',conteudo:'Revisão: Ciências (sistemas do corpo)',mat:'Ciências da Natureza'},
+    {data:'2026-09-04',dia:'Sex',conteudo:'Matemática: Equações do 1º grau',mat:'Matemática'},
+    {data:'2026-09-05',dia:'Sáb',conteudo:'Simulado: 10 questões de Português',mat:'Português'},
+    {data:'2026-09-06',dia:'Dom',conteudo:'Revisão geral + mapa de pontos fracos',mat:'Geral'},
+  ]},
+  {semana:'12',periodo:'08/09–14/09',dias:[
+    {data:'2026-09-08',dia:'Ter',conteudo:'Português: Pontuação e seus efeitos de sentido',mat:'Português'},
+    {data:'2026-09-09',dia:'Qua',conteudo:'História: Revolução Chinesa e Cubana',mat:'História'},
+    {data:'2026-09-10',dia:'Qui',conteudo:'Revisão: História (revoluções)',mat:'História'},
+    {data:'2026-09-11',dia:'Sex',conteudo:'Matemática: Equações do 2º grau',mat:'Matemática'},
+    {data:'2026-09-12',dia:'Sáb',conteudo:'Simulado misto: 20 questões',mat:'Geral'},
+    {data:'2026-09-13',dia:'Dom',conteudo:'Revisão + correção de erros',mat:'Geral'},
+  ]},
+  {semana:'13',periodo:'15/09–21/09',dias:[
+    {data:'2026-09-15',dia:'Ter',conteudo:'Português: Ortografia, prosódia e acentuação',mat:'Português'},
+    {data:'2026-09-16',dia:'Qua',conteudo:'Geografia: Estrutura interna da Terra e tectônica',mat:'Geografia'},
+    {data:'2026-09-17',dia:'Qui',conteudo:'Revisão: Geografia (geologia)',mat:'Geografia'},
+    {data:'2026-09-18',dia:'Sex',conteudo:'Matemática: Sistemas lineares do 1º grau',mat:'Matemática'},
+    {data:'2026-09-19',dia:'Sáb',conteudo:'Simulado: 15 questões (Mat + Geo)',mat:'Geral'},
+    {data:'2026-09-20',dia:'Dom',conteudo:'Revisão geral da semana',mat:'Geral'},
+  ]},
+  {semana:'14',periodo:'22/09–28/09',dias:[
+    {data:'2026-09-22',dia:'Ter',conteudo:'Português: Classes gramaticais — verbos, pronomes, conjunções',mat:'Português'},
+    {data:'2026-09-23',dia:'Qua',conteudo:'Ciências: Sistema digestório e urinário',mat:'Ciências da Natureza'},
+    {data:'2026-09-24',dia:'Qui',conteudo:'Revisão: Ciências (sistemas do corpo)',mat:'Ciências da Natureza'},
+    {data:'2026-09-25',dia:'Sex',conteudo:'Matemática: Polígonos — ângulos internos e externos',mat:'Matemática'},
+    {data:'2026-09-26',dia:'Sáb',conteudo:'Simulado misto: 20 questões',mat:'Geral'},
+    {data:'2026-09-27',dia:'Dom',conteudo:'Revisão + caderno de erros atualizado',mat:'Geral'},
+  ]},
+  {semana:'15',periodo:'29/09–05/10',dias:[
+    {data:'2026-09-29',dia:'Ter',conteudo:'Português: Coordenação e subordinação — tipos de orações',mat:'Português'},
+    {data:'2026-09-30',dia:'Qua',conteudo:'História: Descolonização da África e Ásia',mat:'História'},
+    {data:'2026-10-01',dia:'Qui',conteudo:'Revisão: História (descolonização)',mat:'História'},
+    {data:'2026-10-02',dia:'Sex',conteudo:'Matemática: Triângulos e semelhança',mat:'Matemática'},
+    {data:'2026-10-03',dia:'Sáb',conteudo:'Simulado: 15 questões (Port + Hist)',mat:'Geral'},
+    {data:'2026-10-04',dia:'Dom',conteudo:'Revisão geral da semana',mat:'Geral'},
+  ]},
+  {semana:'16',periodo:'06/10–12/10',dias:[
+    {data:'2026-10-06',dia:'Ter',conteudo:'Português: Anáfora, catáfora e coesão referencial',mat:'Português'},
+    {data:'2026-10-07',dia:'Qua',conteudo:'Geografia: Relevo mundial e do Brasil',mat:'Geografia'},
+    {data:'2026-10-08',dia:'Qui',conteudo:'Revisão: Geografia (relevo)',mat:'Geografia'},
+    {data:'2026-10-09',dia:'Sex',conteudo:'Matemática: Relações métricas no triângulo retângulo',mat:'Matemática'},
+    {data:'2026-10-10',dia:'Sáb',conteudo:'Simulado misto: 20 questões',mat:'Geral'},
+    {data:'2026-10-11',dia:'Dom',conteudo:'Revisão geral + mapa de pontos fracos',mat:'Geral'},
+  ]},
+  {semana:'17',periodo:'13/10–19/10',dias:[
+    {data:'2026-10-13',dia:'Ter',conteudo:'Português: Hiperonímia, hiponímia e relações semânticas',mat:'Português'},
+    {data:'2026-10-14',dia:'Qua',conteudo:'Ciências: Sistema nervoso e reprodutor',mat:'Ciências da Natureza'},
+    {data:'2026-10-15',dia:'Qui',conteudo:'Revisão: Ciências (sistemas)',mat:'Ciências da Natureza'},
+    {data:'2026-10-16',dia:'Sex',conteudo:'Matemática: Trigonometria básica — seno, cosseno, tangente',mat:'Matemática'},
+    {data:'2026-10-17',dia:'Sáb',conteudo:'Simulado: 15 questões de Matemática',mat:'Matemática'},
+    {data:'2026-10-18',dia:'Dom',conteudo:'Revisão geral da semana',mat:'Geral'},
+  ]},
+  {semana:'18',periodo:'20/10–26/10',dias:[
+    {data:'2026-10-20',dia:'Ter',conteudo:'Revisão geral de Português — tópicos mais errados',mat:'Português'},
+    {data:'2026-10-21',dia:'Qua',conteudo:'História: República Oligárquica e Era Vargas',mat:'História'},
+    {data:'2026-10-22',dia:'Qui',conteudo:'Revisão: História (Brasil contemporâneo)',mat:'História'},
+    {data:'2026-10-23',dia:'Sex',conteudo:'Matemática: Áreas de figuras planas',mat:'Matemática'},
+    {data:'2026-10-24',dia:'Sáb',conteudo:'Simulado misto: 25 questões',mat:'Geral'},
+    {data:'2026-10-25',dia:'Dom',conteudo:'Revisão intensiva + correção',mat:'Geral'},
+  ]},
+  {semana:'19',periodo:'27/10–02/11',dias:[
+    {data:'2026-10-27',dia:'Ter',conteudo:'Revisão geral de Matemática — tópicos mais errados',mat:'Matemática'},
+    {data:'2026-10-28',dia:'Qua',conteudo:'Geografia: Clima, vegetação e hidrografia',mat:'Geografia'},
+    {data:'2026-10-29',dia:'Qui',conteudo:'Revisão: Geografia (clima e hidrografia)',mat:'Geografia'},
+    {data:'2026-10-30',dia:'Sex',conteudo:'Matemática: Circunferência e círculo',mat:'Matemática'},
+    {data:'2026-10-31',dia:'Sáb',conteudo:'Simulado completo: 30 questões cronometrado',mat:'Geral'},
+    {data:'2026-11-01',dia:'Dom',conteudo:'Análise do simulado + prioridades finais',mat:'Geral'},
+  ]},
+  {semana:'20',periodo:'03/11–09/11',dias:[
+    {data:'2026-11-03',dia:'Ter',conteudo:'Simulado parcial Port + Mat: 15 questões cronometrado',mat:'Geral'},
+    {data:'2026-11-04',dia:'Qua',conteudo:'Ciências: Genética — Leis de Mendel',mat:'Ciências da Natureza'},
+    {data:'2026-11-05',dia:'Qui',conteudo:'Revisão dirigida: erros do simulado',mat:'Geral'},
+    {data:'2026-11-06',dia:'Sex',conteudo:'Simulado parcial Conhecimentos Gerais: 10 questões',mat:'Geral'},
+    {data:'2026-11-07',dia:'Sáb',conteudo:'Simulado completo: 30 questões cronometrado',mat:'Geral'},
+    {data:'2026-11-08',dia:'Dom',conteudo:'Análise detalhada de desempenho',mat:'Geral'},
+  ]},
+  {semana:'21',periodo:'10/11–16/11',dias:[
+    {data:'2026-11-10',dia:'Ter',conteudo:'Revisão intensiva: pontos mais fracos (Port)',mat:'Português'},
+    {data:'2026-11-11',dia:'Qua',conteudo:'História: Ditadura Militar e Nova República',mat:'História'},
+    {data:'2026-11-12',dia:'Qui',conteudo:'Revisão: História (Brasil — Ditadura)',mat:'História'},
+    {data:'2026-11-13',dia:'Sex',conteudo:'Revisão intensiva: pontos mais fracos (Mat)',mat:'Matemática'},
+    {data:'2026-11-14',dia:'Sáb',conteudo:'Simulado completo #2: 30 questões',mat:'Geral'},
+    {data:'2026-11-15',dia:'Dom',conteudo:'Revisão + caderno de erros final',mat:'Geral'},
+  ]},
+  {semana:'22',periodo:'17/11–23/11',dias:[
+    {data:'2026-11-17',dia:'Ter',conteudo:'Ciências: Evolução — Lamarck, Darwin, seleção natural',mat:'Ciências da Natureza'},
+    {data:'2026-11-18',dia:'Qua',conteudo:'Geografia: Urbanização, globalização e geopolítica',mat:'Geografia'},
+    {data:'2026-11-19',dia:'Qui',conteudo:'Revisão: Geografia (geopolítica)',mat:'Geografia'},
+    {data:'2026-11-20',dia:'Sex',conteudo:'Revisão de tudo: questões variadas por matéria',mat:'Geral'},
+    {data:'2026-11-21',dia:'Sáb',conteudo:'Simulado completo #3: 30 questões cronometrado',mat:'Geral'},
+    {data:'2026-11-22',dia:'Dom',conteudo:'Análise + foco nas matérias mais críticas',mat:'Geral'},
+  ]},
+  {semana:'23',periodo:'24/11–30/11',dias:[
+    {data:'2026-11-24',dia:'Ter',conteudo:'Revisão leve: Português — leitura e interpretação',mat:'Português'},
+    {data:'2026-11-25',dia:'Qua',conteudo:'Revisão leve: Ciências — sistemas do corpo humano',mat:'Ciências da Natureza'},
+    {data:'2026-11-26',dia:'Qui',conteudo:'Revisão leve: Matemática — operações e porcentagem',mat:'Matemática'},
+    {data:'2026-11-27',dia:'Sex',conteudo:'Revisão leve: História — eventos principais',mat:'História'},
+    {data:'2026-11-28',dia:'Sáb',conteudo:'Simulado completo final: 30 questões',mat:'Geral'},
+    {data:'2026-11-29',dia:'Dom',conteudo:'Descanso + revisão levíssima dos erros principais',mat:'Geral'},
+  ]},
+  {semana:'24',periodo:'30/11–06/12',dias:[
+    {data:'2026-11-30',dia:'Seg',conteudo:'Revisão rápida: Português (30 min)',mat:'Português'},
+    {data:'2026-12-01',dia:'Ter',conteudo:'Revisão rápida: Matemática (30 min)',mat:'Matemática'},
+    {data:'2026-12-02',dia:'Qua',conteudo:'Revisão rápida: Conhecimentos Gerais (30 min)',mat:'Geral'},
+    {data:'2026-12-03',dia:'Qui',conteudo:'Revisão dos pontos mais errados ao longo do ano',mat:'Geral'},
+    {data:'2026-12-04',dia:'Sex',conteudo:'Descanso total — sem estudo',mat:'Geral'},
+    {data:'2026-12-05',dia:'Sáb',conteudo:'Simuladinho final: 15 questões para aquecer',mat:'Geral'},
+    {data:'2026-12-06',dia:'Dom',conteudo:'Descanso, organizar documentos para a prova',mat:'Geral'},
+  ]},
+  {semana:'25',periodo:'07/12–13/12',dias:[
+    {data:'2026-12-07',dia:'Seg',conteudo:'Revisão muito leve: 1 tópico de cada matéria',mat:'Geral'},
+    {data:'2026-12-08',dia:'Ter',conteudo:'Descanso total',mat:'Geral'},
+    {data:'2026-12-09',dia:'Qua',conteudo:'Revisão rápida: dúvidas específicas que surgirem',mat:'Geral'},
+    {data:'2026-12-10',dia:'Qui',conteudo:'Descanso — cuidar do sono e alimentação',mat:'Geral'},
+    {data:'2026-12-11',dia:'Sex',conteudo:'Revisar só o caderno de erros (30 min)',mat:'Geral'},
+    {data:'2026-12-12',dia:'Sáb',conteudo:'Descanso total — preparar material para a prova',mat:'Geral'},
+    {data:'2026-12-13',dia:'Dom',conteudo:'Descanso e confiança. Você está preparada! ✦',mat:'Geral'},
+  ]},
+  {semana:'26',periodo:'14/12–20/12',dias:[
+    {data:'2026-12-14',dia:'Seg',conteudo:'Revisão levíssima — só o que sentir necessidade',mat:'Geral'},
+    {data:'2026-12-15',dia:'Ter',conteudo:'Descanso total',mat:'Geral'},
+    {data:'2026-12-16',dia:'Qua',conteudo:'Revisar 5 questões de cada matéria (15 no total)',mat:'Geral'},
+    {data:'2026-12-17',dia:'Qui',conteudo:'Descanso — dormir bem é essencial',mat:'Geral'},
+    {data:'2026-12-18',dia:'Sex',conteudo:'Organizar material, documentos e local de prova',mat:'Geral'},
+    {data:'2026-12-19',dia:'Sáb',conteudo:'Descanso total. Boa sorte amanhã! 🌟',mat:'Geral'},
+    {data:'2026-12-20',dia:'Dom',conteudo:'🎯 DIA DA PROVA — IFPE 2027',mat:'Geral'},
+  ]},
+];
+
+let planoFeitos = JSON.parse(localStorage.getItem('luisa_plano')||'[]');
+
+function savePlano(){localStorage.setItem('luisa_plano',JSON.stringify(planoFeitos));}
+
+function renderPlano(){
+  const wrap=document.getElementById('plano-list');
+  const today=new Date().toISOString().slice(0,10);
+  const MAT_BADGE={'Português':'badge-port','Matemática':'badge-mat','Ciências da Natureza':'badge-bio','História':'badge-hist','Geografia':'badge-geo','Geral':'badge-rev'};
+
+  wrap.innerHTML=PLANO_DATA.map((sem,si)=>{
+    const totalDias=sem.dias.length;
+    const feitos=sem.dias.filter(d=>planoFeitos.includes(d.data)).length;
+    const pct=Math.round(feitos/totalDias*100);
+    const isCurrent=sem.dias.some(d=>d.data===today||d.data>=today)&&(si===0||PLANO_DATA[si-1].dias.every(d=>d.data<today));
+
+    const diasHTML=sem.dias.map(d=>{
+      const isDone=planoFeitos.includes(d.data);
+      const isToday=d.data===today;
+      const isPast=d.data<today&&!isDone;
+      const badge=MAT_BADGE[d.mat]||'badge-rev';
+      return '<div class="plano-dia" style="'+(isPast?'opacity:.5':'')+(isToday?'background:rgba(251,191,36,.06);border-radius:8px;padding:8px;margin:-2px':'')+'">'
+        +'<div class="plano-dia-check'+(isDone?' done':'')+'" onclick="togglePlano(\''+d.data+'\',this)"></div>'
+        +'<div class="plano-dia-info">'
+          +'<div class="plano-dia-data">'+d.dia+', '+fmtDate(d.data)+(isToday?' 📌 Hoje':'')+'</div>'
+          +'<div class="plano-dia-conteudo">'+d.conteudo+'</div>'
+          +'<span class="bloco-badge '+badge+'" style="margin-top:4px;display:inline-block">'+d.mat+'</span>'
+        +'</div>'
+      +'</div>';
+    }).join('');
+
+    return '<div class="plano-semana">'
+      +'<div class="plano-semana-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\'">'
+        +'<div>'
+          +'<div class="plano-semana-titulo">Semana '+sem.semana+' · '+sem.periodo+'</div>'
+          +'<div style="font-size:10px;color:var(--text-dim);margin-top:2px">'+feitos+' de '+totalDias+' dias · '+pct+'%</div>'
+        +'</div>'
+        +'<div style="display:flex;align-items:center;gap:8px">'
+          +'<div style="width:60px;height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:var(--accent);border-radius:99px"></div></div>'
+          +(isCurrent?'<span style="font-size:9px;background:var(--accent);color:#fff;padding:2px 7px;border-radius:99px">ATUAL</span>':'')
+        +'</div>'
+      +'</div>'
+      +'<div class="plano-semana-body" style="display:'+(isCurrent?'block':'none')+'">'
+        +diasHTML
+      +'</div>'
+    +'</div>';
+  }).join('');
+}
+
+function togglePlano(data, el){
+  if(planoFeitos.includes(data)){
+    planoFeitos=planoFeitos.filter(d=>d!==data);
+    el.classList.remove('done');
+    showToast('Dia desmarcado.','info');
+  } else {
+    planoFeitos.push(data);
+    el.classList.add('done');
+    showToast('Dia concluído! ✦','success');
+  }
+  savePlano();
 }
 
 // ═══════════════════════════════════════
