@@ -1244,9 +1244,10 @@ function renderChartTempo(){
   document.getElementById('chart-tempo-inner').style.display=hasData?'block':'none';
   if(!hasData){if(charts['chartTempo']){charts['chartTempo'].destroy();delete charts['chartTempo'];}return;}
   const colors=MATS.map(m=>MCOLOR[m]);
-  mkChart('chartTempo',{type:'doughnut',data:{labels:MATS,datasets:[{data,backgroundColor:colors.map(c=>c+'CC'),borderColor:colors,borderWidth:2,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.label+': '+ctx.parsed+'min ('+Math.round(ctx.parsed/total*100)+'%)'}}}}}});
-  document.getElementById('donut-center').innerHTML=`<div class="donut-total">${total}</div><div class="donut-sub">minutos</div>`;
-  document.getElementById('tempo-legend').innerHTML=MATS.map((m,i)=>data[i]>0?`<div class="legend-row"><div class="legend-dot" style="background:${MCOLOR[m]}"></div><span class="legend-name">${m.split(' ')[0]}</span><span class="legend-val">${data[i]}min · ${Math.round(data[i]/total*100)}%</span></div>`:'').join('');
+  const tempoTooltip = function(ctx) { return ' '+ctx.label+': '+ctx.parsed+'min ('+Math.round(ctx.parsed/total*100)+'%)'; };
+  mkChart('chartTempo',{type:'doughnut',data:{labels:MATS,datasets:[{data,backgroundColor:colors.map(c=>c+'CC'),borderColor:colors,borderWidth:2,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{callbacks:{label:tempoTooltip}}}}});
+  document.getElementById('donut-center').innerHTML='<div class="donut-total">'+total+'</div><div class="donut-sub">minutos</div>';
+  document.getElementById('tempo-legend').innerHTML=MATS.map((m,i)=>data[i]>0?'<div class="legend-row"><div class="legend-dot" style="background:'+MCOLOR[m]+'"></div><span class="legend-name">'+m.split(' ')[0]+'</span><span class="legend-val">'+data[i]+'min · '+Math.round(data[i]/total*100)+'%</span></div>':'').join('');
 }
 
 function renderChartMateria(){
