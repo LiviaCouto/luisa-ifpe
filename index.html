@@ -6,6 +6,14 @@
 <title>Luísa Couto Mota — IFPE 2027</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">
 <link rel="alternate icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%237C3AED'/><text x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='18' fill='white'>✦</text></svg>">
+<meta property="og:title" content="Luísa Couto Mota · IFPE 2027">
+<meta property="og:description" content="Preparatório Técnico Integrado · Ciclo de Estudos personalizado para o IFPE 2027">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://liviacouto.github.io/luisa-ifpe">
+<meta property="og:image" content="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='630' viewBox='0 0 1200 630'><rect width='1200' height='630' fill='%2307041A'/><circle cx='200' cy='100' r='300' fill='rgba(124,58,237,0.15)'/><circle cx='1000' cy='530' r='250' fill='rgba(59,7,100,0.15)'/><text x='600' y='260' text-anchor='middle' font-family='serif' font-size='80' fill='%23C084FC'>✦</text><text x='600' y='360' text-anchor='middle' font-family='serif' font-size='52' fill='%23F0E8FF'>Luísa Couto Mota</text><text x='600' y='420' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%239B8EC4'>Preparatório IFPE 2027</text></svg>">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Luísa Couto Mota · IFPE 2027">
+<meta name="twitter:description" content="Preparatório Técnico Integrado · Ciclo de Estudos personalizado">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════ TOKENS ═══════════════ */
@@ -283,7 +291,39 @@ body{background:var(--bg-primary);color:var(--text-primary);font-family:'Inter',
 .toast.info{background:var(--accent);color:#fff}
 .toast.warning{background:var(--warning);color:#07041A}
 
-/* ═══════════════ FOOTER ═══════════════ */
+/* ═══════════════ STREAK ═══════════════ */
+.streak-card{background:linear-gradient(135deg,rgba(168,85,247,.15),rgba(251,191,36,.08));border:1px solid rgba(168,85,247,.3);border-radius:12px;padding:1.2rem;margin-bottom:1rem}
+.streak-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
+.streak-main{display:flex;align-items:center;gap:10px}
+.streak-fire{font-size:2rem;line-height:1}
+.streak-num{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--warning);line-height:1}
+.streak-label{font-size:11px;color:var(--text-secondary);margin-top:2px}
+.streak-record{text-align:right;font-size:11px;color:var(--text-dim)}
+.streak-record strong{color:var(--accent-light);font-size:13px;display:block}
+.streak-calendar{display:flex;flex-wrap:wrap;gap:4px;margin-top:.5rem}
+.streak-day{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;transition:all .2s;position:relative}
+.streak-day.active{background:var(--accent);color:#fff}
+.streak-day.today{border:2px solid var(--warning)}
+.streak-day.inactive{background:var(--input-bg);color:var(--text-dim)}
+.streak-day-label{font-size:9px;color:var(--text-dim);text-align:center;margin-top:2px}
+@media(max-width:500px){.streak-day{width:18px;height:18px;font-size:7px}}
+
+/* ═══════════════ TOOLTIPS ═══════════════ */
+[data-tip]{position:relative;cursor:help}
+[data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1A0A3E;color:var(--text-primary);font-size:10px;padding:5px 10px;border-radius:7px;white-space:nowrap;border:1px solid var(--border);opacity:0;pointer-events:none;transition:opacity .2s;z-index:200;font-family:'Inter',sans-serif;font-weight:400;letter-spacing:0;text-transform:none;max-width:200px;white-space:normal;text-align:center}
+[data-tip]:hover::after{opacity:1}
+
+/* ═══════════════ METAS NO DASH ═══════════════ */
+.dash-metas{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-bottom:1rem}
+.dash-meta-card{background:var(--input-bg);border:1px solid var(--border);border-radius:10px;padding:.9rem}
+.dash-meta-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.dash-meta-label{font-size:10px;color:var(--text-secondary);letter-spacing:.5px}
+.dash-meta-pct{font-size:12px;font-weight:700;color:var(--accent-light)}
+.dash-meta-track{height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+.dash-meta-fill{height:100%;border-radius:99px;transition:width .6s}
+.dash-meta-sub{font-size:10px;color:var(--text-dim);margin-top:4px}
+
+/* ═══════════════ OG / SHARE ═══════════════ */
 footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(--border);margin-top:2rem;position:relative;z-index:1}
 .footer-made{font-size:11px;color:var(--accent-light);letter-spacing:.5px;margin-bottom:.3rem}
 .footer-rights{font-size:10px;color:var(--text-dim)}
@@ -335,11 +375,35 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
   <!-- DASHBOARD -->
   <div id="sec-dashboard" class="section active">
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-value" id="st-sess">0</div><div class="stat-label">Sessões</div></div>
-      <div class="stat-card"><div class="stat-value" id="st-q">0</div><div class="stat-label">Questões</div></div>
-      <div class="stat-card"><div class="stat-value" id="st-pct">—</div><div class="stat-label">% Acertos</div></div>
-      <div class="stat-card"><div class="stat-value" id="st-min">0</div><div class="stat-label">Min estudados</div></div>
-      <div class="stat-card"><div class="stat-value" id="st-sem">0</div><div class="stat-label">Sem. concluídas</div></div>
+      <div class="stat-card" data-tip="Total de sessões de estudo registradas"><div class="stat-value" id="st-sess">0</div><div class="stat-label">Sessões</div></div>
+      <div class="stat-card" data-tip="Total de questões resolvidas (certas + erradas)"><div class="stat-value" id="st-q">0</div><div class="stat-label">Questões</div></div>
+      <div class="stat-card" data-tip="Percentual de questões certas sobre o total resolvido"><div class="stat-value" id="st-pct">—</div><div class="stat-label">% Acertos</div></div>
+      <div class="stat-card" data-tip="Soma de todos os minutos registrados nas sessões"><div class="stat-value" id="st-min">0</div><div class="stat-label">Min estudados</div></div>
+      <div class="stat-card" data-tip="Semanas dos ciclos marcadas como concluídas"><div class="stat-value" id="st-sem">0</div><div class="stat-label">Sem. concluídas</div></div>
+    </div>
+
+    <!-- STREAK -->
+    <div class="streak-card" id="streak-card">
+      <div class="streak-top">
+        <div class="streak-main">
+          <div class="streak-fire">🔥</div>
+          <div>
+            <div class="streak-num" id="streak-num">0</div>
+            <div class="streak-label">dias seguidos estudando</div>
+          </div>
+        </div>
+        <div class="streak-record">
+          <span>Recorde</span>
+          <strong id="streak-record">0 dias</strong>
+        </div>
+      </div>
+      <div class="streak-calendar" id="streak-calendar"></div>
+    </div>
+
+    <!-- METAS NO DASH -->
+    <div id="dash-metas-wrap" style="display:none">
+      <div class="card-title" style="margin-bottom:.75rem;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent)">✦ Metas desta semana</div>
+      <div class="dash-metas" id="dash-metas"></div>
     </div>
 
     <!-- ANALYTICS -->
@@ -626,13 +690,14 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
 <div class="float-timer hidden" id="float-timer">
   <div class="float-timer-time" id="float-time">00:00:00</div>
   <div class="float-timer-btns">
-    <button class="float-btn" id="float-play" onclick="floatTimerToggle()">▶</button>
-    <button class="float-btn go" onclick="irParaLancar()" title="Lançar sessão">✦ Lançar</button>
+    <button class="float-btn" id="float-play" onclick="floatTimerToggle()" title="Pausar/Retomar">▶</button>
+    <button class="float-btn go" onclick="irParaLancar()" title="Ir para lançamento">✦ Lançar</button>
+    <button class="float-btn" onclick="cancelarTimer()" title="Cancelar e zerar" style="color:var(--danger);border-color:var(--danger)">✕</button>
   </div>
 </div>
 
 <footer>
-  <div class="footer-made">Feito com ♥ por Lívia Couto · Engenheira de Software</div>
+  <div class="footer-made">Feito com ♥ por Lívia Couto · <em>Product Manager</em> / Eng.ª de Software</div>
   <div class="footer-rights">© 2026 · Todos os direitos reservados · Luísa Couto Mota · IFPE 2027</div>
 </footer>
 
@@ -898,6 +963,11 @@ function irParaLancar(){
 function timerStart(){if(timerRunning)return;timerRunning=true;showFloatTimer();timerInterval=setInterval(()=>{timerSec++;updateTimerDisplays();document.getElementById('float-play').textContent='■';},1000);document.getElementById('btn-start').style.display='none';document.getElementById('btn-stop').style.display='';showToast('Cronômetro iniciado!','info')}
 function timerStop(){if(!timerRunning)return;clearInterval(timerInterval);timerRunning=false;document.getElementById('float-play').textContent='▶';document.getElementById('btn-start').style.display='';document.getElementById('btn-stop').style.display='none';showToast('Pausado · '+fmtTimer(timerSec),'info')}
 function timerReset(){timerStop();timerSec=0;updateTimerDisplays();document.getElementById('float-timer').classList.add('hidden');}
+function cancelarTimer(){
+  if(timerSec>0 && !confirm('Cancelar e zerar o cronômetro?')) return;
+  timerReset();
+  showToast('Cronômetro cancelado.','info');
+}
 function usarCronometro(){if(timerSec===0){showToast('Cronômetro está zerado!','error');return;}const m=Math.round(timerSec/60);document.getElementById('f-minutos').value=m;document.getElementById('timer-badge').style.display='inline';showToast('Tempo preenchido: '+m+'min ✦','success')}
 
 // ═══════════════════════════════════════
@@ -1113,7 +1183,7 @@ async function salvarMetas(){
   const s=parseInt(document.getElementById('g-sessions').value)||0;
   const q=parseInt(document.getElementById('g-questions').value)||0;
   goals={weekly_hours:h,weekly_sessions:s,weekly_questions:q};
-  saveLocal();renderMetas();showToast('Metas salvas! ✦','success');
+  saveLocal();renderMetas();renderDashMetas();showToast('Metas salvas! ✦','success');
   try{await sbUpsert('study_goals',{id:1,...goals},'id');}catch(e){}
 }
 function renderMetas(){
@@ -1278,8 +1348,90 @@ function renderAnalytics(){
 }
 
 // ═══════════════════════════════════════
-//  DASHBOARD
+//  STREAK
 // ═══════════════════════════════════════
+function calcStreak(){
+  const diasAtivos=new Set(sessions.map(s=>s.data));
+  const today=new Date().toISOString().slice(0,10);
+  let cur=new Date(today);
+  let streak=0;
+  while(true){
+    const k=cur.toISOString().slice(0,10);
+    if(diasAtivos.has(k)){streak++;cur.setDate(cur.getDate()-1);}
+    else break;
+  }
+  // Recorde: maior sequência histórica
+  const sorted=[...diasAtivos].sort();
+  let maxStreak=0,tempStreak=0,prevDate=null;
+  sorted.forEach(d=>{
+    if(prevDate){
+      const prev=new Date(prevDate);prev.setDate(prev.getDate()+1);
+      if(prev.toISOString().slice(0,10)===d) tempStreak++;
+      else tempStreak=1;
+    } else tempStreak=1;
+    if(tempStreak>maxStreak) maxStreak=tempStreak;
+    prevDate=d;
+  });
+  return{streak,record:Math.max(maxStreak,streak)};
+}
+
+function renderStreak(){
+  const{streak,record}=calcStreak();
+  document.getElementById('streak-num').textContent=streak;
+  document.getElementById('streak-record').textContent=record+' dias';
+
+  // Calendário últimos 35 dias (5 semanas)
+  const cal=document.getElementById('streak-calendar');
+  const diasAtivos=new Set(sessions.map(s=>s.data));
+  const today=new Date().toISOString().slice(0,10);
+  const days=[];
+  for(let i=34;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    days.push(d.toISOString().slice(0,10));
+  }
+  cal.innerHTML=days.map(d=>{
+    const isActive=diasAtivos.has(d);
+    const isToday=d===today;
+    const day=parseInt(d.slice(8));
+    const cls='streak-day'+(isActive?' active':'  inactive')+(isToday?' today':'');
+    return '<div class="'+cls+'" title="'+fmtDate(d)+'">'+day+'</div>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+//  METAS NO DASHBOARD
+// ═══════════════════════════════════════
+function renderDashMetas(){
+  const wrap=document.getElementById('dash-metas-wrap');
+  const grid=document.getElementById('dash-metas');
+  if(!goals.weekly_hours&&!goals.weekly_sessions&&!goals.weekly_questions){wrap.style.display='none';return;}
+
+  const now=new Date();
+  const startW=new Date(now);startW.setDate(now.getDate()-now.getDay());startW.setHours(0,0,0,0);
+  const weekSess=sessions.filter(s=>{const d=new Date(s.data+'T12:00');return d>=startW;});
+  const wMin=weekSess.reduce((a,s)=>a+(s.minutos||0),0);
+  const wSess=weekSess.length;
+  const wQ=weekSess.reduce((a,s)=>a+s.acertos+s.erros,0);
+
+  const items=[
+    {label:'Horas estudadas',cur:Math.round(wMin/60*10)/10,meta:goals.weekly_hours,unit:'h',tip:'Horas de estudo acumuladas nesta semana'},
+    {label:'Sessões realizadas',cur:wSess,meta:goals.weekly_sessions,unit:'',tip:'Uma sessão = cada vez que você lança um estudo'},
+    {label:'Questões resolvidas',cur:wQ,meta:goals.weekly_questions,unit:'',tip:'Total de questões certas + erradas desta semana'}
+  ].filter(x=>x.meta>0);
+
+  wrap.style.display='block';
+  grid.innerHTML=items.map(x=>{
+    const pct=Math.min(100,Math.round(x.cur/x.meta*100));
+    const col=pct>=100?'var(--success)':pct>=60?'var(--warning)':'var(--accent)';
+    return '<div class="dash-meta-card" data-tip="'+x.tip+'">'
+      +'<div class="dash-meta-top"><span class="dash-meta-label">'+x.label+'</span><span class="dash-meta-pct">'+pct+'%</span></div>'
+      +'<div class="dash-meta-track"><div class="dash-meta-fill" style="width:'+pct+'%;background:'+col+'"></div></div>'
+      +'<div class="dash-meta-sub">'+x.cur+x.unit+' de '+x.meta+x.unit+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+
 function renderDashboard(){
   const total=sessions.length;
   const totalQ=sessions.reduce((a,s)=>a+s.acertos+s.erros,0);
@@ -1291,6 +1443,8 @@ function renderDashboard(){
   document.getElementById('st-pct').textContent=pct;
   document.getElementById('st-min').textContent=totalMin;
   document.getElementById('st-sem').textContent=semanasFeitas.length;
+  renderStreak();
+  renderDashMetas();
   renderProgressMat();renderChartTempo();renderChartMateria();renderChartEvolucao();
   renderHeatmap();renderAnalytics();renderRevisoes();
 }
