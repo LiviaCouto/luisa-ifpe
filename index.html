@@ -17,13 +17,27 @@
   --nebula1:rgba(124,58,237,0.12);--nebula2:rgba(59,7,100,0.12);
 }
 [data-theme="light"] {
-  --bg-primary:#F3EEFF;--bg-card:rgba(255,255,255,0.9);--bg-card-solid:#fff;
+  --bg-primary:#F3EEFF;--bg-card:rgba(255,255,255,0.88);--bg-card-solid:#fff;
   --text-primary:#1A0A3E;--text-secondary:#6B5E8E;--text-dim:#9B8EC4;
   --accent:#7C3AED;--accent-light:#A855F7;--accent-pale:#6D28D9;
   --border:rgba(124,58,237,0.18);--border-strong:rgba(124,58,237,0.35);
   --success:#16A34A;--danger:#DC2626;--warning:#D97706;--info:#0284C7;
   --input-bg:rgba(124,58,237,0.06);--shadow:rgba(124,58,237,0.12);
-  --nebula1:rgba(168,85,247,0.06);--nebula2:rgba(124,58,237,0.06);
+  --nebula1:rgba(168,85,247,0.08);--nebula2:rgba(124,58,237,0.06);
+}
+[data-theme="light"] body {
+  background: linear-gradient(135deg, #F3EEFF 0%, #EDE0FF 30%, #F8F4FF 60%, #EAD9FF 100%);
+}
+[data-theme="light"] #space-bg canvas { opacity: 0.3; }
+[data-theme="light"] .nebula-1 { background: radial-gradient(ellipse, rgba(168,85,247,0.15), transparent 70%); }
+[data-theme="light"] .nebula-2 { background: radial-gradient(ellipse, rgba(124,58,237,0.1), transparent 70%); }
+
+/* Fix campo date mobile */
+input[type="date"].form-control {
+  -webkit-appearance: none;
+  appearance: none;
+  max-width: 100%;
+  min-width: 0;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100vh;overflow-x:hidden}
@@ -51,11 +65,12 @@ body{background:var(--bg-primary);color:var(--text-primary);font-family:'Inter',
 .theme-btn.active{background:var(--accent);color:#fff}
 
 /* ═══════════════ NAV ═══════════════ */
-.nav{display:flex;gap:3px;background:var(--input-bg);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:1.5rem;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.nav{display:flex;gap:4px;background:var(--input-bg);border:1px solid var(--border);border-radius:12px;padding:5px;margin-bottom:1.5rem;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .nav::-webkit-scrollbar{display:none}
-.nav-btn{flex:0 0 auto;padding:7px 11px;border:none;border-radius:8px;background:transparent;color:var(--text-secondary);font-family:'Inter',sans-serif;font-size:11px;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+.nav-btn{flex:1 1 auto;padding:8px 14px;border:none;border-radius:8px;background:transparent;color:var(--text-secondary);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap;text-align:center}
 .nav-btn.active{background:var(--accent);color:#fff}
 .nav-btn:hover:not(.active){background:rgba(168,85,247,.15);color:var(--accent-light)}
+@media(max-width:640px){.nav{gap:3px}.nav-btn{font-size:11px;padding:7px 10px}}
 
 /* ═══════════════ SECTIONS ═══════════════ */
 .section{display:none}.section.active{display:block}
@@ -160,7 +175,23 @@ body{background:var(--bg-primary);color:var(--text-primary);font-family:'Inter',
 .check-dot.done::after{content:'✓';font-size:10px;color:#07041A;font-weight:700}
 .check-label{font-size:11px;color:var(--text-dim)}
 
-/* ═══════════════ TIMER ═══════════════ */
+/* ═══════════════ TIMER FLUTUANTE ═══════════════ */
+.float-timer{position:fixed;bottom:70px;right:12px;z-index:90;background:var(--bg-card-solid);border:1px solid var(--border-strong);border-radius:14px;padding:8px 12px;display:flex;align-items:center;gap:8px;backdrop-filter:blur(12px);box-shadow:0 4px 20px rgba(0,0,0,.25);transition:all .3s}
+.float-timer.hidden{transform:translateY(100px);opacity:0;pointer-events:none}
+.float-timer-time{font-family:'Playfair Display',serif;font-size:1rem;color:var(--accent-light);letter-spacing:2px;min-width:70px}
+.float-timer-btns{display:flex;gap:4px}
+.float-btn{padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--text-secondary);font-size:10px;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap}
+.float-btn:hover{border-color:var(--accent);color:var(--accent-light)}
+.float-btn.go{background:var(--accent);color:#fff;border-color:var(--accent)}
+.float-btn.stop{background:rgba(248,113,113,.15);border-color:var(--danger);color:var(--danger)}
+@media(max-width:640px){.float-timer{bottom:80px;right:8px;padding:6px 10px}.float-timer-time{font-size:.9rem}}
+
+/* ═══════════════ HEATMAP RESPONSIVO ═══════════════ */
+.heatmap-wrap{overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+.heatmap-grid{display:flex;gap:3px;min-width:max-content}
+.heatmap-col{display:flex;flex-direction:column;gap:3px}
+.heatmap-cell{width:13px;height:13px;border-radius:2px;transition:all .2s;cursor:default;flex-shrink:0}
+@media(max-width:640px){.heatmap-cell{width:11px;height:11px}.heatmap-grid{gap:2px}.heatmap-col{gap:2px}}
 .timer-box{background:rgba(168,85,247,.08);border:1px solid var(--border-strong);border-radius:12px;padding:1.2rem;margin-bottom:1rem;text-align:center}
 .timer-display{font-family:'Playfair Display',serif;font-size:2.8rem;color:var(--accent-light);letter-spacing:4px;margin-bottom:.7rem;line-height:1}
 .timer-label{font-size:10px;color:var(--text-dim);letter-spacing:1px;margin-bottom:.4rem}
@@ -589,6 +620,15 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
   </div>
 </div>
 
+<!-- TIMER FLUTUANTE -->
+<div class="float-timer hidden" id="float-timer">
+  <div class="float-timer-time" id="float-time">00:00:00</div>
+  <div class="float-timer-btns">
+    <button class="float-btn" id="float-play" onclick="floatTimerToggle()">▶</button>
+    <button class="float-btn go" onclick="irParaLancar()" title="Lançar sessão">✦ Lançar</button>
+  </div>
+</div>
+
 <footer>
   <div class="footer-made">Feito com ♥ por Lívia Couto · Engenheira de Software</div>
   <div class="footer-rights">© 2026 · Todos os direitos reservados · Luísa Couto Mota · IFPE 2027</div>
@@ -650,11 +690,11 @@ const EDITAL = {
 };
 
 const CRONOGRAMA_DATA = [
-  {dia:'Segunda-feira',livre:'Após 18h',blocos:[{horario:'18h–19h',materia:'Português',badge:'badge-port',tipo:'Fixação rápida · questões objetivas'}]},
-  {dia:'Terça-feira',livre:'Tarde livre (exceto 1×/mês)',blocos:[{horario:'13h–15h30',materia:'Conteúdo novo',badge:'badge-port',tipo:'Português ou Matemática — dia forte'},{horario:'15h30–16h',materia:'Questões',badge:'badge-mat',tipo:'10–15 questões do assunto'}]},
-  {dia:'Quarta-feira',livre:'Após 16h10',blocos:[{horario:'16h10–17h30',materia:'Conhecimentos Gerais',badge:'badge-bio',tipo:'Ciências · História · Geografia'}]},
-  {dia:'Quinta-feira',livre:'Após 16h (pós-prova)',blocos:[{horario:'16h–17h',materia:'Revisão leve',badge:'badge-rev',tipo:'Corrigir erros · sem conteúdo novo'}]},
-  {dia:'Sexta-feira',livre:'Tarde inteira',blocos:[{horario:'13h–15h30',materia:'Matemática / Português',badge:'badge-mat',tipo:'Exercícios e prática — segundo dia forte'}]},
+  {dia:'Segunda-feira',livre:'Após 18h30',blocos:[{horario:'18h30–19h30',materia:'Português',badge:'badge-port',tipo:'Fixação rápida · questões objetivas'}]},
+  {dia:'Terça-feira',livre:'Tarde e noite livres',blocos:[{horario:'16h–17h',materia:'Conteúdo novo',badge:'badge-port',tipo:'Português ou Matemática'},{horario:'18h30–19h30',materia:'Questões',badge:'badge-mat',tipo:'10–15 questões do assunto estudado'}]},
+  {dia:'Quarta-feira',livre:'Após 16h10 (pós-reforço)',blocos:[{horario:'18h30–19h30',materia:'Conhecimentos Gerais',badge:'badge-bio',tipo:'Ciências · História · Geografia'}]},
+  {dia:'Quinta-feira',livre:'Após 16h (pós-prova)',blocos:[{horario:'18h30–19h30',materia:'Revisão leve',badge:'badge-rev',tipo:'Corrigir erros · sem conteúdo novo'}]},
+  {dia:'Sexta-feira',livre:'Tarde inteira',blocos:[{horario:'16h–17h',materia:'Matemática / Português',badge:'badge-mat',tipo:'Exercícios e prática — dia forte'}]},
   {dia:'Sábado',livre:'Dia livre',blocos:[{horario:'9h–11h',materia:'Simulado parcial',badge:'badge-rev',tipo:'10 questões cronometradas (QConcursos)'},{horario:'11h–12h',materia:'Correção',badge:'badge-rev',tipo:'Rever todos os erros'}]},
   {dia:'Domingo',livre:'Dia livre',blocos:[{horario:'9h–10h30',materia:'Revisão geral',badge:'badge-rev',tipo:'Fechar a semana · organizar a próxima'}]}
 ];
@@ -828,9 +868,34 @@ function showToast(msg, type='info') {
 let timerSec=0,timerInterval=null,timerRunning=false;
 function pad(n){return String(n).padStart(2,'0')}
 function fmtTimer(s){return pad(Math.floor(s/3600))+':'+pad(Math.floor((s%3600)/60))+':'+pad(s%60)}
-function timerStart(){if(timerRunning)return;timerRunning=true;timerInterval=setInterval(()=>{timerSec++;document.getElementById('timer-display').textContent=fmtTimer(timerSec);},1000);document.getElementById('btn-start').style.display='none';document.getElementById('btn-stop').style.display='';showToast('Cronômetro iniciado!','info')}
-function timerStop(){if(!timerRunning)return;clearInterval(timerInterval);timerRunning=false;document.getElementById('btn-start').style.display='';document.getElementById('btn-stop').style.display='none';showToast('Pausado · '+fmtTimer(timerSec),'info')}
-function timerReset(){timerStop();timerSec=0;document.getElementById('timer-display').textContent='00:00:00'}
+function updateTimerDisplays(){
+  const t=fmtTimer(timerSec);
+  const el=document.getElementById('timer-display');
+  const fl=document.getElementById('float-time');
+  if(el) el.textContent=t;
+  if(fl) fl.textContent=t;
+}
+function showFloatTimer(){
+  const ft=document.getElementById('float-timer');
+  if(ft) ft.classList.remove('hidden');
+}
+function floatTimerToggle(){
+  if(timerRunning) timerStop();
+  else timerStart();
+}
+function irParaLancar(){
+  timerStop();
+  const m=Math.round(timerSec/60);
+  if(m>0){
+    document.getElementById('f-minutos').value=m;
+    document.getElementById('timer-badge').style.display='inline';
+  }
+  showSection('lancar', document.querySelector('.nav-btn:nth-child(4)'));
+  document.querySelectorAll('.bnav-btn').forEach((b,i)=>{b.classList.remove('active');if(i===2)b.classList.add('active');});
+}
+function timerStart(){if(timerRunning)return;timerRunning=true;showFloatTimer();timerInterval=setInterval(()=>{timerSec++;updateTimerDisplays();document.getElementById('float-play').textContent='■';},1000);document.getElementById('btn-start').style.display='none';document.getElementById('btn-stop').style.display='';showToast('Cronômetro iniciado!','info')}
+function timerStop(){if(!timerRunning)return;clearInterval(timerInterval);timerRunning=false;document.getElementById('float-play').textContent='▶';document.getElementById('btn-start').style.display='';document.getElementById('btn-stop').style.display='none';showToast('Pausado · '+fmtTimer(timerSec),'info')}
+function timerReset(){timerStop();timerSec=0;updateTimerDisplays();document.getElementById('float-timer').classList.add('hidden');}
 function usarCronometro(){if(timerSec===0){showToast('Cronômetro está zerado!','error');return;}const m=Math.round(timerSec/60);document.getElementById('f-minutos').value=m;document.getElementById('timer-badge').style.display='inline';showToast('Tempo preenchido: '+m+'min ✦','success')}
 
 // ═══════════════════════════════════════
