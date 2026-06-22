@@ -27,20 +27,27 @@
   --nebula1:rgba(124,58,237,0.12);--nebula2:rgba(59,7,100,0.12);
 }
 [data-theme="light"] {
-  --bg-primary:#F3EEFF;--bg-card:rgba(255,255,255,0.88);--bg-card-solid:#fff;
-  --text-primary:#1A0A3E;--text-secondary:#6B5E8E;--text-dim:#9B8EC4;
-  --accent:#7C3AED;--accent-light:#A855F7;--accent-pale:#6D28D9;
-  --border:rgba(124,58,237,0.18);--border-strong:rgba(124,58,237,0.35);
-  --success:#16A34A;--danger:#DC2626;--warning:#D97706;--info:#0284C7;
-  --input-bg:rgba(124,58,237,0.06);--shadow:rgba(124,58,237,0.12);
-  --nebula1:rgba(168,85,247,0.08);--nebula2:rgba(124,58,237,0.06);
+  --bg-primary:#2D1B69;--bg-card:rgba(255,255,255,0.12);--bg-card-solid:#3D2580;
+  --text-primary:#F5F0FF;--text-secondary:#C4B5FD;--text-dim:#A78BFA;
+  --accent:#C084FC;--accent-light:#E9D5FF;--accent-pale:#F3EEFF;
+  --border:rgba(192,132,252,0.25);--border-strong:rgba(192,132,252,0.5);
+  --success:#4ADE80;--danger:#F87171;--warning:#FBBF24;--info:#67E8F9;
+  --input-bg:rgba(255,255,255,0.08);--shadow:rgba(0,0,0,0.3);
+  --nebula1:rgba(192,132,252,0.2);--nebula2:rgba(109,40,217,0.25);
+  --star-color:192,132,252;
 }
+[data-theme="dark"] { --star-color:255,255,255; }
 [data-theme="light"] body {
-  background: linear-gradient(135deg, #F3EEFF 0%, #EDE0FF 30%, #F8F4FF 60%, #EAD9FF 100%);
+  background: linear-gradient(160deg, #1A0845 0%, #2D1B69 35%, #3B1F8C 65%, #1E0B5E 100%);
 }
-[data-theme="light"] #space-bg canvas { opacity: 0.3; }
-[data-theme="light"] .nebula-1 { background: radial-gradient(ellipse, rgba(168,85,247,0.15), transparent 70%); }
-[data-theme="light"] .nebula-2 { background: radial-gradient(ellipse, rgba(124,58,237,0.1), transparent 70%); }
+[data-theme="light"] .nebula-1 { background: radial-gradient(ellipse, rgba(192,132,252,0.25), transparent 70%); filter:blur(60px); }
+[data-theme="light"] .nebula-2 { background: radial-gradient(ellipse, rgba(109,40,217,0.3), transparent 70%); filter:blur(60px); }
+[data-theme="light"] .card { box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+[data-theme="light"] .stat-card { background: rgba(255,255,255,0.1); }
+[data-theme="light"] .analytics-card { background: rgba(255,255,255,0.08); }
+[data-theme="light"] .streak-card { background: linear-gradient(135deg,rgba(192,132,252,.2),rgba(251,191,36,.1)); }
+[data-theme="light"] .form-control { color: #F5F0FF; }
+[data-theme="light"] .form-control option { background: #2D1B69; color: #F5F0FF; }
 
 /* Fix campo date mobile */
 input[type="date"].form-control {
@@ -305,6 +312,7 @@ body{background:var(--bg-primary);color:var(--text-primary);font-family:'Inter',
 .streak-day.active{background:var(--accent);color:#fff}
 .streak-day.today{border:2px solid var(--warning)}
 .streak-day.inactive{background:var(--input-bg);color:var(--text-dim)}
+.streak-day.future{background:transparent;color:var(--text-dim);opacity:.3;cursor:default}
 .streak-day-label{font-size:9px;color:var(--text-dim);text-align:center;margin-top:2px}
 @media(max-width:500px){.streak-day{width:18px;height:18px;font-size:7px}}
 
@@ -396,6 +404,11 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
           <span>Recorde</span>
           <strong id="streak-record">0 dias</strong>
         </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <button onclick="streakPrevMonth()" style="background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:16px;padding:0 4px">‹</button>
+        <span id="streak-month-label" style="font-size:11px;color:var(--text-secondary);letter-spacing:1px"></span>
+        <button onclick="streakNextMonth()" style="background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:16px;padding:0 4px">›</button>
       </div>
       <div class="streak-calendar" id="streak-calendar"></div>
     </div>
@@ -831,24 +844,23 @@ async function loadFromSupabase() {
   }
 }
 
-async function syncSession(sess) {
+async function syncSession(localId) {
+  const idx = sessions.findIndex(s => s.localId === localId);
+  if(idx < 0) return;
+  const sess = sessions[idx];
   try {
-    const {id, ...body} = sess;
-    if (id && String(id).length > 10) {
-      await sbPatch('sessions', id, body);
-    } else {
-      const res = await sbPost('sessions', body);
-      const newId = res[0]?.id;
-      if (newId) {
-        const idx = sessions.findIndex(s => s.id === sess.id);
-        if (idx >= 0) sessions[idx].id = newId;
-        saveLocal();
-        await createReviews(newId, sess.data, sess.assunto);
-      }
+    const {localId:_lid, id:_id, ...body} = sess;
+    const res = await sbPost('sessions', body);
+    const newId = res[0]?.id;
+    if (newId) {
+      sessions[idx].id = newId;
+      saveLocal();
+      setSyncStatus('ok','Sincronizado');
+      await createReviews(newId, sess.data, sess.assunto);
     }
-    setSyncStatus('ok','Sincronizado');
   } catch(e) {
-    setSyncStatus('error','Erro ao sincronizar');
+    setSyncStatus('error','Erro ao sincronizar — dados salvos localmente');
+    console.error('syncSession error:', e);
   }
 }
 
@@ -875,17 +887,85 @@ function initStars() {
   const canvas = document.getElementById('starCanvas');
   const ctx = canvas.getContext('2d');
   let stars = [];
+  let shooters = [];
+
   function resize() {
-    canvas.width = window.innerWidth; canvas.height = window.innerHeight; stars = [];
-    for (let i=0;i<150;i++) stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.4+.2,alpha:Math.random()*.6+.1,speed:Math.random()*.004+.001,offset:Math.random()*Math.PI*2});
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    stars = [];
+    // Camada 1: estrelas pequenas (muitas)
+    for (let i=0;i<200;i++) stars.push({
+      x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+      r:Math.random()*.8+.2, alpha:Math.random()*.5+.15,
+      speed:Math.random()*.003+.0008, offset:Math.random()*Math.PI*2, layer:1
+    });
+    // Camada 2: estrelas médias
+    for (let i=0;i<80;i++) stars.push({
+      x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+      r:Math.random()*1.2+.6, alpha:Math.random()*.6+.2,
+      speed:Math.random()*.005+.002, offset:Math.random()*Math.PI*2, layer:2
+    });
+    // Camada 3: estrelas grandes que piscam com mais intensidade
+    for (let i=0;i<30;i++) stars.push({
+      x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+      r:Math.random()*1.8+1.2, alpha:Math.random()*.4+.5,
+      speed:Math.random()*.008+.004, offset:Math.random()*Math.PI*2, layer:3
+    });
   }
+
+  function spawnShooter() {
+    shooters.push({
+      x: Math.random()*canvas.width*0.7,
+      y: Math.random()*canvas.height*0.4,
+      vx: Math.random()*3+2,
+      vy: Math.random()*1.5+0.5,
+      len: Math.random()*80+60,
+      alpha: 1,
+      life: 1
+    });
+    setTimeout(spawnShooter, Math.random()*8000+5000);
+  }
+
   function draw(t) {
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    const isDark = document.documentElement.getAttribute('data-theme')==='dark';
-    stars.forEach(s=>{ const a=s.alpha*(0.5+0.5*Math.sin(t*s.speed+s.offset))*(isDark?1:.4); ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${a})`;ctx.fill(); });
+    const isDark = document.documentElement.getAttribute('data-theme')!=='light';
+    const rgb = isDark ? '255,255,255' : '192,132,252';
+
+    stars.forEach(s=>{
+      const pulse = 0.5+0.5*Math.sin(t*s.speed+s.offset);
+      const a = s.alpha * pulse;
+      // Estrelas grandes têm halo
+      if(s.layer===3) {
+        const grd = ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*3);
+        grd.addColorStop(0,'rgba('+rgb+','+a+')');
+        grd.addColorStop(1,'rgba('+rgb+',0)');
+        ctx.beginPath();ctx.arc(s.x,s.y,s.r*3,0,Math.PI*2);
+        ctx.fillStyle=grd;ctx.fill();
+      }
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle='rgba('+rgb+','+a+')';ctx.fill();
+    });
+
+    // Shooting stars
+    shooters = shooters.filter(sh=>{
+      sh.x+=sh.vx; sh.y+=sh.vy; sh.life-=0.015;
+      if(sh.life<=0) return false;
+      const grad=ctx.createLinearGradient(sh.x,sh.y,sh.x-sh.vx*sh.len/4,sh.y-sh.vy*sh.len/4);
+      grad.addColorStop(0,'rgba('+rgb+','+sh.life+')');
+      grad.addColorStop(1,'rgba('+rgb+',0)');
+      ctx.beginPath();ctx.moveTo(sh.x,sh.y);
+      ctx.lineTo(sh.x-sh.vx*sh.len/4,sh.y-sh.vy*sh.len/4);
+      ctx.strokeStyle=grad;ctx.lineWidth=1.5;ctx.stroke();
+      return true;
+    });
+
     requestAnimationFrame(draw);
   }
-  resize(); window.addEventListener('resize',resize); requestAnimationFrame(draw);
+
+  resize();
+  window.addEventListener('resize',resize);
+  requestAnimationFrame(draw);
+  setTimeout(spawnShooter, 3000);
 }
 
 // ═══════════════════════════════════════
@@ -1018,13 +1098,12 @@ async function lancarSessao(){
   if(sub==='Outro'&&!outro){showToast('Descreva o assunto!','error');return}
 
   const assunto=sub==='Outro'?outro:sub;
-  const sess={id:Date.now(),materia,topico,assunto,data:data||new Date().toISOString().slice(0,10),acertos,erros,minutos,obs,banca,tags:[...currentTags],archived:false};
+  const localId='local_'+Date.now();
+  const sess={localId,id:null,materia,topico,assunto,data:data||new Date().toISOString().slice(0,10),acertos,erros,minutos,obs,banca,tags:[...currentTags],archived:false};
   sessions.unshift(sess);
   saveLocal();
-  renderDashboard();
-  showToast('Sessão registrada! ✦','success');
 
-  // Reset
+  // Reset form
   ['f-materia','f-banca','f-obs'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-minutos').value='';
   document.getElementById('f-acertos').value='';
@@ -1037,16 +1116,24 @@ async function lancarSessao(){
   document.getElementById('timer-badge').style.display='none';
   currentTags=[];renderTagsInput();timerReset();
 
-  await syncSession(sess);
+  showToast('Sessão registrada! ✦','success');
+
+  // Redireciona para dashboard
+  setTimeout(()=>{
+    showSection('dashboard', document.querySelector('.nav-btn'));
+    document.querySelectorAll('.bnav-btn').forEach((b,i)=>{b.classList.remove('active');if(i===0)b.classList.add('active');});
+  }, 800);
+
+  await syncSession(localId);
 }
 
 // ═══════════════════════════════════════
 //  EDITAR SESSÃO
 // ═══════════════════════════════════════
-function openEdit(id) {
-  const s = sessions.find(x=>x.id===id);
-  if(!s) return;
-  document.getElementById('edit-id').value=id;
+function openEdit(uid) {
+  const s = sessions.find(x=>(x.id==uid||x.localId==uid));
+  if(!s||s.archived) return;
+  document.getElementById('edit-id').value=uid;
   document.getElementById('edit-materia').value=s.materia;
   document.getElementById('edit-data').value=s.data;
   document.getElementById('edit-assunto').value=s.assunto;
@@ -1059,8 +1146,8 @@ function openEdit(id) {
 }
 function closeModal(){document.getElementById('modal-edit').style.display='none'}
 async function salvarEdicao(){
-  const id=Number(document.getElementById('edit-id').value)||document.getElementById('edit-id').value;
-  const idx=sessions.findIndex(s=>s.id==id);
+  const uid=document.getElementById('edit-id').value;
+  const idx=sessions.findIndex(s=>s.id==uid||s.localId==uid);
   if(idx<0) return;
   const upd={
     materia:document.getElementById('edit-materia').value,
@@ -1075,20 +1162,19 @@ async function salvarEdicao(){
   sessions[idx]={...sessions[idx],...upd};
   saveLocal();closeModal();renderHistorico();renderDashboard();
   showToast('Sessão atualizada!','success');
-  try{await sbPatch('sessions',sessions[idx].id,upd);}catch(e){setSyncStatus('error','Erro ao sincronizar edição')}
+  const dbId=sessions[idx].id;
+  if(dbId) try{await sbPatch('sessions',dbId,upd);}catch(e){setSyncStatus('error','Erro ao sincronizar edição')}
 }
 
-// ═══════════════════════════════════════
-//  ARQUIVAR
-// ═══════════════════════════════════════
-async function arquivar(id){
-  const idx=sessions.findIndex(s=>s.id==id);
+async function arquivar(uid){
+  const idx=sessions.findIndex(s=>s.id==uid||s.localId==uid);
   if(idx<0)return;
   sessions[idx].archived=!sessions[idx].archived;
   const isArq=sessions[idx].archived;
   saveLocal();renderHistorico();renderDashboard();
   showToast(isArq?'Sessão arquivada.':'Sessão restaurada.','info');
-  try{await sbPatch('sessions',sessions[idx].id,{archived:isArq});}catch(e){}
+  const dbId=sessions[idx].id;
+  if(dbId) try{await sbPatch('sessions',dbId,{archived:isArq});}catch(e){}
 }
 
 // ═══════════════════════════════════════
@@ -1108,24 +1194,28 @@ function renderHistorico(){
     return [s.materia,s.topico,s.assunto,s.obs,s.banca,...(s.tags||[])].some(x=>(x||'').toLowerCase().includes(q));
   });
   if(!list.length){wrap.innerHTML='<p style="color:var(--text-dim);font-size:13px">Nenhuma sessão encontrada.</p>';return;}
-  wrap.innerHTML=list.map(s=>`
-    <div class="log-item">
-      <div class="log-mat-dot" style="background:${MCOLOR[s.materia]||'#888'}"></div>
-      <div class="log-info">
-        <div class="log-title">${s.assunto}</div>
-        <div class="log-sub">${s.materia} · ${s.topico} · ${fmtDate(s.data)}${s.banca?' · '+s.banca:''}${s.obs?' · '+s.obs:''}</div>
-        ${s.tags?.length?`<div class="log-tags">${s.tags.map(t=>`<span class="log-tag">${t}</span>`).join('')}</div>`:''}
-      </div>
-      <div class="log-scores">
-        <span class="score-acerto">+${s.acertos}</span>
-        <span class="score-erro">−${s.erros}</span>
-        ${s.minutos?`<span class="score-time">${s.minutos}min</span>`:''}
-      </div>
-      <div class="log-actions">
-        <button class="action-btn" onclick="openEdit(${s.id})" title="Editar">✏️</button>
-        <button class="action-btn archive" onclick="arquivar(${s.id})" title="${s.archived?'Restaurar':'Arquivar'}">${s.archived?'↩':'📦'}</button>
-      </div>
-    </div>`).join('');
+  const uid = s => s.id || s.localId;
+  wrap.innerHTML=list.map(s=>{
+    const id=uid(s);
+    const isArq=s.archived;
+    return '<div class="log-item" style="'+(isArq?'opacity:.6':'')+'">'+
+      '<div class="log-mat-dot" style="background:'+(MCOLOR[s.materia]||'#888')+'"></div>'+
+      '<div class="log-info">'+
+        '<div class="log-title">'+s.assunto+(isArq?' <span style="font-size:9px;color:var(--text-dim)">[arquivada]</span>':'')+'</div>'+
+        '<div class="log-sub">'+s.materia+' · '+s.topico+' · '+fmtDate(s.data)+(s.banca?' · '+s.banca:'')+(s.obs?' · '+s.obs:'')+'</div>'+
+        (s.tags&&s.tags.length?'<div class="log-tags">'+s.tags.map(t=>'<span class="log-tag">'+t+'</span>').join('')+'</div>':'')+
+      '</div>'+
+      '<div class="log-scores">'+
+        '<span class="score-acerto">+'+s.acertos+'</span>'+
+        '<span class="score-erro">−'+s.erros+'</span>'+
+        (s.minutos?'<span class="score-time">'+s.minutos+'min</span>':'')+
+      '</div>'+
+      '<div class="log-actions">'+
+        (!isArq?'<button class="action-btn" onclick="openEdit(\''+id+'\')" title="Editar">✏️</button>':'')+
+        '<button class="action-btn archive" onclick="arquivar(\''+id+'\')" title="'+(isArq?'Restaurar':'Arquivar')+'">'+(isArq?'↩':'📦')+'</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
 }
 function fmtDate(d){if(!d)return'';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`}
 
@@ -1350,8 +1440,14 @@ function renderAnalytics(){
 // ═══════════════════════════════════════
 //  STREAK
 // ═══════════════════════════════════════
+let streakMonthOffset=0;
+
+function streakPrevMonth(){streakMonthOffset--;renderStreak();}
+function streakNextMonth(){if(streakMonthOffset<0){streakMonthOffset++;renderStreak();}}
+
 function calcStreak(){
-  const diasAtivos=new Set(sessions.map(s=>s.data));
+  const ativas=sessions.filter(s=>!s.archived);
+  const diasAtivos=new Set(ativas.map(s=>s.data));
   const today=new Date().toISOString().slice(0,10);
   let cur=new Date(today);
   let streak=0;
@@ -1360,7 +1456,6 @@ function calcStreak(){
     if(diasAtivos.has(k)){streak++;cur.setDate(cur.getDate()-1);}
     else break;
   }
-  // Recorde: maior sequência histórica
   const sorted=[...diasAtivos].sort();
   let maxStreak=0,tempStreak=0,prevDate=null;
   sorted.forEach(d=>{
@@ -1372,30 +1467,39 @@ function calcStreak(){
     if(tempStreak>maxStreak) maxStreak=tempStreak;
     prevDate=d;
   });
-  return{streak,record:Math.max(maxStreak,streak)};
+  return{streak,record:Math.max(maxStreak,streak),diasAtivos};
 }
 
 function renderStreak(){
-  const{streak,record}=calcStreak();
+  const{streak,record,diasAtivos}=calcStreak();
   document.getElementById('streak-num').textContent=streak;
   document.getElementById('streak-record').textContent=record+' dias';
 
-  // Calendário últimos 35 dias (5 semanas)
+  const today=new Date();
+  const ref=new Date(today.getFullYear(),today.getMonth()+streakMonthOffset,1);
+  const year=ref.getFullYear();
+  const month=ref.getMonth();
+  const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  document.getElementById('streak-month-label').textContent=MESES[month]+' '+year;
+
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const todayStr=today.toISOString().slice(0,10);
   const cal=document.getElementById('streak-calendar');
-  const diasAtivos=new Set(sessions.map(s=>s.data));
-  const today=new Date().toISOString().slice(0,10);
-  const days=[];
-  for(let i=34;i>=0;i--){
-    const d=new Date();d.setDate(d.getDate()-i);
-    days.push(d.toISOString().slice(0,10));
+
+  let html='';
+  for(let d=1;d<=daysInMonth;d++){
+    const dateStr=year+'-'+String(month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const isActive=diasAtivos.has(dateStr);
+    const isToday=dateStr===todayStr;
+    const isFuture=dateStr>todayStr;
+    let cls='streak-day';
+    if(isFuture) cls+=' future';
+    else if(isActive) cls+=' active';
+    else cls+=' inactive';
+    if(isToday) cls+=' today';
+    html+='<div class="'+cls+'" title="'+fmtDate(dateStr)+'">'+d+'</div>';
   }
-  cal.innerHTML=days.map(d=>{
-    const isActive=diasAtivos.has(d);
-    const isToday=d===today;
-    const day=parseInt(d.slice(8));
-    const cls='streak-day'+(isActive?' active':'  inactive')+(isToday?' today':'');
-    return '<div class="'+cls+'" title="'+fmtDate(d)+'">'+day+'</div>';
-  }).join('');
+  cal.innerHTML=html;
 }
 
 // ═══════════════════════════════════════
@@ -1433,10 +1537,11 @@ function renderDashMetas(){
 
 
 function renderDashboard(){
-  const total=sessions.length;
-  const totalQ=sessions.reduce((a,s)=>a+s.acertos+s.erros,0);
-  const totalA=sessions.reduce((a,s)=>a+s.acertos,0);
-  const totalMin=sessions.reduce((a,s)=>a+(s.minutos||0),0);
+  const ativas=sessions.filter(s=>!s.archived);
+  const total=ativas.length;
+  const totalQ=ativas.reduce((a,s)=>a+s.acertos+s.erros,0);
+  const totalA=ativas.reduce((a,s)=>a+s.acertos,0);
+  const totalMin=ativas.reduce((a,s)=>a+(s.minutos||0),0);
   const pct=totalQ>0?Math.round(totalA/totalQ*100)+'%':'—';
   document.getElementById('st-sess').textContent=total;
   document.getElementById('st-q').textContent=totalQ;
