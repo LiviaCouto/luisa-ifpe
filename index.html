@@ -470,6 +470,8 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
 
     <div class="card"><div class="card-title">✦ Progresso por matéria</div><div id="progress-list"></div></div>
 
+    <div class="card"><div class="card-title">✦ Tipos de estudo</div><div id="tags-dash"><p style="color:var(--text-dim);font-size:12px">Nenhuma tag registrada ainda.</p></div></div>
+
     <!-- HEATMAP -->
     <div class="card">
       <div class="card-title">✦ Heatmap de estudos</div>
@@ -1652,10 +1654,11 @@ function togglePlano(data, el){
   } else {
     planoFeitos.push(data);
     el.classList.add('done');
-    showToast('Dia concluído! 🔥','success');
+    const isToday=data===todayLocal();
+    if(isToday) setTimeout(celebrar, 200);
+    else showToast('Dia concluído! 🔥','success');
   }
   savePlano();
-  // Atualiza streak e contador em tempo real
   document.getElementById('st-sem').textContent=planoFeitos.length;
   renderStreak();
 }
@@ -1966,7 +1969,7 @@ function renderDashboard(){
   document.getElementById('st-sem').textContent=planoFeitos.length;
   renderStreak();
   renderDashMetas();
-  renderProgressMat();renderChartTempo();renderChartMateria();renderChartEvolucao();
+  renderProgressMat();renderTagsDash();renderChartTempo();renderChartMateria();renderChartEvolucao();
   renderHeatmap();renderAnalytics();renderRevisoes();
 }
 
@@ -2011,14 +2014,124 @@ function renderChartMateria(){
   }).join('');
 }
 
+function parseLocalDate(str){
+  // Evita bug UTC: '2026-06-22' virar 21/06 em UTC-3
+  const [y,m,d]=str.split('-').map(Number);
+  return new Date(y,m-1,d);
+}
+
 function renderChartEvolucao(){
-  const byW={};sessions.forEach(s=>{const d=new Date(s.data);d.setDate(d.getDate()-d.getDay());const w=pad(d.getDate())+'/'+pad(d.getMonth()+1);if(!byW[w])byW[w]={a:0,e:0};byW[w].a+=s.acertos;byW[w].e+=s.erros;});
-  const labels=Object.keys(byW).sort();const hasData=labels.length>=1&&sessions.some(s=>s.acertos+s.erros>0);
+  const byW={};
+  sessions.filter(s=>!s.archived).forEach(s=>{
+    const d=parseLocalDate(s.data);
+    d.setDate(d.getDate()-d.getDay());
+    const w=pad(d.getDate())+'/'+pad(d.getMonth()+1);
+    if(!byW[w])byW[w]={a:0,e:0};
+    byW[w].a+=s.acertos;byW[w].e+=s.erros;
+  });
+  const labels=Object.keys(byW).sort();
+  const hasData=labels.length>=1&&sessions.some(s=>s.acertos+s.erros>0);
   document.getElementById('empty-ev').style.display=hasData?'none':'flex';
   document.getElementById('chart-ev-inner').style.display=hasData?'block':'none';
   if(!hasData){if(charts['chartEvolucao']){charts['chartEvolucao'].destroy();delete charts['chartEvolucao'];}return;}
   const pcts=labels.map(w=>{const t=byW[w].a+byW[w].e;return t>0?Math.round(byW[w].a/t*100):0;});
   mkChart('chartEvolucao',{type:'line',data:{labels,datasets:[{label:'% Acertos',data:pcts,borderColor:'#A855F7',backgroundColor:'rgba(168,85,247,0.12)',tension:.4,fill:true,pointBackgroundColor:'#C084FC',pointRadius:6,pointHoverRadius:8,borderWidth:2.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.parsed.y+'% de acertos'}}},scales:{x:{ticks:TICK,grid:GRID},y:{min:0,max:100,ticks:{...TICK,stepSize:25,callback:v=>v+'%'},grid:GRID}}}});
+}
+
+// ═══════════════════════════════════════
+//  TAGS NO DASHBOARD
+// ═══════════════════════════════════════
+function renderTagsDash(){
+  const wrap=document.getElementById('tags-dash');
+  if(!wrap) return;
+  const ativas=sessions.filter(s=>!s.archived&&s.tags&&s.tags.length);
+  if(!ativas.length){wrap.innerHTML='<p style="color:var(--text-dim);font-size:12px">Nenhuma tag registrada ainda.</p>';return;}
+  const count={};
+  ativas.forEach(s=>s.tags.forEach(t=>{count[t]=(count[t]||0)+1;}));
+  const sorted=Object.entries(count).sort((a,b)=>b[1]-a[1]);
+  const total=sorted.reduce((s,e)=>s+e[1],0);
+  wrap.innerHTML=sorted.map(([tag,n])=>{
+    const pct=Math.round(n/total*100);
+    const EMOJI={'teoria':'📖','questões':'❓','revisão':'🔁','simulado':'📝','leitura':'📚','resumo':'✍️','prova':'🎯','reforço':'💪'};
+    const em=EMOJI[tag]||'✦';
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'
+      +'<span style="font-size:11px;min-width:90px;color:var(--text-primary)">'+em+' '+tag+'</span>'
+      +'<div style="flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden">'
+        +'<div style="height:100%;width:'+pct+'%;background:var(--accent);border-radius:99px"></div>'
+      +'</div>'
+      +'<span style="font-size:10px;color:var(--text-secondary);min-width:30px;text-align:right">'+n+'×</span>'
+    +'</div>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+//  CELEBRAÇÃO — CHUVA DE ESTRELAS
+// ═══════════════════════════════════════
+function celebrar(){
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden';
+  document.body.appendChild(overlay);
+
+  const canvas=document.createElement('canvas');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  canvas.style.cssText='position:absolute;inset:0';
+  overlay.appendChild(canvas);
+  const ctx=canvas.getContext('2d');
+
+  // Mensagem central
+  const msg=document.createElement('div');
+  msg.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;animation:celebFade 4s ease forwards';
+  msg.innerHTML='<div style="font-size:3rem;margin-bottom:.5rem">🔥✦🌟</div>'
+    +'<div style="font-family:\'Playfair Display\',serif;font-size:clamp(1.4rem,4vw,2.2rem);color:#F0E8FF;font-weight:700;text-shadow:0 0 30px rgba(168,85,247,.8)">Parabéns, Luísa!</div>'
+    +'<div style="font-size:1rem;color:#C084FC;margin-top:.4rem;letter-spacing:1px">Você bateu sua meta hoje! ✦</div>';
+  overlay.appendChild(msg);
+
+  // Adiciona animação CSS
+  if(!document.getElementById('celebStyle')){
+    const s=document.createElement('style');
+    s.id='celebStyle';
+    s.textContent='@keyframes celebFade{0%{opacity:0;transform:translate(-50%,-60%)}20%{opacity:1;transform:translate(-50%,-50%)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-40%)}}';
+    document.head.appendChild(s);
+  }
+
+  // Estrelas cadentes
+  const stars=[];
+  for(let i=0;i<60;i++){
+    setTimeout(()=>{
+      stars.push({
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height*.4,
+        vx:Math.random()*4+2,
+        vy:Math.random()*2+1,
+        len:Math.random()*100+60,
+        life:1,
+        color:`hsl(${Math.random()*60+260},90%,${Math.random()*20+70}%)`
+      });
+    },i*60);
+  }
+
+  let frame;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(let i=stars.length-1;i>=0;i--){
+      const s=stars[i];
+      s.x+=s.vx;s.y+=s.vy;s.life-=0.018;
+      if(s.life<=0){stars.splice(i,1);continue;}
+      const tail=s.len/4;
+      const g=ctx.createLinearGradient(s.x,s.y,s.x-s.vx*tail,s.y-s.vy*tail);
+      g.addColorStop(0,s.color.replace(')',`,${s.life})`).replace('hsl','hsla'));
+      g.addColorStop(1,'transparent');
+      ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x-s.vx*tail,s.y-s.vy*tail);
+      ctx.strokeStyle=g;ctx.lineWidth=2;ctx.stroke();
+    }
+    if(stars.length>0) frame=requestAnimationFrame(draw);
+  }
+  draw();
+
+  setTimeout(()=>{
+    cancelAnimationFrame(frame);
+    overlay.remove();
+  },5000);
 }
 
 // ═══════════════════════════════════════
