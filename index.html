@@ -350,8 +350,9 @@ body{background:var(--bg-primary);color:var(--text-primary);font-family:'Inter',
   background:var(--bg-card-solid);border:1px solid rgba(168,85,247,.5);border-radius:16px;
   padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;
   box-shadow:0 8px 40px rgba(168,85,247,.3);backdrop-filter:blur(20px);
-  transition:transform .5s cubic-bezier(.34,1.56,.64,1);max-width:90vw;min-width:280px}
-.conquista-notif.show{transform:translateX(-50%) translateY(0)}
+  transition:transform .5s cubic-bezier(.34,1.56,.64,1),opacity .3s ease;max-width:90vw;min-width:280px;
+  cursor:pointer;opacity:0}
+.conquista-notif.show{transform:translateX(-50%) translateY(0);opacity:1}
 .conquista-notif-icon{font-size:2.5rem;flex-shrink:0}
 .conquista-notif-texto{flex:1}
 .conquista-notif-titulo{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
@@ -1472,8 +1473,9 @@ function mostrarNotifConquista(c){
   document.getElementById('cn-nome').textContent=c.nome;
   document.getElementById('cn-desc').textContent=c.desc;
   el.classList.add('show');
+  el.onclick=()=>{el.classList.remove('show');clearTimeout(notifTimer);};
   clearTimeout(notifTimer);
-  notifTimer=setTimeout(()=>el.classList.remove('show'),4000);
+  notifTimer=setTimeout(()=>el.classList.remove('show'),3500);
 }
 
 function verificarConquistas(silent=false){
@@ -2518,6 +2520,10 @@ function renderAll(){
   sincronizarPlanoComSessoes();
   renderDashboard();renderHistorico();renderRevisoes();renderMetas();
 }
+
+// ═══════════════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════════════
 
 // ═══════════════════════════════════════
 //  INIT
