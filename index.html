@@ -791,8 +791,11 @@ async function sbPatch(table, id, body) {
   return r.json();
 }
 async function sbDelete(table, id) {
-  const r = await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}`, {method:'DELETE',headers:H});
-  if (!r.ok) throw new Error(await r.text());
+  const r = await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}`, {
+    method:'DELETE',
+    headers:{...H,'Prefer':'return=minimal'}
+  });
+  if (!r.ok) { const txt=await r.text(); throw new Error(txt); }
 }
 async function sbUpsert(table, body, onConflict) {
   const r = await fetch(`${SUPA_URL}/rest/v1/${table}?on_conflict=${onConflict}`, {method:'POST',headers:{...H,'Prefer':'resolution=merge-duplicates,return=representation'},body:JSON.stringify(body)});
@@ -910,7 +913,7 @@ async function createReviews(sessionId, dataStr, assunto) {
   const base = new Date(dataStr + 'T12:00:00');
   const dates = [1, 7, 30].map(d => {
     const dt = new Date(base); dt.setDate(dt.getDate() + d);
-    return dt.toISOString().slice(0,10);
+    return dateToLocal(dt);
   });
   try {
     for (const rd of dates) {
@@ -923,8 +926,15 @@ async function createReviews(sessionId, dataStr, assunto) {
 }
 
 // ═══════════════════════════════════════
-//  STARS
+//  DATE UTILS — usa fuso local (evita UTC -3 virar dia anterior)
 // ═══════════════════════════════════════
+function todayLocal(){
+  const d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function dateToLocal(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
 function initStars() {
   const canvas = document.getElementById('starCanvas');
   const ctx = canvas.getContext('2d');
@@ -1133,7 +1143,7 @@ async function lancarSessao(){
 
   const assunto=sub==='Outro'?outro:sub;
   const localId='local_'+Date.now();
-  const sess={localId,id:null,materia,topico,assunto,data:data||new Date().toISOString().slice(0,10),acertos,erros,minutos,obs,banca:'',tags,archived:false};
+  const sess={localId,id:null,materia,topico,assunto,data:data||todayLocal(),acertos,erros,minutos,obs,banca:'',tags,archived:false};
   sessions.unshift(sess);
   saveLocal();
 
@@ -1262,7 +1272,7 @@ let revFilter2='pendente';
 function setRevFilter(m,btn){revFilter2=m;document.querySelectorAll('#sec-revisoes .filter-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderRevisoes();}
 function renderRevisoes(){
   const wrap=document.getElementById('revisoes-list');
-  const today=new Date().toISOString().slice(0,10);
+  const today=todayLocal();
   let list=reviews.filter(r=>{
     if(revFilter2==='pendente') return r.status==='pendente';
     if(revFilter2==='concluida') return r.status==='concluida';
@@ -1312,25 +1322,38 @@ async function reabrirRevisao(id){
 //  ZERAR MATÉRIA
 // ═══════════════════════════════════════
 async function zerarMateria(mat){
-  const count=sessions.filter(s=>s.materia===mat).length;
-  if(count===0){showToast('Nenhuma sessão de '+mat+' para zerar.','info');return;}
-  if(!confirm('Zerar '+mat+'?\n\nIsso vai deletar '+count+' sessão(ões) permanentemente.\nEssa ação não pode ser desfeita!')) return;
+  const toDelete=sessions.filter(s=>s.materia===mat);
+  if(toDelete.length===0){showToast('Nenhuma sessão de '+mat+' para zerar.','info');return;}
+  if(!confirm('Zerar '+mat+'?\n\nIsso vai deletar '+toDelete.length+' sessão(ões) permanentemente.\nEssa ação não pode ser desfeita!')) return;
 
   setSyncStatus('loading','Zerando '+mat+'...');
 
-  try{
-    await fetch(SUPA_URL+'/rest/v1/sessions?materia=eq.'+encodeURIComponent(mat),{method:'DELETE',headers:H});
-  }catch(e){console.error('Erro ao deletar no Supabase:',e);}
+  const dbIds=toDelete.filter(s=>s.id).map(s=>s.id);
 
-  // Limpa cache local completamente
-  sessions=[];
-  reviews=[];
+  // 1. Deleta REVISÕES primeiro (evita conflict de foreign key)
+  for(const id of dbIds){
+    try{
+      await fetch(SUPA_URL+'/rest/v1/reviews?session_id=eq.'+id,{
+        method:'DELETE',headers:{...H,'Prefer':'return=minimal'}
+      });
+    }catch(e){console.error('rev del err',id,e);}
+  }
+
+  // 2. Deleta SESSÕES depois
+  for(const id of dbIds){
+    try{ await sbDelete('sessions', id); }
+    catch(e){ console.error('sess del err',id,e); }
+  }
+
+  // 3. Limpa localStorage
   localStorage.removeItem('luisa_sess');
   localStorage.removeItem('luisa_rev');
+  sessions=[];
+  reviews=[];
 
-  // Recarrega TUDO do Supabase para garantir estado limpo
+  // 4. Recarrega do banco
   await loadFromSupabase();
-  showToast(mat+' zerada com sucesso! ✦','success');
+  showToast(mat+' zerada! ✦','success');
 }
 
 // ═══════════════════════════════════════
@@ -1579,7 +1602,7 @@ function savePlano(){localStorage.setItem('luisa_plano',JSON.stringify(planoFeit
 
 function renderPlano(){
   const wrap=document.getElementById('plano-list');
-  const today=new Date().toISOString().slice(0,10);
+  const today=todayLocal();
   const MAT_BADGE={'Português':'badge-port','Matemática':'badge-mat','Ciências da Natureza':'badge-bio','História':'badge-hist','Geografia':'badge-geo','Geral':'badge-rev'};
 
   wrap.innerHTML=PLANO_DATA.map((sem,si)=>{
@@ -1773,7 +1796,7 @@ function renderHeatmap(){
   cols.forEach(col=>{
     const colEl=document.createElement('div');colEl.className='heatmap-col';
     col.forEach(dt=>{
-      const k=dt.toISOString().slice(0,10);
+      const k=dateToLocal(dt);
       const val=byDay[k]||0;
       const cell=document.createElement('div');cell.className='heatmap-cell';
       const intensity=val===0?0.07:val<30?0.3:val<60?0.6:1;
@@ -1841,11 +1864,11 @@ function streakNextMonth(){if(streakMonthOffset<0){streakMonthOffset++;renderStr
 
 function calcStreak(){
   const diasAtivos=new Set(planoFeitos);
-  const today=new Date().toISOString().slice(0,10);
+  const today=todayLocal();
   let cur=new Date(today);
   let streak=0;
   while(true){
-    const k=cur.toISOString().slice(0,10);
+    const k=dateToLocal(cur);
     if(diasAtivos.has(k)){streak++;cur.setDate(cur.getDate()-1);}
     else break;
   }
@@ -1854,7 +1877,7 @@ function calcStreak(){
   sorted.forEach(d=>{
     if(prevDate){
       const prev=new Date(prevDate);prev.setDate(prev.getDate()+1);
-      if(prev.toISOString().slice(0,10)===d) tempStreak++;
+      if(dateToLocal(prev)===d) tempStreak++;
       else tempStreak=1;
     } else tempStreak=1;
     if(tempStreak>maxStreak) maxStreak=tempStreak;
@@ -1876,7 +1899,7 @@ function renderStreak(){
   document.getElementById('streak-month-label').textContent=MESES[month]+' '+year;
 
   const daysInMonth=new Date(year,month+1,0).getDate();
-  const todayStr=today.toISOString().slice(0,10);
+  const todayStr=todayLocal();
   const cal=document.getElementById('streak-calendar');
 
   let html='';
@@ -2012,7 +2035,7 @@ async function init(){
   document.querySelectorAll('.theme-btn').forEach(b=>{if((b.textContent==='🌙'&&savedTheme==='dark')||(b.textContent==='☀️'&&savedTheme==='light'))b.classList.add('active');else b.classList.remove('active');});
   initStars();
   renderCronograma();
-  document.getElementById('f-data').value=new Date().toISOString().slice(0,10);
+  document.getElementById('f-data').value=todayLocal();
   await loadFromSupabase();
 }
 init();
