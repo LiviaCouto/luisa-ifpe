@@ -319,7 +319,7 @@ body{background:var(--bg-primary);color:var(--text-primary);font-family:'Inter',
 .plano-semana-body{padding:10px 14px;border-top:1px solid var(--border)}
 .plano-dia{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(168,85,247,.08)}
 .plano-dia:last-child{border-bottom:none}
-.plano-dia-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .2s}
+.plano-dia-check{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .2s;pointer-events:auto!important}
 .plano-dia-check.done{background:var(--success);border-color:var(--success)}
 .plano-dia-check.done::after{content:'✓';font-size:10px;color:#07041A;font-weight:700}
 .plano-dia-check.atrasado{border-color:var(--danger);background:rgba(248,113,113,.1)}
@@ -1236,6 +1236,7 @@ async function lancarSessao(){
   }, 800);
 
   await syncSession(localId);
+  sincronizarPlanoComSessoes();
 }
 
 // ═══════════════════════════════════════
@@ -1860,7 +1861,7 @@ function renderPlano(){
       // Estilo do container do dia
       let diaStyle='';
       if(isToday) diaStyle='background:rgba(251,191,36,.06);border-radius:8px;padding:8px;margin:-2px';
-      else if(isPast) diaStyle='opacity:.65';
+      else if(isPast&&!isDone) diaStyle='border-left:2px solid rgba(248,113,113,.3);padding-left:6px;margin-left:-6px';
 
       // Classe e estilo do check
       let checkClass='plano-dia-check';
@@ -1900,6 +1901,28 @@ function renderPlano(){
       +'</div>'
     +'</div>';
   }).join('');
+}
+
+// ═══════════════════════════════════════
+//  CRUZAMENTO AUTOMÁTICO SESSÕES → PLANO
+// ═══════════════════════════════════════
+function sincronizarPlanoComSessoes(){
+  let mudou=false;
+  const diasComSessao=new Set(sessions.filter(s=>!s.archived).map(s=>s.data));
+  // Para cada dia do plano que tem sessão registrada, marca automaticamente
+  PLANO_DATA.forEach(sem=>{
+    sem.dias.forEach(d=>{
+      if(diasComSessao.has(d.data) && !planoFeitos.includes(d.data)){
+        planoFeitos.push(d.data);
+        mudou=true;
+      }
+    });
+  });
+  if(mudou){
+    savePlano();
+    return true;
+  }
+  return false;
 }
 
 function togglePlano(data, el){
@@ -2491,7 +2514,10 @@ function celebrar(){
 // ═══════════════════════════════════════
 //  RENDER ALL
 // ═══════════════════════════════════════
-function renderAll(){renderDashboard();renderHistorico();renderRevisoes();renderMetas();}
+function renderAll(){
+  sincronizarPlanoComSessoes();
+  renderDashboard();renderHistorico();renderRevisoes();renderMetas();
+}
 
 // ═══════════════════════════════════════
 //  INIT
