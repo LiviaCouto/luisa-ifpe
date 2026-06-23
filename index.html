@@ -1313,14 +1313,31 @@ async function reabrirRevisao(id){
 // ═══════════════════════════════════════
 async function zerarMateria(mat){
   const count=sessions.filter(s=>s.materia===mat).length;
+  if(count===0){showToast('Nenhuma sessão de '+mat+' para zerar.','info');return;}
   if(!confirm('Zerar '+mat+'?\n\nIsso vai deletar '+count+' sessão(ões) permanentemente.\nEssa ação não pode ser desfeita!')) return;
-  const ids=sessions.filter(s=>s.materia===mat&&s.id).map(s=>s.id);
+
+  setSyncStatus('loading','Zerando '+mat+'...');
+
+  // Deleta no Supabase por matéria (uma chamada só)
+  try{
+    await fetch(SUPA_URL+'/rest/v1/sessions?materia=eq.'+encodeURIComponent(mat),{method:'DELETE',headers:H});
+  }catch(e){console.error('Erro ao deletar no Supabase:',e);}
+
+  // Limpa local completamente
   sessions=sessions.filter(s=>s.materia!==mat);
-  saveLocal();renderDashboard();renderHistorico();
-  showToast(mat+' zerada!','success');
-  for(const id of ids){
-    try{await sbDelete('sessions',id);}catch(e){}
-  }
+  reviews=reviews.filter(r=>{
+    // Remove revisões órfãs (sessões zeradas)
+    const ids=new Set(sessions.map(s=>s.id));
+    return ids.has(r.session_id);
+  });
+  saveLocal();
+
+  // Re-render completo
+  renderDashboard();
+  renderHistorico();
+  renderRevisoes();
+  setSyncStatus('ok','Sincronizado');
+  showToast(mat+' zerada com sucesso! ✦','success');
 }
 
 // ═══════════════════════════════════════
