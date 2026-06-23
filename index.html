@@ -405,7 +405,6 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
   <nav class="nav">
     <button class="nav-btn active" onclick="showSection('dashboard',this)">✦ Dash</button>
     <button class="nav-btn" onclick="showSection('cronograma',this)">Horário</button>
-    <button class="nav-btn" onclick="showSection('ciclos',this)">Ciclos</button>
     <button class="nav-btn" onclick="showSection('lancar',this)">Lançar</button>
     <button class="nav-btn" onclick="showSection('historico',this)">Histórico</button>
     <button class="nav-btn" onclick="showSection('revisoes',this)">Revisões</button>
@@ -420,7 +419,7 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
       <div class="stat-card" data-tip="Total de questões resolvidas (certas + erradas)"><div class="stat-value" id="st-q">0</div><div class="stat-label">Questões</div></div>
       <div class="stat-card" data-tip="Percentual de questões certas sobre o total resolvido"><div class="stat-value" id="st-pct">—</div><div class="stat-label">% Acertos</div></div>
       <div class="stat-card" data-tip="Soma de todos os minutos registrados nas sessões"><div class="stat-value" id="st-min">0</div><div class="stat-label">Min estudados</div></div>
-      <div class="stat-card" data-tip="Semanas dos ciclos marcadas como concluídas"><div class="stat-value" id="st-sem">0</div><div class="stat-label">Sem. concluídas</div></div>
+      <div class="stat-card" data-tip="Dias do Plano de Estudos já concluídos"><div class="stat-value" id="st-sem">0</div><div class="stat-label">Dias do plano</div></div>
     </div>
 
     <!-- STREAK -->
@@ -523,16 +522,6 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
       <p style="font-size:12px;color:var(--text-secondary);line-height:1.7">Baseado na sua rotina real no Colégio DOM de Olinda. Dias integrais, Pré-SSA e reforço respeitados.</p>
     </div>
     <div id="dias-list"></div>
-  </div>
-
-  <!-- CICLOS -->
-  <div id="sec-ciclos" class="section">
-    <div class="card" style="margin-bottom:1.2rem">
-      <div class="card-title">✦ Estrutura dos ciclos</div>
-      <p style="font-size:12px;color:var(--text-secondary);line-height:1.7">Marque as semanas concluídas para acompanhar o progresso.</p>
-    </div>
-    <div class="ciclo-nav" id="ciclo-nav"></div>
-    <div id="ciclo-content"></div>
   </div>
 
   <!-- LANÇAR -->
@@ -1630,9 +1619,12 @@ function togglePlano(data, el){
   } else {
     planoFeitos.push(data);
     el.classList.add('done');
-    showToast('Dia concluído! ✦','success');
+    showToast('Dia concluído! 🔥','success');
   }
   savePlano();
+  // Atualiza streak e contador em tempo real
+  document.getElementById('st-sem').textContent=planoFeitos.length;
+  renderStreak();
 }
 
 // ═══════════════════════════════════════
@@ -1816,8 +1808,7 @@ function streakPrevMonth(){streakMonthOffset--;renderStreak();}
 function streakNextMonth(){if(streakMonthOffset<0){streakMonthOffset++;renderStreak();}}
 
 function calcStreak(){
-  const ativas=sessions.filter(s=>!s.archived);
-  const diasAtivos=new Set(ativas.map(s=>s.data));
+  const diasAtivos=new Set(planoFeitos);
   const today=new Date().toISOString().slice(0,10);
   let cur=new Date(today);
   let streak=0;
@@ -1917,7 +1908,7 @@ function renderDashboard(){
   document.getElementById('st-q').textContent=totalQ;
   document.getElementById('st-pct').textContent=pct;
   document.getElementById('st-min').textContent=totalMin;
-  document.getElementById('st-sem').textContent=semanasFeitas.length;
+  document.getElementById('st-sem').textContent=planoFeitos.length;
   renderStreak();
   renderDashMetas();
   renderProgressMat();renderChartTempo();renderChartMateria();renderChartEvolucao();
@@ -1989,7 +1980,6 @@ async function init(){
   document.querySelectorAll('.theme-btn').forEach(b=>{if((b.textContent==='🌙'&&savedTheme==='dark')||(b.textContent==='☀️'&&savedTheme==='light'))b.classList.add('active');else b.classList.remove('active');});
   initStars();
   renderCronograma();
-  renderCicloNav();renderCicloContent();
   document.getElementById('f-data').value=new Date().toISOString().slice(0,10);
   await loadFromSupabase();
 }
