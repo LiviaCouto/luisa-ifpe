@@ -1318,25 +1318,18 @@ async function zerarMateria(mat){
 
   setSyncStatus('loading','Zerando '+mat+'...');
 
-  // Deleta no Supabase por matéria (uma chamada só)
   try{
     await fetch(SUPA_URL+'/rest/v1/sessions?materia=eq.'+encodeURIComponent(mat),{method:'DELETE',headers:H});
   }catch(e){console.error('Erro ao deletar no Supabase:',e);}
 
-  // Limpa local completamente
-  sessions=sessions.filter(s=>s.materia!==mat);
-  reviews=reviews.filter(r=>{
-    // Remove revisões órfãs (sessões zeradas)
-    const ids=new Set(sessions.map(s=>s.id));
-    return ids.has(r.session_id);
-  });
-  saveLocal();
+  // Limpa cache local completamente
+  sessions=[];
+  reviews=[];
+  localStorage.removeItem('luisa_sess');
+  localStorage.removeItem('luisa_rev');
 
-  // Re-render completo
-  renderDashboard();
-  renderHistorico();
-  renderRevisoes();
-  setSyncStatus('ok','Sincronizado');
+  // Recarrega TUDO do Supabase para garantir estado limpo
+  await loadFromSupabase();
   showToast(mat+' zerada com sucesso! ✦','success');
 }
 
@@ -1796,9 +1789,24 @@ function renderHeatmap(){
 //  ANALYTICS
 // ═══════════════════════════════════════
 function renderAnalytics(){
-  const withQ=sessions.filter(s=>s.acertos+s.erros>0);
+  // Sempre reseta para — antes de calcular
+  ['an-best','an-worst','an-avg','an-day'].forEach(id=>{
+    document.getElementById(id).textContent='—';
+  });
+  document.getElementById('an-best-sub').textContent='';
+  document.getElementById('an-worst-sub').textContent='';
+  document.getElementById('an-day-sub').textContent='';
+
+  const ativas=sessions.filter(s=>!s.archived);
+  const withQ=ativas.filter(s=>s.acertos+s.erros>0);
   if(withQ.length){
-    const byMat={};MATS.forEach(m=>{const ms=withQ.filter(s=>s.materia===m);const a=ms.reduce((t,s)=>t+s.acertos,0);const e=ms.reduce((t,s)=>t+s.erros,0);if(a+e>0)byMat[m]={pct:Math.round(a/(a+e)*100),total:a+e};});
+    const byMat={};
+    MATS.forEach(m=>{
+      const ms=withQ.filter(s=>s.materia===m);
+      const a=ms.reduce((t,s)=>t+s.acertos,0);
+      const e=ms.reduce((t,s)=>t+s.erros,0);
+      if(a+e>0) byMat[m]={pct:Math.round(a/(a+e)*100),total:a+e};
+    });
     const sorted=Object.entries(byMat).sort((a,b)=>b[1].pct-a[1].pct);
     if(sorted.length){
       document.getElementById('an-best').textContent=sorted[0][0].split(' ')[0];
@@ -1807,12 +1815,19 @@ function renderAnalytics(){
       document.getElementById('an-worst-sub').textContent=sorted[sorted.length-1][1].pct+'% acertos';
     }
   }
-  const withMin=sessions.filter(s=>s.minutos>0);
-  if(withMin.length){const avg=Math.round(withMin.reduce((t,s)=>t+s.minutos,0)/withMin.length);document.getElementById('an-avg').textContent=avg+'min';}
-  if(sessions.length){
-    const byDay={};sessions.forEach(s=>{const d=new Date(s.data+'T12:00').getDay();if(!byDay[d])byDay[d]=0;byDay[d]+=s.minutos||1;});
+  const withMin=ativas.filter(s=>s.minutos>0);
+  if(withMin.length){
+    const avg=Math.round(withMin.reduce((t,s)=>t+s.minutos,0)/withMin.length);
+    document.getElementById('an-avg').textContent=avg+'min';
+  }
+  if(ativas.length){
+    const byDay={};
+    ativas.forEach(s=>{const d=new Date(s.data+'T12:00').getDay();if(!byDay[d])byDay[d]=0;byDay[d]+=s.minutos||1;});
     const bestDay=Object.entries(byDay).sort((a,b)=>b[1]-a[1])[0];
-    if(bestDay){document.getElementById('an-day').textContent=DIAS_SEMANA[bestDay[0]];document.getElementById('an-day-sub').textContent=bestDay[1]+'min acumulados';}
+    if(bestDay){
+      document.getElementById('an-day').textContent=DIAS_SEMANA[bestDay[0]];
+      document.getElementById('an-day-sub').textContent=bestDay[1]+'min acumulados';
+    }
   }
 }
 
