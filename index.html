@@ -1426,10 +1426,10 @@ async function zerarMateria(mat){
 // ═══════════════════════════════════════
 const CONQUISTAS = [
   // Streak
-  {id:'streak_1',   icon:'🔥', nome:'Primeiro passo',    desc:'1 dia seguido estudando',      cat:'streak',  check:s=>s.streak>=1},
-  {id:'streak_7',   icon:'💪', nome:'Uma semana de fogo', desc:'7 dias seguidos no plano',     cat:'streak',  check:s=>s.streak>=7},
-  {id:'streak_14',  icon:'⚡', nome:'Invicta',            desc:'14 dias seguidos no plano',    cat:'streak',  check:s=>s.streak>=14},
-  {id:'streak_30',  icon:'👑', nome:'Mês de ouro',        desc:'30 dias seguidos no plano',    cat:'streak',  check:s=>s.streak>=30},
+  {id:'streak_1',   icon:'🔥', nome:'Primeiro passo',    desc:'1 dia seguido estudando',      cat:'streak',  check:s=>s.streak>=1||s.diasPlano>=1},
+  {id:'streak_7',   icon:'💪', nome:'Uma semana de fogo', desc:'7 dias seguidos no plano',     cat:'streak',  check:s=>s.streak>=7||s.record>=7},
+  {id:'streak_14',  icon:'⚡', nome:'Invicta',            desc:'14 dias seguidos no plano',    cat:'streak',  check:s=>s.streak>=14||s.record>=14},
+  {id:'streak_30',  icon:'👑', nome:'Mês de ouro',        desc:'30 dias seguidos no plano',    cat:'streak',  check:s=>s.streak>=30||s.record>=30},
   // Plano
   {id:'plano_7',    icon:'📆', nome:'Semana completa',    desc:'7 dias do plano marcados',     cat:'plano',   check:s=>s.diasPlano>=7},
   {id:'plano_30',   icon:'🗓️', nome:'No ritmo',           desc:'30 dias do plano marcados',    cat:'plano',   check:s=>s.diasPlano>=30},
@@ -1459,9 +1459,9 @@ function calcStatsConquistas(){
   const totalMin=ativas.reduce((a,s)=>a+(s.minutos||0),0);
   const mediaGeral=totalQ>0?Math.round(totalA/totalQ*100):0;
   const temSessao100pct=ativas.some(s=>s.erros===0&&s.acertos>=5);
-  const {streak}=calcStreak();
+  const {streak,record}=calcStreak();
   const diasPlano=planoFeitos.length;
-  return{totalQ,totalA,totalMin,mediaGeral,temSessao100pct,streak,diasPlano};
+  return{totalQ,totalA,totalMin,mediaGeral,temSessao100pct,streak,record,diasPlano};
 }
 
 let notifTimer=null;
