@@ -1129,140 +1129,56 @@ function showToast(msg, type='info') {
 // ═══════════════════════════════════════
 //  TIMER
 // ═══════════════════════════════════════
+//  CRONÔMETRO
 // ═══════════════════════════════════════
-//  CRONÔMETRO — baseado em timestamp real
-//  Salva início no localStorage + Supabase
-//  Funciona em background, múltiplas abas
-// ═══════════════════════════════════════
-const TIMER_KEY='luisa_timer_start';
-const TIMER_PAUSED_KEY='luisa_timer_paused'; // segundos acumulados antes de pausar
-
-let timerInterval=null;
-let timerRunning=false;
-
-function timerGetSec(){
-  const start=parseInt(localStorage.getItem(TIMER_KEY)||'0');
-  const paused=parseInt(localStorage.getItem(TIMER_PAUSED_KEY)||'0');
-  if(!start) return paused;
-  return paused + Math.floor((Date.now()-start)/1000);
-}
-
-
+let timerSec=0,timerInterval=null,timerRunning=false;
+function timerGetSec(){return timerSec;}
 function pad(n){return String(n).padStart(2,'0')}
 function fmtTimer(s){return pad(Math.floor(s/3600))+':'+pad(Math.floor((s%3600)/60))+':'+pad(s%60)}
-
 function updateTimerDisplays(){
-  const t=fmtTimer(timerGetSec());
+  const t=fmtTimer(timerSec);
   const el=document.getElementById('timer-display');
   const fl=document.getElementById('float-time');
   if(el) el.textContent=t;
   if(fl) fl.textContent=t;
 }
-
-function showFloatTimer(){
-  const ft=document.getElementById('float-timer');
-  if(ft) ft.classList.remove('hidden');
-}
-
+function showFloatTimer(){const ft=document.getElementById('float-timer');if(ft)ft.classList.remove('hidden');}
+function floatTimerToggle(){if(timerRunning)timerStop();else timerStart();}
 function timerStart(){
-  if(timerRunning) return;
-  const outroStart=localStorage.getItem(TIMER_KEY);
-  if(!outroStart || parseInt(outroStart)===0){
-    localStorage.setItem(TIMER_KEY, Date.now().toString());
-  }
-  timerRunning=true;
-  showFloatTimer();
-  timerInterval=setInterval(updateTimerDisplays,1000);
-  const btnStart=document.getElementById('btn-start');
-  const btnStop=document.getElementById('btn-stop');
-  const floatPlay=document.getElementById('float-play');
-  if(btnStart) btnStart.style.display='none';
-  if(btnStop) btnStop.style.display='';
-  if(floatPlay) floatPlay.textContent='■';
-  updateTimerDisplays();
-  showToast('Cronômetro iniciado! ✦','info');
+  if(timerRunning)return;
+  timerRunning=true;showFloatTimer();
+  timerInterval=setInterval(()=>{timerSec++;updateTimerDisplays();},1000);
+  const s=document.getElementById('btn-start');const p=document.getElementById('btn-stop');const f=document.getElementById('float-play');
+  if(s)s.style.display='none';if(p)p.style.display='';if(f)f.textContent='■';
+  showToast('Cronômetro iniciado!','info');
 }
-
 function timerStop(){
-  if(!timerRunning) return;
-  clearInterval(timerInterval);
-  timerRunning=false;
-  // Salva segundos acumulados e limpa o início
-  const sec=timerGetSec();
-  localStorage.setItem(TIMER_PAUSED_KEY, sec.toString());
-  localStorage.removeItem(TIMER_KEY);
-  document.getElementById('float-play').textContent='▶';
-  document.getElementById('btn-start').style.display='';
-  document.getElementById('btn-stop').style.display='none';
-  showToast('Pausado · '+fmtTimer(sec),'info');
+  if(!timerRunning)return;
+  clearInterval(timerInterval);timerRunning=false;
+  const s=document.getElementById('btn-start');const p=document.getElementById('btn-stop');const f=document.getElementById('float-play');
+  if(f)f.textContent='▶';if(s)s.style.display='';if(p)p.style.display='none';
+  showToast('Pausado · '+fmtTimer(timerSec),'info');
 }
-
 function timerReset(){
-  if(timerRunning) clearInterval(timerInterval);
-  timerRunning=false;
-  localStorage.removeItem(TIMER_KEY);
-  localStorage.removeItem(TIMER_PAUSED_KEY);
-  updateTimerDisplays();
-  document.getElementById('float-timer').classList.add('hidden');
-  document.getElementById('btn-start').style.display='';
-  document.getElementById('btn-stop').style.display='none';
-  document.getElementById('float-play').textContent='▶';
+  timerStop();timerSec=0;updateTimerDisplays();
+  const ft=document.getElementById('float-timer');if(ft)ft.classList.add('hidden');
 }
-
-function floatTimerToggle(){
-  if(timerRunning) timerStop();
-  else timerStart();
-}
-
-function cancelarTimer(){
-  if(timerGetSec()>0 && !confirm('Cancelar e zerar o cronômetro?')) return;
-  timerReset();
-  showToast('Cronômetro cancelado.','info');
-}
-
+function cancelarTimer(){if(timerSec>0&&!confirm('Cancelar e zerar o cronômetro?'))return;timerReset();showToast('Cronômetro cancelado.','info');}
 function irParaLancar(){
-  timerStop();
-  const m=Math.round(timerGetSec()/60);
-  if(m>0){
-    document.getElementById('f-horas').value=Math.floor(m/60);
-    document.getElementById('f-mins').value=m%60;
-    document.getElementById('timer-badge').style.display='inline';
-  }
-  showSection('lancar', document.querySelector('.nav-btn:nth-child(4)'));
+  timerStop();const m=Math.round(timerSec/60);
+  if(m>0){document.getElementById('f-horas').value=Math.floor(m/60);document.getElementById('f-mins').value=m%60;document.getElementById('timer-badge').style.display='inline';}
+  showSection('lancar',document.querySelector('.nav-btn:nth-child(4)'));
   document.querySelectorAll('.bnav-btn').forEach((b,i)=>{b.classList.remove('active');if(i===2)b.classList.add('active');});
 }
-
 function usarCronometro(){
-  const sec=timerGetSec();
-  if(sec===0){showToast('Cronômetro está zerado!','error');return;}
-  const totalMin=Math.round(sec/60);
-  document.getElementById('f-horas').value=Math.floor(totalMin/60);
-  document.getElementById('f-mins').value=totalMin%60;
+  if(timerSec===0){showToast('Cronômetro está zerado!','error');return;}
+  const m=Math.round(timerSec/60);
+  document.getElementById('f-horas').value=Math.floor(m/60);
+  document.getElementById('f-mins').value=m%60;
   document.getElementById('timer-badge').style.display='inline';
-  showToast('Tempo preenchido: '+Math.floor(totalMin/60)+'h'+totalMin%60+'min ✦','success');
+  showToast('Tempo preenchido: '+Math.floor(m/60)+'h'+m%60+'min ✦','success');
 }
-
-// Restaura cronômetro ao carregar a página
-function restoreTimer(){
-  const start=localStorage.getItem(TIMER_KEY);
-  const paused=localStorage.getItem(TIMER_PAUSED_KEY);
-  if(start && parseInt(start)>0){
-    timerRunning=true;
-    showFloatTimer();
-    timerInterval=setInterval(updateTimerDisplays,1000);
-    const btnStart=document.getElementById('btn-start');
-    const btnStop=document.getElementById('btn-stop');
-    const floatPlay=document.getElementById('float-play');
-    if(btnStart) btnStart.style.display='none';
-    if(btnStop) btnStop.style.display='';
-    if(floatPlay) floatPlay.textContent='■';
-    updateTimerDisplays();
-  } else if(paused && parseInt(paused)>0){
-    updateTimerDisplays();
-    showFloatTimer();
-  }
-}
-
+function restoreTimer(){}
 function toggleTagFixa(btn, tag) {
   btn.classList.toggle('selected');
 }
@@ -1388,6 +1304,7 @@ async function arquivar(uid){
 //  HISTÓRICO
 // ═══════════════════════════════════════
 let filterMode2='ativas';
+let recadoOrdem='desc';
 function setFilter(m,btn){filterMode2=m;document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderHistorico();}
 function renderHistorico(){
   const q=(document.getElementById('search-input')?.value||'').toLowerCase();
@@ -2385,8 +2302,6 @@ function renderDashboard(){
   renderAnalytics();renderRevisoes();renderRecado();
   verificarConquistas(true);
 }
-
-let recadoOrdem='desc'; // desc = mais recente primeiro
 
 function renderRecado(){
   const wrap=document.getElementById('recado-content');
