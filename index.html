@@ -2270,6 +2270,9 @@ function renderDashMetas(){
 
 
 function renderDashboard(){
+  // Sincroniza plano com sessões antes de qualquer render
+  sincronizarPlanoComSessoes();
+
   const ativas=sessions.filter(s=>!s.archived);
   const total=ativas.length;
   const totalQ=ativas.reduce((a,s)=>a+s.acertos+s.erros,0);
@@ -2517,8 +2520,17 @@ function celebrar(){
 //  RENDER ALL
 // ═══════════════════════════════════════
 function renderAll(){
-  sincronizarPlanoComSessoes();
-  renderDashboard();renderHistorico();renderRevisoes();renderMetas();
+  const mudou=sincronizarPlanoComSessoes();
+  renderDashboard();
+  renderHistorico();
+  renderRevisoes();
+  renderMetas();
+  // Se houve sincronização, re-renderiza streak e contador com dados atualizados
+  if(mudou){
+    document.getElementById('st-sem').textContent=planoFeitos.length;
+    renderStreak();
+    verificarConquistas(true);
+  }
 }
 
 // ═══════════════════════════════════════
