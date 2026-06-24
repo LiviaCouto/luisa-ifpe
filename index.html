@@ -358,9 +358,6 @@ body{background:var(--bg-primary);color:var(--text-primary);font-family:'Inter',
 .conquista-notif-titulo{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
 .conquista-notif-nome{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text-primary);font-weight:700}
 .conquista-notif-desc{font-size:11px;color:var(--text-secondary);margin-top:2px}
-.recado-texto{font-size:14px;color:var(--text-primary);line-height:1.7;font-style:italic;padding:10px 14px;background:rgba(168,85,247,.06);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;margin-bottom:8px}
-.recado-meta{font-size:11px;color:var(--text-dim)}
-.recado-vazio{font-size:13px;color:var(--text-dim);font-style:italic;text-align:center;padding:12px 0}
 .zerar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:1rem}
 .zerar-btn{padding:10px;border:1px solid var(--danger);border-radius:8px;background:rgba(248,113,113,.08);color:var(--danger);font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;transition:all .2s}
 .zerar-btn:hover{background:rgba(248,113,113,.2)}
@@ -502,8 +499,8 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
     </div>
 
     <!-- RECADO DO DIA -->
-    <div class="card" id="card-recado">
-      <div class="card-title">✦ Recado do dia</div>
+    <div class="card">
+      <div class="card-title">✦ Recados</div>
       <div id="recado-content"></div>
     </div>
 
@@ -544,6 +541,7 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
       <div class="chart-empty" id="empty-mat"><div class="empty-icon">🎯</div><div class="empty-msg">Registre questões em uma sessão e veja seus acertos aqui!</div></div>
       <div id="chart-mat-inner" style="display:none"><div id="mat-bars"></div></div>
     </div>
+  </div>
 
   <!-- CRONOGRAMA -->
   <div id="sec-cronograma" class="section">
@@ -1095,23 +1093,19 @@ function setTheme(t, btn) {
 //  NAV
 // ═══════════════════════════════════════
 function showSection(id, btn, isMobile=false) {
-  try{
-    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-    const sec=document.getElementById('sec-'+id);
-    if(sec) sec.classList.add('active');
-    if (isMobile) {
-      document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
-    } else {
-      document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-    }
-    if (btn) btn.classList.add('active');
-    if (id==='dashboard') renderDashboard();
-    if (id==='historico') renderHistorico();
-    if (id==='revisoes') renderRevisoes();
-    if (id==='metas') renderMetas();
-    if (id==='plano') renderPlano();
-    if (id==='cronograma') {/* já renderizado no init */}
-  }catch(e){console.error('showSection error:',e);}
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  if (isMobile) {
+    document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
+  } else {
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  }
+  if (btn) btn.classList.add('active');
+  if (id==='dashboard') renderDashboard();
+  if (id==='historico') renderHistorico();
+  if (id==='revisoes') renderRevisoes();
+  if (id==='metas') renderMetas();
+  if (id==='plano') renderPlano();
 }
 
 // ═══════════════════════════════════════
@@ -1129,10 +1123,7 @@ function showToast(msg, type='info') {
 // ═══════════════════════════════════════
 //  TIMER
 // ═══════════════════════════════════════
-//  CRONÔMETRO
-// ═══════════════════════════════════════
 let timerSec=0,timerInterval=null,timerRunning=false;
-function timerGetSec(){return timerSec;}
 function pad(n){return String(n).padStart(2,'0')}
 function fmtTimer(s){return pad(Math.floor(s/3600))+':'+pad(Math.floor((s%3600)/60))+':'+pad(s%60)}
 function updateTimerDisplays(){
@@ -1142,43 +1133,42 @@ function updateTimerDisplays(){
   if(el) el.textContent=t;
   if(fl) fl.textContent=t;
 }
-function showFloatTimer(){const ft=document.getElementById('float-timer');if(ft)ft.classList.remove('hidden');}
-function floatTimerToggle(){if(timerRunning)timerStop();else timerStart();}
-function timerStart(){
-  if(timerRunning)return;
-  timerRunning=true;showFloatTimer();
-  timerInterval=setInterval(()=>{timerSec++;updateTimerDisplays();},1000);
-  const s=document.getElementById('btn-start');const p=document.getElementById('btn-stop');const f=document.getElementById('float-play');
-  if(s)s.style.display='none';if(p)p.style.display='';if(f)f.textContent='■';
-  showToast('Cronômetro iniciado!','info');
+function showFloatTimer(){
+  const ft=document.getElementById('float-timer');
+  if(ft) ft.classList.remove('hidden');
 }
-function timerStop(){
-  if(!timerRunning)return;
-  clearInterval(timerInterval);timerRunning=false;
-  const s=document.getElementById('btn-start');const p=document.getElementById('btn-stop');const f=document.getElementById('float-play');
-  if(f)f.textContent='▶';if(s)s.style.display='';if(p)p.style.display='none';
-  showToast('Pausado · '+fmtTimer(timerSec),'info');
+function floatTimerToggle(){
+  if(timerRunning) timerStop();
+  else timerStart();
 }
-function timerReset(){
-  timerStop();timerSec=0;updateTimerDisplays();
-  const ft=document.getElementById('float-timer');if(ft)ft.classList.add('hidden');
-}
-function cancelarTimer(){if(timerSec>0&&!confirm('Cancelar e zerar o cronômetro?'))return;timerReset();showToast('Cronômetro cancelado.','info');}
 function irParaLancar(){
-  timerStop();const m=Math.round(timerSec/60);
-  if(m>0){document.getElementById('f-horas').value=Math.floor(m/60);document.getElementById('f-mins').value=m%60;document.getElementById('timer-badge').style.display='inline';}
-  showSection('lancar',document.querySelector('.nav-btn:nth-child(4)'));
+  timerStop();
+  const m=Math.round(timerSec/60);
+  if(m>0){
+    document.getElementById('f-horas').value=Math.floor(m/60);
+    document.getElementById('f-mins').value=m%60;
+    document.getElementById('timer-badge').style.display='inline';
+  }
+  showSection('lancar', document.querySelector('.nav-btn:nth-child(4)'));
   document.querySelectorAll('.bnav-btn').forEach((b,i)=>{b.classList.remove('active');if(i===2)b.classList.add('active');});
+}
+function timerStart(){if(timerRunning)return;timerRunning=true;showFloatTimer();timerInterval=setInterval(()=>{timerSec++;updateTimerDisplays();document.getElementById('float-play').textContent='■';},1000);document.getElementById('btn-start').style.display='none';document.getElementById('btn-stop').style.display='';showToast('Cronômetro iniciado!','info')}
+function timerStop(){if(!timerRunning)return;clearInterval(timerInterval);timerRunning=false;document.getElementById('float-play').textContent='▶';document.getElementById('btn-start').style.display='';document.getElementById('btn-stop').style.display='none';showToast('Pausado · '+fmtTimer(timerSec),'info')}
+function timerReset(){timerStop();timerSec=0;updateTimerDisplays();document.getElementById('float-timer').classList.add('hidden');}
+function cancelarTimer(){
+  if(timerSec>0 && !confirm('Cancelar e zerar o cronômetro?')) return;
+  timerReset();
+  showToast('Cronômetro cancelado.','info');
 }
 function usarCronometro(){
   if(timerSec===0){showToast('Cronômetro está zerado!','error');return;}
-  const m=Math.round(timerSec/60);
-  document.getElementById('f-horas').value=Math.floor(m/60);
-  document.getElementById('f-mins').value=m%60;
+  const totalMin=Math.round(timerSec/60);
+  document.getElementById('f-horas').value=Math.floor(totalMin/60);
+  document.getElementById('f-mins').value=totalMin%60;
   document.getElementById('timer-badge').style.display='inline';
-  showToast('Tempo preenchido: '+Math.floor(m/60)+'h'+m%60+'min ✦','success');
+  showToast('Tempo preenchido: '+Math.floor(totalMin/60)+'h'+totalMin%60+'min ✦','success');
 }
-function restoreTimer(){}
+
 function toggleTagFixa(btn, tag) {
   btn.classList.toggle('selected');
 }
@@ -1206,7 +1196,7 @@ async function lancarSessao(){
   const erros=parseInt(document.getElementById('f-erros').value)||0;
   const horas=parseInt(document.getElementById('f-horas').value)||0;
   const mins=parseInt(document.getElementById('f-mins').value)||0;
-  const minutos=horas*60+mins || Math.round(timerGetSec()/60);
+  const minutos=horas*60+mins || Math.round(timerSec/60);
   const obs=document.getElementById('f-obs').value.trim();
   const tags=getTagsFixasSelecionadas();
 
@@ -1304,7 +1294,6 @@ async function arquivar(uid){
 //  HISTÓRICO
 // ═══════════════════════════════════════
 let filterMode2='ativas';
-let recadoOrdem='desc';
 function setFilter(m,btn){filterMode2=m;document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderHistorico();}
 function renderHistorico(){
   const q=(document.getElementById('search-input')?.value||'').toLowerCase();
@@ -2016,10 +2005,9 @@ function renderCronograma(){
 // ═══════════════════════════════════════
 //  CICLOS
 // ═══════════════════════════════════════
-function renderCicloNav(){const el=document.getElementById('ciclo-nav');if(!el)return;el.innerHTML=CICLOS.map((c,i)=>`<button class="ciclo-btn ${i===currentCiclo?'active':''}" onclick="selectCiclo(${i})">${c.nome}</button>`).join('');}
+function renderCicloNav(){document.getElementById('ciclo-nav').innerHTML=CICLOS.map((c,i)=>`<button class="ciclo-btn ${i===currentCiclo?'active':''}" onclick="selectCiclo(${i})">${c.nome}</button>`).join('');}
 function selectCiclo(i){currentCiclo=i;renderCicloNav();renderCicloContent();}
 function renderCicloContent(){
-  const el=document.getElementById('ciclo-content');if(!el)return;
   const c=CICLOS[currentCiclo];
   const total=c.semanas.length;
   const done=c.semanas.filter((_,si)=>semanasFeitas.includes(`${currentCiclo}-${si}`)).length;
@@ -2303,48 +2291,6 @@ function renderDashboard(){
   verificarConquistas(true);
 }
 
-function renderRecado(){
-  const wrap=document.getElementById('recado-content');
-  if(!wrap) return;
-  const ativas=sessions.filter(s=>!s.archived&&s.obs&&s.obs.trim()!=='');
-
-  if(!ativas.length){
-    wrap.innerHTML='<div class="recado-vazio">✦ Deixe um recado no campo observação ao lançar uma sessão!</div>';
-    return;
-  }
-
-  const sorted=[...ativas].sort((a,b)=>{
-    if(a.data===b.data) return 0;
-    return recadoOrdem==='desc'?(a.data>b.data?-1:1):(a.data>b.data?1:-1);
-  });
-
-  const btn='<div style="display:flex;justify-content:flex-end;margin-bottom:8px">'
-    +'<button onclick="toggleRecadoOrdem()" style="background:none;border:1px solid var(--border);border-radius:99px;padding:3px 10px;font-size:10px;color:var(--text-secondary);cursor:pointer;font-family:\'Inter\',sans-serif;transition:all .2s" id="btn-recado-ordem">'
-    +(recadoOrdem==='desc'?'↑ Mais antigo primeiro':'↓ Mais recente primeiro')
-    +'</button></div>';
-
-  const items=sorted.map(s=>{
-    const isToday=s.data===todayLocal();
-    return '<div style="padding:12px 0;border-bottom:1px solid var(--border-subtle)">'
-      +'<div style="font-size:10px;font-weight:600;color:'+(isToday?'var(--warning)':'var(--accent)')+';margin-bottom:4px;letter-spacing:.05em">'
-      +fmtDate(s.data)+(isToday?' · Hoje':'')
-      +' <span style="color:var(--text-dim);font-weight:400">· '+s.materia+(s.assunto?' · '+s.assunto:'')+'</span>'
-      +'</div>'
-      +'<div class="recado-texto" style="margin-bottom:0">"'+s.obs+'"</div>'
-    +'</div>';
-  }).join('');
-
-  wrap.innerHTML=btn
-    +'<div style="max-height:240px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;padding-right:4px">'
-    +items
-    +'</div>';
-}
-
-function toggleRecadoOrdem(){
-  recadoOrdem=recadoOrdem==='desc'?'asc':'desc';
-  renderRecado();
-}
-
 function renderProgressMat(){
   document.getElementById('progress-list').innerHTML=MATS.map(m=>{
     const sess=sessions.filter(s=>s.materia===m);
@@ -2600,10 +2546,42 @@ async function init(){
   document.querySelectorAll('.theme-btn').forEach(b=>{if((b.textContent==='🌙'&&savedTheme==='dark')||(b.textContent==='☀️'&&savedTheme==='light'))b.classList.add('active');else b.classList.remove('active');});
   initStars();
   renderCronograma();
-  restoreTimer();
   document.getElementById('f-data').value=todayLocal();
   await loadFromSupabase();
 }
+// ═══════════════════════════════════════
+//  RECADOS
+// ═══════════════════════════════════════
+let recadoOrdem='desc';
+function renderRecado(){
+  const wrap=document.getElementById('recado-content');
+  if(!wrap) return;
+  const comObs=sessions.filter(s=>!s.archived&&s.obs&&s.obs.trim()!=='');
+  if(!comObs.length){
+    wrap.innerHTML='<p style="font-size:13px;color:var(--text-dim);font-style:italic;text-align:center;padding:10px 0">✦ Deixe um recado no campo observação ao lançar uma sessão!</p>';
+    return;
+  }
+  const sorted=[...comObs].sort((a,b)=>recadoOrdem==='desc'?(a.data>b.data?-1:1):(a.data>b.data?1:-1));
+  const today=todayLocal();
+  const btn='<div style="display:flex;justify-content:flex-end;margin-bottom:8px">'
+    +'<button onclick="toggleRecadoOrdem()" style="background:none;border:1px solid var(--border);border-radius:99px;padding:3px 10px;font-size:10px;color:var(--text-secondary);cursor:pointer;font-family:\'Inter\',sans-serif">'
+    +(recadoOrdem==='desc'?'↑ Mais antigo primeiro':'↓ Mais recente primeiro')
+    +'</button></div>';
+  const items=sorted.map(s=>{
+    const isToday=s.data===today;
+    return '<div style="padding:10px 0;border-bottom:1px solid rgba(168,85,247,.08)">'
+      +'<div style="font-size:10px;font-weight:600;color:'+(isToday?'var(--warning)':'var(--accent)')+';margin-bottom:4px">'
+      +fmtDate(s.data)+(isToday?' · Hoje':'')+' <span style="color:var(--text-dim);font-weight:400">· '+s.materia+'</span></div>'
+      +'<div style="font-size:13px;color:var(--text-primary);font-style:italic;padding:8px 12px;background:rgba(168,85,247,.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0">"'+s.obs+'"</div>'
+      +'</div>';
+  }).join('');
+  wrap.innerHTML=btn+'<div style="max-height:220px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent">'+items+'</div>';
+}
+function toggleRecadoOrdem(){
+  recadoOrdem=recadoOrdem==='desc'?'asc':'desc';
+  renderRecado();
+}
+
 init();
 </script>
 </body>
