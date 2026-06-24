@@ -358,6 +358,9 @@ body{background:var(--bg-primary);color:var(--text-primary);font-family:'Inter',
 .conquista-notif-titulo{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
 .conquista-notif-nome{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text-primary);font-weight:700}
 .conquista-notif-desc{font-size:11px;color:var(--text-secondary);margin-top:2px}
+.recado-texto{font-size:14px;color:var(--text-primary);line-height:1.7;font-style:italic;padding:10px 14px;background:rgba(168,85,247,.06);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;margin-bottom:8px}
+.recado-meta{font-size:11px;color:var(--text-dim)}
+.recado-vazio{font-size:13px;color:var(--text-dim);font-style:italic;text-align:center;padding:12px 0}
 .zerar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:1rem}
 .zerar-btn{padding:10px;border:1px solid var(--danger);border-radius:8px;background:rgba(248,113,113,.08);color:var(--danger);font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;transition:all .2s}
 .zerar-btn:hover{background:rgba(248,113,113,.2)}
@@ -498,6 +501,12 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
       </div>
     </div>
 
+    <!-- RECADO DO DIA -->
+    <div class="card" id="card-recado">
+      <div class="card-title">✦ Recado do dia</div>
+      <div id="recado-content"></div>
+    </div>
+
     <!-- REVISÕES PENDENTES -->
     <div class="card" id="rev-dash-card" style="display:none">
       <div class="card-title">⏰ Revisões pendentes hoje</div>
@@ -535,13 +544,6 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
       <div class="chart-empty" id="empty-mat"><div class="empty-icon">🎯</div><div class="empty-msg">Registre questões em uma sessão e veja seus acertos aqui!</div></div>
       <div id="chart-mat-inner" style="display:none"><div id="mat-bars"></div></div>
     </div>
-
-    <div class="card">
-      <div class="card-title">✦ Evolução semanal de acertos</div>
-      <div class="chart-empty" id="empty-ev"><div class="empty-icon">📈</div><div class="empty-msg">Estude por algumas semanas e veja sua evolução aqui!</div></div>
-      <div id="chart-ev-inner" style="display:none"><div class="chart-wrap"><canvas id="chartEvolucao"></canvas></div></div>
-    </div>
-  </div>
 
   <!-- CRONOGRAMA -->
   <div id="sec-cronograma" class="section">
@@ -1123,27 +1125,112 @@ function showToast(msg, type='info') {
 // ═══════════════════════════════════════
 //  TIMER
 // ═══════════════════════════════════════
-let timerSec=0,timerInterval=null,timerRunning=false;
+// ═══════════════════════════════════════
+//  CRONÔMETRO — baseado em timestamp real
+//  Salva início no localStorage + Supabase
+//  Funciona em background, múltiplas abas
+// ═══════════════════════════════════════
+const TIMER_KEY='luisa_timer_start';
+const TIMER_PAUSED_KEY='luisa_timer_paused'; // segundos acumulados antes de pausar
+
+let timerInterval=null;
+let timerRunning=false;
+
+function timerGetSec(){
+  const start=parseInt(localStorage.getItem(TIMER_KEY)||'0');
+  const paused=parseInt(localStorage.getItem(TIMER_PAUSED_KEY)||'0');
+  if(!start) return paused;
+  return paused + Math.floor((Date.now()-start)/1000);
+}
+
+
 function pad(n){return String(n).padStart(2,'0')}
 function fmtTimer(s){return pad(Math.floor(s/3600))+':'+pad(Math.floor((s%3600)/60))+':'+pad(s%60)}
+
 function updateTimerDisplays(){
-  const t=fmtTimer(timerSec);
+  const t=fmtTimer(timerGetSec());
   const el=document.getElementById('timer-display');
   const fl=document.getElementById('float-time');
   if(el) el.textContent=t;
   if(fl) fl.textContent=t;
 }
+
 function showFloatTimer(){
   const ft=document.getElementById('float-timer');
   if(ft) ft.classList.remove('hidden');
 }
+
+function timerStart(){
+  if(timerRunning) return;
+  // Detecta se outra aba tem o cronômetro ativo
+  const outroStart=localStorage.getItem(TIMER_KEY);
+  if(outroStart && parseInt(outroStart)>0){
+    // Retoma o cronômetro existente (outra aba ou reload)
+    showToast('Cronômetro retomado! ✦','info');
+  } else {
+    // Novo início — salva timestamp atual
+    localStorage.setItem(TIMER_KEY, Date.now().toString());
+  }
+  timerRunning=true;
+  showFloatTimer();
+  timerInterval=setInterval(()=>{
+    updateTimerDisplays();
+    document.getElementById('float-play').textContent='■';
+  },1000);
+  document.getElementById('btn-start').style.display='none';
+  document.getElementById('btn-stop').style.display='';
+  updateTimerDisplays();
+  showToast('Cronômetro iniciado! ✦','info');
+
+  // Salva início no Supabase também para persistência total
+  try{
+    fetch(SUPA_URL+'/rest/v1/preferences?user_id=eq.luisa',{
+      method:'PATCH',headers:{...H,'Prefer':'return=minimal'},
+      body:JSON.stringify({timer_start:localStorage.getItem(TIMER_KEY),timer_paused:localStorage.getItem(TIMER_PAUSED_KEY)||'0'})
+    });
+  }catch(e){}
+}
+
+function timerStop(){
+  if(!timerRunning) return;
+  clearInterval(timerInterval);
+  timerRunning=false;
+  // Salva segundos acumulados e limpa o início
+  const sec=timerGetSec();
+  localStorage.setItem(TIMER_PAUSED_KEY, sec.toString());
+  localStorage.removeItem(TIMER_KEY);
+  document.getElementById('float-play').textContent='▶';
+  document.getElementById('btn-start').style.display='';
+  document.getElementById('btn-stop').style.display='none';
+  showToast('Pausado · '+fmtTimer(sec),'info');
+}
+
+function timerReset(){
+  if(timerRunning) clearInterval(timerInterval);
+  timerRunning=false;
+  localStorage.removeItem(TIMER_KEY);
+  localStorage.removeItem(TIMER_PAUSED_KEY);
+  updateTimerDisplays();
+  document.getElementById('float-timer').classList.add('hidden');
+  document.getElementById('btn-start').style.display='';
+  document.getElementById('btn-stop').style.display='none';
+  document.getElementById('float-play').textContent='▶';
+}
+
 function floatTimerToggle(){
   if(timerRunning) timerStop();
   else timerStart();
 }
+
+function cancelarTimer(){
+  if(timerGetSec()>0 && !confirm('Cancelar e zerar o cronômetro?')) return;
+  timerReset();
+  showToast('Cronômetro cancelado.','info');
+}
+
 function irParaLancar(){
   timerStop();
-  const m=Math.round(timerSec/60);
+  const m=Math.round(timerGetSec()/60);
   if(m>0){
     document.getElementById('f-horas').value=Math.floor(m/60);
     document.getElementById('f-mins').value=m%60;
@@ -1152,21 +1239,36 @@ function irParaLancar(){
   showSection('lancar', document.querySelector('.nav-btn:nth-child(4)'));
   document.querySelectorAll('.bnav-btn').forEach((b,i)=>{b.classList.remove('active');if(i===2)b.classList.add('active');});
 }
-function timerStart(){if(timerRunning)return;timerRunning=true;showFloatTimer();timerInterval=setInterval(()=>{timerSec++;updateTimerDisplays();document.getElementById('float-play').textContent='■';},1000);document.getElementById('btn-start').style.display='none';document.getElementById('btn-stop').style.display='';showToast('Cronômetro iniciado!','info')}
-function timerStop(){if(!timerRunning)return;clearInterval(timerInterval);timerRunning=false;document.getElementById('float-play').textContent='▶';document.getElementById('btn-start').style.display='';document.getElementById('btn-stop').style.display='none';showToast('Pausado · '+fmtTimer(timerSec),'info')}
-function timerReset(){timerStop();timerSec=0;updateTimerDisplays();document.getElementById('float-timer').classList.add('hidden');}
-function cancelarTimer(){
-  if(timerSec>0 && !confirm('Cancelar e zerar o cronômetro?')) return;
-  timerReset();
-  showToast('Cronômetro cancelado.','info');
-}
+
 function usarCronometro(){
-  if(timerSec===0){showToast('Cronômetro está zerado!','error');return;}
-  const totalMin=Math.round(timerSec/60);
+  const sec=timerGetSec();
+  if(sec===0){showToast('Cronômetro está zerado!','error');return;}
+  const totalMin=Math.round(sec/60);
   document.getElementById('f-horas').value=Math.floor(totalMin/60);
   document.getElementById('f-mins').value=totalMin%60;
   document.getElementById('timer-badge').style.display='inline';
   showToast('Tempo preenchido: '+Math.floor(totalMin/60)+'h'+totalMin%60+'min ✦','success');
+}
+
+// Restaura cronômetro ao carregar a página
+function restoreTimer(){
+  const start=localStorage.getItem(TIMER_KEY);
+  const paused=localStorage.getItem(TIMER_PAUSED_KEY);
+  if(start && parseInt(start)>0){
+    // Havia cronômetro ativo — retoma
+    timerRunning=true;
+    showFloatTimer();
+    timerInterval=setInterval(updateTimerDisplays,1000);
+    document.getElementById('btn-start').style.display='none';
+    document.getElementById('btn-stop').style.display='';
+    document.getElementById('float-play').textContent='■';
+    updateTimerDisplays();
+    showToast('Cronômetro retomado! ✦','info');
+  } else if(paused && parseInt(paused)>0){
+    // Havia tempo pausado
+    updateTimerDisplays();
+    showFloatTimer();
+  }
 }
 
 function toggleTagFixa(btn, tag) {
@@ -1196,7 +1298,7 @@ async function lancarSessao(){
   const erros=parseInt(document.getElementById('f-erros').value)||0;
   const horas=parseInt(document.getElementById('f-horas').value)||0;
   const mins=parseInt(document.getElementById('f-mins').value)||0;
-  const minutos=horas*60+mins || Math.round(timerSec/60);
+  const minutos=horas*60+mins || Math.round(timerGetSec()/60);
   const obs=document.getElementById('f-obs').value.trim();
   const tags=getTagsFixasSelecionadas();
 
@@ -2286,9 +2388,53 @@ function renderDashboard(){
   document.getElementById('st-sem').textContent=planoFeitos.length;
   renderStreak();
   renderDashMetas();
-  renderProgressMat();renderTagsDash();renderChartTempo();renderChartMateria();renderChartEvolucao();
-  renderAnalytics();renderRevisoes();
+  renderProgressMat();renderTagsDash();renderChartTempo();renderChartMateria();
+  renderAnalytics();renderRevisoes();renderRecado();
   verificarConquistas(true);
+}
+
+let recadoOrdem='desc'; // desc = mais recente primeiro
+
+function renderRecado(){
+  const wrap=document.getElementById('recado-content');
+  if(!wrap) return;
+  const ativas=sessions.filter(s=>!s.archived&&s.obs&&s.obs.trim()!=='');
+
+  if(!ativas.length){
+    wrap.innerHTML='<div class="recado-vazio">✦ Deixe um recado no campo observação ao lançar uma sessão!</div>';
+    return;
+  }
+
+  const sorted=[...ativas].sort((a,b)=>{
+    if(a.data===b.data) return 0;
+    return recadoOrdem==='desc'?(a.data>b.data?-1:1):(a.data>b.data?1:-1);
+  });
+
+  const btn='<div style="display:flex;justify-content:flex-end;margin-bottom:8px">'
+    +'<button onclick="toggleRecadoOrdem()" style="background:none;border:1px solid var(--border);border-radius:99px;padding:3px 10px;font-size:10px;color:var(--text-secondary);cursor:pointer;font-family:\'Inter\',sans-serif;transition:all .2s" id="btn-recado-ordem">'
+    +(recadoOrdem==='desc'?'↑ Mais antigo primeiro':'↓ Mais recente primeiro')
+    +'</button></div>';
+
+  const items=sorted.map(s=>{
+    const isToday=s.data===todayLocal();
+    return '<div style="padding:12px 0;border-bottom:1px solid var(--border-subtle)">'
+      +'<div style="font-size:10px;font-weight:600;color:'+(isToday?'var(--warning)':'var(--accent)')+';margin-bottom:4px;letter-spacing:.05em">'
+      +fmtDate(s.data)+(isToday?' · Hoje':'')
+      +' <span style="color:var(--text-dim);font-weight:400">· '+s.materia+(s.assunto?' · '+s.assunto:'')+'</span>'
+      +'</div>'
+      +'<div class="recado-texto" style="margin-bottom:0">"'+s.obs+'"</div>'
+    +'</div>';
+  }).join('');
+
+  wrap.innerHTML=btn
+    +'<div style="max-height:240px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;padding-right:4px">'
+    +items
+    +'</div>';
+}
+
+function toggleRecadoOrdem(){
+  recadoOrdem=recadoOrdem==='desc'?'asc':'desc';
+  renderRecado();
 }
 
 function renderProgressMat(){
@@ -2546,6 +2692,7 @@ async function init(){
   document.querySelectorAll('.theme-btn').forEach(b=>{if((b.textContent==='🌙'&&savedTheme==='dark')||(b.textContent==='☀️'&&savedTheme==='light'))b.classList.add('active');else b.classList.remove('active');});
   initStars();
   renderCronograma();
+  restoreTimer();
   document.getElementById('f-data').value=todayLocal();
   await loadFromSupabase();
 }
