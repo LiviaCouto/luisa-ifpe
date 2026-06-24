@@ -1162,33 +1162,21 @@ function showFloatTimer(){
 
 function timerStart(){
   if(timerRunning) return;
-  // Detecta se outra aba tem o cronômetro ativo
   const outroStart=localStorage.getItem(TIMER_KEY);
-  if(outroStart && parseInt(outroStart)>0){
-    // Retoma o cronômetro existente (outra aba ou reload)
-    showToast('Cronômetro retomado! ✦','info');
-  } else {
-    // Novo início — salva timestamp atual
+  if(!outroStart || parseInt(outroStart)===0){
     localStorage.setItem(TIMER_KEY, Date.now().toString());
   }
   timerRunning=true;
   showFloatTimer();
-  timerInterval=setInterval(()=>{
-    updateTimerDisplays();
-    document.getElementById('float-play').textContent='■';
-  },1000);
-  document.getElementById('btn-start').style.display='none';
-  document.getElementById('btn-stop').style.display='';
+  timerInterval=setInterval(updateTimerDisplays,1000);
+  const btnStart=document.getElementById('btn-start');
+  const btnStop=document.getElementById('btn-stop');
+  const floatPlay=document.getElementById('float-play');
+  if(btnStart) btnStart.style.display='none';
+  if(btnStop) btnStop.style.display='';
+  if(floatPlay) floatPlay.textContent='■';
   updateTimerDisplays();
   showToast('Cronômetro iniciado! ✦','info');
-
-  // Salva início no Supabase também para persistência total
-  try{
-    fetch(SUPA_URL+'/rest/v1/preferences?user_id=eq.luisa',{
-      method:'PATCH',headers:{...H,'Prefer':'return=minimal'},
-      body:JSON.stringify({timer_start:localStorage.getItem(TIMER_KEY),timer_paused:localStorage.getItem(TIMER_PAUSED_KEY)||'0'})
-    });
-  }catch(e){}
 }
 
 function timerStop(){
@@ -1255,17 +1243,17 @@ function restoreTimer(){
   const start=localStorage.getItem(TIMER_KEY);
   const paused=localStorage.getItem(TIMER_PAUSED_KEY);
   if(start && parseInt(start)>0){
-    // Havia cronômetro ativo — retoma
     timerRunning=true;
     showFloatTimer();
     timerInterval=setInterval(updateTimerDisplays,1000);
-    document.getElementById('btn-start').style.display='none';
-    document.getElementById('btn-stop').style.display='';
-    document.getElementById('float-play').textContent='■';
+    const btnStart=document.getElementById('btn-start');
+    const btnStop=document.getElementById('btn-stop');
+    const floatPlay=document.getElementById('float-play');
+    if(btnStart) btnStart.style.display='none';
+    if(btnStop) btnStop.style.display='';
+    if(floatPlay) floatPlay.textContent='■';
     updateTimerDisplays();
-    showToast('Cronômetro retomado! ✦','info');
   } else if(paused && parseInt(paused)>0){
-    // Havia tempo pausado
     updateTimerDisplays();
     showFloatTimer();
   }
