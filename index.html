@@ -1095,19 +1095,23 @@ function setTheme(t, btn) {
 //  NAV
 // ═══════════════════════════════════════
 function showSection(id, btn, isMobile=false) {
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.getElementById('sec-'+id).classList.add('active');
-  if (isMobile) {
-    document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
-  } else {
-    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  }
-  if (btn) btn.classList.add('active');
-  if (id==='dashboard') renderDashboard();
-  if (id==='historico') renderHistorico();
-  if (id==='revisoes') renderRevisoes();
-  if (id==='metas') renderMetas();
-  if (id==='plano') renderPlano();
+  try{
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    const sec=document.getElementById('sec-'+id);
+    if(sec) sec.classList.add('active');
+    if (isMobile) {
+      document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
+    } else {
+      document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    }
+    if (btn) btn.classList.add('active');
+    if (id==='dashboard') renderDashboard();
+    if (id==='historico') renderHistorico();
+    if (id==='revisoes') renderRevisoes();
+    if (id==='metas') renderMetas();
+    if (id==='plano') renderPlano();
+    if (id==='cronograma') {/* já renderizado no init */}
+  }catch(e){console.error('showSection error:',e);}
 }
 
 // ═══════════════════════════════════════
@@ -2095,9 +2099,10 @@ function renderCronograma(){
 // ═══════════════════════════════════════
 //  CICLOS
 // ═══════════════════════════════════════
-function renderCicloNav(){document.getElementById('ciclo-nav').innerHTML=CICLOS.map((c,i)=>`<button class="ciclo-btn ${i===currentCiclo?'active':''}" onclick="selectCiclo(${i})">${c.nome}</button>`).join('');}
+function renderCicloNav(){const el=document.getElementById('ciclo-nav');if(!el)return;el.innerHTML=CICLOS.map((c,i)=>`<button class="ciclo-btn ${i===currentCiclo?'active':''}" onclick="selectCiclo(${i})">${c.nome}</button>`).join('');}
 function selectCiclo(i){currentCiclo=i;renderCicloNav();renderCicloContent();}
 function renderCicloContent(){
+  const el=document.getElementById('ciclo-content');if(!el)return;
   const c=CICLOS[currentCiclo];
   const total=c.semanas.length;
   const done=c.semanas.filter((_,si)=>semanasFeitas.includes(`${currentCiclo}-${si}`)).length;
