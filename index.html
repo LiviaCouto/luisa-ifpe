@@ -693,6 +693,18 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
 <div id="sidebar-overlay" onclick="fecharSidebar()"></div>
 
 <!-- SIDEBAR -->
+<div id="bv-overlay" style="display:none">
+  <div id="bv-modal">
+    <div class="bv-stars" id="bv-stars"></div>
+    <div class="bv-logo" style="position:relative;z-index:1">L<span>✦</span></div>
+    <div class="bv-title" id="bv-title">Bem-vinda ao Luia! ✨</div>
+    <div class="bv-sub" id="bv-sub">Sua plataforma de estudos para o IFPE 2027.<br>Digite sua palavra-chave para entrar.</div>
+    <input class="bv-input" id="bv-input" type="password" placeholder="Digite sua palavra-chave..." autocomplete="off" onkeydown="if(event.key==='Enter')bvEntrar()">
+    <div class="bv-error" id="bv-error">Palavra-chave incorreta. Tente novamente.</div>
+    <button class="bv-btn" onclick="bvEntrar()">✦ Entrar</button>
+    <button class="bv-btn-visit" onclick="bvVisitante()">Explorar sem palavra-chave →</button>
+  </div>
+</div>
 <aside class="luia-sidebar" id="luia-sidebar">
   <div class="luia-sidebar-brand">
     <svg class="luia-logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1739,11 +1751,24 @@ async function loadFromSupabase() {
       localStorage.setItem('luia_sim_favs', JSON.stringify(simFavSalvas));
     }
 
-    // Carrega chave de acesso do banco — funciona em qualquer navegador
+    // Carrega chave e perfil completo do banco — funciona em qualquer navegador
     if(goalRows && goalRows[0] && goalRows[0].access_key){
       perfilData.chave = goalRows[0].access_key;
       if(goalRows[0].access_pergunta) perfilData.pergunta = goalRows[0].access_pergunta;
       if(goalRows[0].access_resposta) perfilData.resposta = goalRows[0].access_resposta;
+      if(goalRows[0].perfil_json){
+        const pj = goalRows[0].perfil_json;
+        perfilData.nome = pj.nome || perfilData.nome || '';
+        perfilData.apelido = pj.apelido || perfilData.apelido || '';
+        perfilData.idade = pj.idade || perfilData.idade || '';
+        perfilData.signo = pj.signo || perfilData.signo || '';
+        perfilData.musica = pj.musica || perfilData.musica || '';
+        perfilData.cor = pj.cor || perfilData.cor || '';
+        perfilData.sonho = pj.sonho || perfilData.sonho || '';
+        perfilData.motivacao = pj.motivacao || perfilData.motivacao || '';
+        perfilData.avatarId = pj.avatarId || perfilData.avatarId || '';
+        perfilData.avatarSvg = pj.avatarSvg || perfilData.avatarSvg || '';
+      }
       localStorage.setItem('luia_perfil', JSON.stringify(perfilData));
     }
 
@@ -2038,11 +2063,14 @@ async function lancarSessao(){
 
   showToast('Sessão registrada! ✦','success');
 
-  // Redireciona para dashboard
+  // Restaura última aba ou vai pro dashboard
   setTimeout(()=>{
-    // Redireciona para dashboard
     sincronizarPlanoComSessoes();
-    showLuia('dashboard', document.querySelector('.luia-nav-item'));
+    const abaAnterior = sessionStorage.getItem('luia_aba') || 'dashboard';
+    // Abas que precisam de auth não restauram automaticamente — vai pro dashboard
+    const abasAuth = ['sobre','perfil'];
+    const abaFinal = abasAuth.includes(abaAnterior) ? 'dashboard' : abaAnterior;
+    showLuia(abaFinal, null);
     document.querySelectorAll('.bnav-btn').forEach((b,i)=>{b.classList.remove('active');if(i===0)b.classList.add('active');});
     verificarConquistas();
   }, 800);
@@ -3489,6 +3517,87 @@ function renderAll(){
 // ═══════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════
+// ═══════════════════════════════════════
+//  MODAL BOAS-VINDAS
+// ═══════════════════════════════════════
+function bvMostrar(){
+  // Gera estrelinhas
+  const bg = document.getElementById('bv-stars');
+  if(bg && !bg.children.length){
+    for(let i=0;i<20;i++){
+      const s=document.createElement('div');
+      s.className='bv-star';
+      s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;opacity:${.1+Math.random()*.6};animation-delay:${Math.random()*2}s;animation-duration:${1.5+Math.random()*2}s`;
+      bg.appendChild(s);
+    }
+  }
+  // Adapta texto se já tem chave no banco
+  if(perfilData.chave){
+    const nome = perfilData.nome ? perfilData.nome.split(' ')[0] : '';
+    document.getElementById('bv-title').textContent = nome ? `Olá, ${nome}! 👋` : 'Bem-vinda de volta! 👋';
+    document.getElementById('bv-sub').innerHTML = 'Digite sua palavra-chave para carregar seus dados.';
+  } else {
+    document.getElementById('bv-title').textContent = 'Bem-vinda ao Luia! ✨';
+    document.getElementById('bv-sub').innerHTML = 'Sua plataforma de estudos para o IFPE 2027.<br>Digite sua palavra-chave para entrar.';
+  }
+  document.getElementById('bv-overlay').style.display='flex';
+  setTimeout(()=>document.getElementById('bv-input').focus(),200);
+}
+
+function bvFechar(){
+  document.getElementById('bv-overlay').style.display='none';
+}
+
+async function bvEntrar(){
+  const inp = document.getElementById('bv-input');
+  const err = document.getElementById('bv-error');
+  const chave = inp.value.trim();
+  if(!chave){ err.textContent='Digite sua palavra-chave.'; err.style.display='block'; return; }
+  err.style.display='none';
+
+  // Busca no Supabase pelo access_key
+  try{
+    const rows = await sbGet('study_goals','access_key=eq.'+encodeURIComponent(chave));
+    if(!rows || !rows.length){
+      // Chave não existe — pode ser primeira vez, aceita se não há chave cadastrada
+      if(!perfilData.chave){
+        // Sem chave ainda no banco — deixa entrar e vai pro perfil criar
+        authDesbloqueado=true;
+        bvFechar();
+        showToast('Crie sua palavra-chave no Perfil para proteger seus dados! 🔐','info');
+        return;
+      }
+      err.textContent='Palavra-chave incorreta. Tente novamente.';
+      err.style.display='block';
+      inp.value='';
+      inp.focus();
+      return;
+    }
+    // Chave correta — carrega tudo
+    const row = rows[0];
+    perfilData.chave = row.access_key;
+    if(row.access_pergunta) perfilData.pergunta = row.access_pergunta;
+    if(row.access_resposta) perfilData.resposta = row.access_resposta;
+    if(row.perfil_json){
+      const pj = row.perfil_json;
+      Object.assign(perfilData, pj);
+    }
+    localStorage.setItem('luia_perfil', JSON.stringify(perfilData));
+    authDesbloqueado = true;
+    bvFechar();
+    await loadFromSupabase();
+    showToast('Bem-vinda de volta' + (perfilData.nome?' , '+perfilData.nome.split(' ')[0]:'')+'! ✦','success');
+  } catch(e){
+    err.textContent='Erro de conexão. Tente novamente.';
+    err.style.display='block';
+  }
+}
+
+function bvVisitante(){
+  bvFechar();
+  showToast('Modo visitante — dados não serão salvos.','info');
+}
+
 async function init(){
   const savedTheme=localStorage.getItem('luisa_theme')||'dark';
   document.documentElement.setAttribute('data-theme',savedTheme);
@@ -3496,14 +3605,44 @@ async function init(){
   initStars();
   renderCronograma();
   document.getElementById('f-data').value=todayLocal();
+  // Carrega dados do Supabase primeiro (pega chave e perfil se existirem)
   await loadFromSupabase();
+  // Mostra modal de boas-vindas — só pula se já estava autenticado nessa sessão
+  if(!authDesbloqueado){
+    bvMostrar();
+  }
 }
 // ═══════════════════════════════════════
 //  LUIA — SIDEBAR & WELCOME
 // ═══════════════════════════════════════
 function showLuia(id, btn){
+  // Abas protegidas — qualquer aba exceto dashboard requer chave definida
+  const ABAS_PUBLICAS = ['dashboard'];
+  if(!ABAS_PUBLICAS.includes(id)){
+    if(!perfilData.chave){
+      // Sem chave criada: redireciona para perfil criar
+      comAuth(()=>showLuia(id, btn));
+      return;
+    }
+    // Abas que exigem confirmação ativa de identidade
+    const ABAS_AUTH = ['sobre','perfil'];
+    if(ABAS_AUTH.includes(id) && !authDesbloqueado){
+      comAuth(()=>showLuia(id, btn));
+      return;
+    }
+  }
+
+  // Salva aba atual para sobreviver ao refresh
+  sessionStorage.setItem('luia_aba', id);
+
   document.querySelectorAll('.luia-nav-item').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
+  else {
+    // Ativa o botão correto na sidebar
+    document.querySelectorAll('.luia-nav-item').forEach(b=>{
+      if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+id+"'")) b.classList.add('active');
+    });
+  }
   fecharSidebar();
   if(['progresso','sobre','perfil','simulados'].includes(id)){
     document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -3724,7 +3863,19 @@ async function salvarPerfil(){
         id:1,
         access_key:perfilData.chave,
         access_pergunta:perfilData.pergunta||'',
-        access_resposta:perfilData.resposta||''
+        access_resposta:perfilData.resposta||'',
+        perfil_json:{
+          nome:perfilData.nome||'',
+          apelido:perfilData.apelido||'',
+          idade:perfilData.idade||'',
+          signo:perfilData.signo||'',
+          musica:perfilData.musica||'',
+          cor:perfilData.cor||'',
+          sonho:perfilData.sonho||'',
+          motivacao:perfilData.motivacao||'',
+          avatarId:perfilData.avatarId||'',
+          avatarSvg:perfilData.avatarSvg||''
+        }
       },'id');
     }catch(e){console.log('chave salva só local');}
   }
@@ -4362,17 +4513,12 @@ SIMULADOS (${periodo}):
 - Média de acertos: ${simMedia}%
 - Melhor resultado: ${simMelhor}%`;
 
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    const resp=await fetch(`${SUPA_URL}/functions/v1/gerar-questoes`,{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-6',
-        max_tokens:1000,
-        messages:[{role:'user',content:prompt}]
-      })
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
+      body:JSON.stringify({prompt, modo:'texto'})
     });
-    const data=await resp.json();
-    diagnostico=data.content?.[0]?.text||'Diagnóstico não disponível.';
+    diagnostico=(await resp.text())||'Diagnóstico não disponível.';
   }catch(e){
     diagnostico='Não foi possível gerar o diagnóstico com IA. Verifique sua conexão e tente novamente.';
   }
@@ -4457,6 +4603,28 @@ SIMULADOS (${periodo}):
   
   /* RODAPÉ */
   .rodape{text-align:center;padding:24px;font-size:11px;color:#CBD5E1;border-top:1px solid #EDE9FE;margin-top:40px}
+
+/* ═══════ MODAL BOAS-VINDAS ═══════ */
+#bv-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+#bv-modal{background:linear-gradient(135deg,#0F172A,#1E1B4B);border:1px solid rgba(124,58,237,.3);border-radius:20px;padding:36px 32px;width:90%;max-width:420px;text-align:center;position:relative;overflow:hidden}
+#bv-modal::before{content:'';position:absolute;top:-60px;left:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(124,58,237,.25),transparent 70%);pointer-events:none}
+#bv-modal::after{content:'';position:absolute;bottom:-60px;right:-60px;width:180px;height:180px;background:radial-gradient(circle,rgba(245,158,11,.12),transparent 70%);pointer-events:none}
+.bv-logo{font-family:'Nunito',sans-serif;font-size:42px;font-weight:800;color:#fff;position:relative;z-index:1}
+.bv-logo span{color:#A78BFA}
+.bv-estrela{color:#F59E0B;font-size:18px;position:relative;z-index:1}
+.bv-title{font-size:18px;font-weight:700;color:#fff;margin:12px 0 6px;position:relative;z-index:1}
+.bv-sub{font-size:13px;color:rgba(167,139,250,.8);margin-bottom:24px;position:relative;z-index:1;line-height:1.6}
+.bv-input{width:100%;padding:12px 16px;background:rgba(255,255,255,.07);border:1px solid rgba(124,58,237,.4);border-radius:10px;color:#fff;font-size:14px;outline:none;margin-bottom:8px;text-align:center;letter-spacing:.1em;font-family:'Inter',sans-serif}
+.bv-input:focus{border-color:#7C3AED;background:rgba(124,58,237,.1)}
+.bv-input::placeholder{color:rgba(255,255,255,.3);letter-spacing:0}
+.bv-btn{width:100%;padding:13px;background:linear-gradient(135deg,#7C3AED,#6D28D9);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;transition:.2s}
+.bv-btn:hover{background:linear-gradient(135deg,#8B5CF6,#7C3AED)}
+.bv-btn-visit{width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,.15);border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;margin-top:8px;transition:.2s}
+.bv-btn-visit:hover{border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.7)}
+.bv-error{color:#F87171;font-size:12px;margin-top:6px;display:none}
+.bv-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.bv-star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:bvPulse 2s infinite alternate}
+@keyframes bvPulse{0%{opacity:.2}100%{opacity:.8}}
 </style>
 </head>
 <body>
