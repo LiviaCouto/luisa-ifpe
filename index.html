@@ -4727,13 +4727,12 @@ RETORNE APENAS um JSON válido, sem markdown, sem texto antes ou depois, apenas 
   ]
 }`;
 
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    const resp=await fetch(`${SUPA_URL}/functions/v1/gerar-questoes`,{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:6000,messages:[{role:'user',content:prompt}]})
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
+      body:JSON.stringify({materia:simConfig.materia,topico:simConfig.topico||'',quantidade:simConfig.quantidade,dificuldade:simConfig.dificuldade,prompt})
     });
-    const data=await resp.json();
-    const txt=data.content?.[0]?.text||'';
+    const txt=await resp.text();
     const json=JSON.parse(txt.replace(/```json|```/g,'').trim());
     simQuestoes=json.questoes;
   }catch(e){
