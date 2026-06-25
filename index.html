@@ -1136,7 +1136,7 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
       </div>
     </div>
 
-    <button class="perfil-save-btn" onclick="salvarPerfil()">✦ Salvar perfil</button>
+    <button class="perfil-save-btn" onclick="perfilData.chave?comAuth(()=>salvarPerfil()):salvarPerfil()">✦ Salvar perfil</button>
   </div><!-- /sec-perfil -->
 
   <!-- METAS -->
@@ -1445,20 +1445,32 @@ function setSyncStatus(status, msg) {
 async function loadFromSupabase() {
   setSyncStatus('loading','Carregando dados...');
   try {
-    const [sess, revs, cics] = await Promise.all([
+    const [sess, revs, cics, goalRows] = await Promise.all([
       sbGet('sessions','order=created_at.desc'),
       sbGet('reviews','order=review_date.asc'),
-      sbGet('ciclos_feitos','select=ciclo_key')
+      sbGet('ciclos_feitos','select=ciclo_key'),
+      sbGet('study_goals','id=eq.1').catch(()=>[])
     ]);
     sessions = sess.map(s => ({...s, tags: s.tags || []}));
     reviews = revs;
     semanasFeitas = cics.map(c => c.ciclo_key);
+
+    // Carrega chave de acesso do banco — funciona em qualquer navegador
+    if(goalRows && goalRows[0] && goalRows[0].access_key){
+      perfilData.chave = goalRows[0].access_key;
+      if(goalRows[0].access_pergunta) perfilData.pergunta = goalRows[0].access_pergunta;
+      if(goalRows[0].access_resposta) perfilData.resposta = goalRows[0].access_resposta;
+      localStorage.setItem('luia_perfil', JSON.stringify(perfilData));
+    }
+
     saveLocal();
     setSyncStatus('ok','Sincronizado com o banco de dados');
     renderAll();
+    atualizarBanner();
   } catch(e) {
     setSyncStatus('error','Sem conexão — usando dados locais');
     renderAll();
+    atualizarBanner();
   }
 }
 
@@ -3313,7 +3325,7 @@ function atualizarAvatares(){
   if(sf) sf.innerHTML=svgContent||inicial;
 }
 
-function salvarPerfil(){
+async function salvarPerfil(){
   const chave=document.getElementById('perfil-chave').value.trim();
   const chave2=document.getElementById('perfil-chave2').value.trim();
   if(chave&&chave!==chave2){showToast('As palavras-chave não coincidem!','error');return;}
@@ -3331,6 +3343,17 @@ function salvarPerfil(){
   if(pergunta) perfilData.pergunta=pergunta;
   if(resposta) perfilData.resposta=resposta;
   localStorage.setItem('luia_perfil',JSON.stringify(perfilData));
+  // Salva chave no Supabase para funcionar em qualquer navegador
+  if(perfilData.chave){
+    try{
+      await sbUpsert('study_goals',{
+        id:1,
+        access_key:perfilData.chave,
+        access_pergunta:perfilData.pergunta||'',
+        access_resposta:perfilData.resposta||''
+      },'id');
+    }catch(e){console.log('chave salva só local');}
+  }
   atualizarSidebar();
   atualizarStatusChave();
   atualizarBanner();
