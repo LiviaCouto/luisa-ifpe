@@ -680,7 +680,29 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
 .sim-resultado-pct{font-family:'Poppins',sans-serif;font-size:4rem;font-weight:800;line-height:1;margin-bottom:6px}
 .sim-loading{text-align:center;padding:48px 20px}
 .sim-loading-icon{font-size:3rem;margin-bottom:14px;animation:pulse-icon 1.5s infinite}
-@keyframes pulse-icon{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}</style>
+@keyframes pulse-icon{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+/* ═══════ MODAL BOAS-VINDAS ═══════ */
+#bv-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+#bv-modal{background:linear-gradient(135deg,#0F172A,#1E1B4B);border:1px solid rgba(124,58,237,.3);border-radius:20px;padding:36px 32px;width:90%;max-width:420px;text-align:center;position:relative;overflow:hidden}
+#bv-modal::before{content:'';position:absolute;top:-60px;left:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(124,58,237,.25),transparent 70%);pointer-events:none}
+#bv-modal::after{content:'';position:absolute;bottom:-60px;right:-60px;width:180px;height:180px;background:radial-gradient(circle,rgba(245,158,11,.12),transparent 70%);pointer-events:none}
+.bv-logo{font-family:'Nunito',sans-serif;font-size:42px;font-weight:800;color:#fff;position:relative;z-index:1}
+.bv-logo span{color:#A78BFA}
+.bv-estrela{color:#F59E0B;font-size:18px;position:relative;z-index:1}
+.bv-title{font-size:18px;font-weight:700;color:#fff;margin:12px 0 6px;position:relative;z-index:1}
+.bv-sub{font-size:13px;color:rgba(167,139,250,.8);margin-bottom:24px;position:relative;z-index:1;line-height:1.6}
+.bv-input{width:100%;padding:12px 16px;background:rgba(255,255,255,.07);border:1px solid rgba(124,58,237,.4);border-radius:10px;color:#fff;font-size:14px;outline:none;margin-bottom:8px;text-align:center;letter-spacing:.1em;font-family:'Inter',sans-serif}
+.bv-input:focus{border-color:#7C3AED;background:rgba(124,58,237,.1)}
+.bv-input::placeholder{color:rgba(255,255,255,.3);letter-spacing:0}
+.bv-btn{width:100%;padding:13px;background:linear-gradient(135deg,#7C3AED,#6D28D9);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;transition:.2s}
+.bv-btn:hover{background:linear-gradient(135deg,#8B5CF6,#7C3AED)}
+.bv-btn-visit{width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,.15);border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;margin-top:8px;transition:.2s}
+.bv-btn-visit:hover{border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.7)}
+.bv-error{color:#F87171;font-size:12px;margin-top:6px;display:none}
+.bv-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.bv-star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:bvPulse 2s infinite alternate}
+@keyframes bvPulse{0%{opacity:.2}100%{opacity:.8}}
+</style>
 </head>
 <body>
 <div id="space-bg">
@@ -696,7 +718,14 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
 <div id="bv-overlay" style="display:none">
   <div id="bv-modal">
     <div class="bv-stars" id="bv-stars"></div>
-    <div class="bv-logo" style="position:relative;z-index:1">L<span>✦</span></div>
+    <div style="position:relative;z-index:1;margin-bottom:4px">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <text x="6" y="50" font-family="Nunito,sans-serif" font-size="52" font-weight="800" fill="white">L</text>
+        <path d="M44 14 L46 10 L48 14 L52 16 L48 18 L46 22 L44 18 L40 16 Z" fill="#F59E0B"/>
+        <ellipse cx="46" cy="38" rx="12" ry="5" fill="none" stroke="#A78BFA" stroke-width="1.5" opacity="0.6"/>
+        <circle cx="46" cy="33" r="4" fill="#7C3AED" opacity="0.9"/>
+      </svg>
+    </div>
     <div class="bv-title" id="bv-title">Bem-vinda ao Luia! ✨</div>
     <div class="bv-sub" id="bv-sub">Sua plataforma de estudos para o IFPE 2027.<br>Digite sua palavra-chave para entrar.</div>
     <input class="bv-input" id="bv-input" type="password" placeholder="Digite sua palavra-chave..." autocomplete="off" onkeydown="if(event.key==='Enter')bvEntrar()">
@@ -4604,28 +4633,6 @@ SIMULADOS (${periodo}):
   /* RODAPÉ */
   .rodape{text-align:center;padding:24px;font-size:11px;color:#CBD5E1;border-top:1px solid #EDE9FE;margin-top:40px}
 
-/* ═══════ MODAL BOAS-VINDAS ═══════ */
-#bv-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
-#bv-modal{background:linear-gradient(135deg,#0F172A,#1E1B4B);border:1px solid rgba(124,58,237,.3);border-radius:20px;padding:36px 32px;width:90%;max-width:420px;text-align:center;position:relative;overflow:hidden}
-#bv-modal::before{content:'';position:absolute;top:-60px;left:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(124,58,237,.25),transparent 70%);pointer-events:none}
-#bv-modal::after{content:'';position:absolute;bottom:-60px;right:-60px;width:180px;height:180px;background:radial-gradient(circle,rgba(245,158,11,.12),transparent 70%);pointer-events:none}
-.bv-logo{font-family:'Nunito',sans-serif;font-size:42px;font-weight:800;color:#fff;position:relative;z-index:1}
-.bv-logo span{color:#A78BFA}
-.bv-estrela{color:#F59E0B;font-size:18px;position:relative;z-index:1}
-.bv-title{font-size:18px;font-weight:700;color:#fff;margin:12px 0 6px;position:relative;z-index:1}
-.bv-sub{font-size:13px;color:rgba(167,139,250,.8);margin-bottom:24px;position:relative;z-index:1;line-height:1.6}
-.bv-input{width:100%;padding:12px 16px;background:rgba(255,255,255,.07);border:1px solid rgba(124,58,237,.4);border-radius:10px;color:#fff;font-size:14px;outline:none;margin-bottom:8px;text-align:center;letter-spacing:.1em;font-family:'Inter',sans-serif}
-.bv-input:focus{border-color:#7C3AED;background:rgba(124,58,237,.1)}
-.bv-input::placeholder{color:rgba(255,255,255,.3);letter-spacing:0}
-.bv-btn{width:100%;padding:13px;background:linear-gradient(135deg,#7C3AED,#6D28D9);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;transition:.2s}
-.bv-btn:hover{background:linear-gradient(135deg,#8B5CF6,#7C3AED)}
-.bv-btn-visit{width:100%;padding:11px;background:transparent;border:1px solid rgba(255,255,255,.15);border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;margin-top:8px;transition:.2s}
-.bv-btn-visit:hover{border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.7)}
-.bv-error{color:#F87171;font-size:12px;margin-top:6px;display:none}
-.bv-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
-.bv-star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:bvPulse 2s infinite alternate}
-@keyframes bvPulse{0%{opacity:.2}100%{opacity:.8}}
-</style>
 </head>
 <body>
 
