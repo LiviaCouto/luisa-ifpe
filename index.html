@@ -14,7 +14,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Luísa Couto Mota · IFPE 2027">
 <meta name="twitter:description" content="Preparatório Técnico Integrado · Ciclo de Estudos personalizado">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito:wght@700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Poppins:wght@400;500;600;700&family=Nunito:wght@700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════ TOKENS ═══════════════ */
 [data-theme="dark"] {
@@ -420,10 +420,10 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
 body{font-family:'Inter',sans-serif}
 
 /* Sidebar */
-.luia-sidebar{position:fixed;top:0;left:0;width:220px;height:100vh;background:#0F172A;border-right:1px solid rgba(255,255,255,.07);z-index:40;display:flex;flex-direction:column;overflow-y:auto}
-.luia-sidebar-brand{padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px}
-.luia-logo-icon{width:40px;height:40px;flex-shrink:0}
-.luia-logo-name{font-family:'Nunito',sans-serif;font-size:24px;font-weight:800;color:#fff;letter-spacing:-.01em;line-height:1}
+.luia-sidebar{position:fixed;top:0;left:0;width:220px;height:100vh;background:#0F172A;border-right:1px solid rgba(255,255,255,.07);z-index:40;display:flex;flex-direction:column;overflow-y:auto;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.luia-sidebar-brand{padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:12px}
+.luia-logo-icon{width:44px;height:44px;flex-shrink:0}
+.luia-logo-name{font-family:'Nunito',sans-serif;font-size:32px;font-weight:800;color:#fff;letter-spacing:-.02em;line-height:1;background:linear-gradient(135deg,#fff 0%,#C4B5FD 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .luia-user{padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:9px}
 .luia-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#4F46E5);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
 .luia-user-name{font-size:12.5px;font-weight:600;color:#F1F5F9;line-height:1.3}
@@ -452,7 +452,7 @@ body{font-family:'Inter',sans-serif}
 /* Welcome hero — igual à referência */
 .luia-hero{background:linear-gradient(135deg,#4C1D95 0%,#3730A3 50%,#1E1B4B 100%);border-radius:16px;padding:24px 28px;margin-bottom:18px;position:relative;overflow:hidden}
 .luia-hero::after{content:'';position:absolute;right:-20px;top:-20px;width:160px;height:160px;background:radial-gradient(circle,rgba(255,255,255,.06),transparent 70%)}
-.luia-hero-greeting{font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:#fff;margin-bottom:4px;font-family:'Poppins',sans-serif}
+.luia-hero-greeting{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:-.01em}
 .luia-hero-sub{font-size:13px;color:rgba(255,255,255,.75);line-height:1.5;margin-bottom:12px}
 .luia-hero-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border-radius:99px;padding:4px 13px;font-size:11px;font-weight:600;color:#fff}
 
@@ -477,8 +477,8 @@ body{font-family:'Inter',sans-serif}
 /* Mobile */
 .luia-menu-btn{display:none;align-items:center;justify-content:center;width:34px;height:34px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;cursor:pointer;color:#94A3B8;flex-shrink:0}
 @media(max-width:768px){
-  .luia-sidebar{transform:translateX(-100%);transition:transform .3s}
-  .luia-sidebar.open{transform:translateX(0)}
+  .luia-sidebar{transform:translateX(-100%)}
+  .luia-sidebar.open{transform:translateX(0);box-shadow:4px 0 24px rgba(0,0,0,.5)}
   .luia-main{margin-left:0}
   .luia-menu-btn{display:flex}
   .stats-grid{grid-template-columns:repeat(2,1fr)}
@@ -491,7 +491,11 @@ body{font-family:'Inter',sans-serif}
   .header{display:none}
   .nav{display:none}
   .bottom-nav{display:none!important}
+  .luia-menu-btn{display:none}
+  #sidebar-overlay{display:none!important}
 }
+/* Overlay escuro sidebar mobile */
+#sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:39;backdrop-filter:blur(2px)}
 /* ═══════════════ PERFIL & AUTH ═══════════════ */
 .luia-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#4F46E5);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;cursor:pointer;transition:all .2s;border:2px solid transparent}
 .luia-avatar:hover{border-color:var(--accent-light)}
@@ -541,6 +545,38 @@ body{font-family:'Inter',sans-serif}
 .chave-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:99px;font-weight:600;margin-top:6px}
 .chave-ok{background:rgba(34,197,94,.1);color:#22C55E;border:1px solid rgba(34,197,94,.2)}
 .chave-nok{background:rgba(245,158,11,.1);color:#F59E0B;border:1px solid rgba(245,158,11,.2)}
+/* Dropdown planos */
+.plano-dropdown{position:absolute;top:calc(100% + 8px);left:0;background:#1E293B;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px;min-width:220px;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.plano-dropdown-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;transition:all .15s;font-size:13px;font-weight:500;color:#94A3B8}
+.plano-dropdown-item:hover{background:rgba(255,255,255,.06)}
+.plano-dropdown-item.ativo{background:rgba(139,92,246,.15);color:#A78BFA}
+.plano-dropdown-item.em-breve{opacity:.45;cursor:default}
+.plano-dropdown-item.em-breve:hover{background:none}
+.plano-dropdown-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.plano-dropdown-badge{font-size:9px;margin-left:auto;background:rgba(255,255,255,.08);padding:2px 6px;border-radius:99px;color:#64748B}
+.luia-plan-btn{position:relative}
+
+/* Sobre mim */
+.sobre-mim-card{background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(79,70,229,.08));border:1px solid rgba(139,92,246,.3);border-radius:16px;padding:24px;margin-bottom:14px;text-align:center}
+.sobre-mim-foto{width:80px;height:80px;border-radius:50%;border:3px solid #8B5CF6;background:linear-gradient(135deg,#7C3AED,#4F46E5);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;color:#fff;margin:0 auto 12px;overflow:hidden}
+.sobre-mim-foto img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.sobre-mim-nome{font-family:'Instrument Serif',serif;font-size:1.6rem;color:#F1F5F9;margin-bottom:4px}
+.sobre-mim-signo{font-size:12px;color:#8B5CF6;font-weight:500;margin-bottom:14px}
+.sobre-mim-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left}
+.sobre-mim-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:10px 14px}
+.sobre-mim-item-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#475569;margin-bottom:3px}
+.sobre-mim-item-val{font-size:13px;color:#F1F5F9;font-weight:500}
+.sobre-mim-full{grid-column:span 2}
+
+/* Progresso */
+.prog-materia-card{background:#1E293B;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px 18px;margin-bottom:10px}
+.prog-mat-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.prog-mat-nome{font-size:14px;font-weight:600;color:#F1F5F9}
+.prog-mat-pct{font-family:'Instrument Serif',serif;font-size:1.4rem;color:#8B5CF6}
+.prog-detalhes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.prog-detalhe{background:rgba(255,255,255,.03);border-radius:8px;padding:8px 10px;text-align:center}
+.prog-detalhe-val{font-size:15px;font-weight:700;color:#F1F5F9;font-family:'Instrument Serif',serif}
+.prog-detalhe-label{font-size:9px;color:#64748B;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
 </style>
 </head>
 <body>
@@ -549,6 +585,9 @@ body{font-family:'Inter',sans-serif}
   <div class="nebula nebula-2"></div>
   <canvas id="starCanvas"></canvas>
 </div>
+
+<!-- Overlay sidebar mobile -->
+<div id="sidebar-overlay" onclick="fecharSidebar()"></div>
 
 <!-- SIDEBAR -->
 <aside class="luia-sidebar" id="luia-sidebar">
@@ -600,6 +639,13 @@ body{font-family:'Inter',sans-serif}
     <button class="luia-nav-item" onclick="showLuia('revisoes',this)">
       <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Revisões
     </button>
+    <div class="luia-nav-section">Análise</div>
+    <button class="luia-nav-item" onclick="showLuia('progresso',this)">
+      <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Progresso
+    </button>
+    <button class="luia-nav-item" onclick="showLuia('sobre',this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>Sobre mim
+    </button>
     <div class="luia-nav-section">Configurações</div>
     <button class="luia-nav-item" onclick="showLuia('perfil',this)">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>Perfil
@@ -619,14 +665,33 @@ body{font-family:'Inter',sans-serif}
 <!-- MAIN -->
 <div class="luia-main">
   <header class="luia-topbar">
-    <button class="luia-menu-btn" onclick="document.getElementById('luia-sidebar').classList.toggle('open')">
+    <button class="luia-menu-btn" onclick="abrirSidebar()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
-    <button class="luia-plan-btn">
-      <div class="luia-plan-dot"></div>
-      IFPE 2027
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
+    <div style="position:relative">
+      <button class="luia-plan-btn" onclick="togglePlanDropdown(this)" id="plan-btn">
+        <div class="luia-plan-dot"></div>
+        <span id="plan-label">IFPE 2027</span>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="plano-dropdown" id="plan-dropdown" style="display:none">
+        <div class="plano-dropdown-item ativo">
+          <div class="plano-dropdown-dot" style="background:#8B5CF6"></div>
+          IFPE 2027
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2.5" style="margin-left:auto"><path d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <div class="plano-dropdown-item em-breve">
+          <div class="plano-dropdown-dot" style="background:#F59E0B"></div>
+          ENEM 2027
+          <span class="plano-dropdown-badge">Em breve</span>
+        </div>
+        <div class="plano-dropdown-item em-breve">
+          <div class="plano-dropdown-dot" style="background:#10B981"></div>
+          SSA 1
+          <span class="plano-dropdown-badge">Em breve</span>
+        </div>
+      </div>
+    </div>
     <div class="luia-topbar-spacer"></div>
     <div class="luia-sync">
       <div class="sync-dot loading" id="sync-dot"></div>
@@ -828,7 +893,7 @@ body{font-family:'Inter',sans-serif}
         <label class="form-label">Observação (opcional)</label>
         <input type="text" class="form-control" id="f-obs" placeholder="Como foi a sessão?">
       </div>
-      <button class="btn-primary" onclick="lancarSessao()">✦ Registrar sessão</button>
+      <button class="btn-primary" onclick="_authLancar()">✦ Registrar sessão</button>
     </div>
   </div>
 
@@ -866,6 +931,34 @@ body{font-family:'Inter',sans-serif}
       <p style="font-size:12px;color:var(--text-secondary);line-height:1.7">Visão panorâmica semana a semana baseada no edital do IFPE. Marque cada dia ao concluir.</p>
     </div>
     <div id="plano-list"></div>
+  </div>
+
+  <!-- SOBRE MIM -->
+  <div id="sec-sobre" class="section">
+    <div class="sobre-mim-card" id="sobre-mim-card">
+      <div class="sobre-mim-foto" id="sobre-foto">L</div>
+      <div class="sobre-mim-nome" id="sobre-nome">Luísa</div>
+      <div class="sobre-mim-signo" id="sobre-signo">✦ IFPE 2027</div>
+      <div class="sobre-mim-grid" id="sobre-grid">
+        <div class="sobre-mim-item sobre-mim-full" style="text-align:center;color:#64748B;font-size:13px">
+          Preencha seu perfil para ver seus dados aqui ✨
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESSO -->
+  <div id="sec-progresso" class="section">
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-title">✦ Progresso por matéria</div>
+      <div id="prog-materias-wrap">
+        <p style="color:var(--text-dim);font-size:13px">Nenhuma sessão registrada ainda.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">✦ Resumo geral</div>
+      <div id="prog-resumo-wrap"></div>
+    </div>
   </div>
 
   <!-- PERFIL -->
@@ -912,7 +1005,7 @@ body{font-family:'Inter',sans-serif}
         </div>
         <div class="perfil-field">
           <label class="perfil-label">Signo ✨</label>
-          <select class="perfil-input" id="perfil-signo">
+          <select class="perfil-input" id="perfil-signo" style="background:#1E293B;color:#F1F5F9">
             <option value="">Selecione...</option>
             <option>♈ Áries</option><option>♉ Touro</option><option>♊ Gêmeos</option>
             <option>♋ Câncer</option><option>♌ Leão</option><option>♍ Virgem</option>
@@ -956,8 +1049,25 @@ body{font-family:'Inter',sans-serif}
       <div class="perfil-field">
         <label class="perfil-label">Confirmar palavra-chave</label>
         <div class="perfil-chave-wrap">
-          <input class="perfil-input" id="perfil-chave2" type="password" placeholder="Repita a palavra-chave">
+          <div class="perfil-chave-wrap"><input class="perfil-input" id="perfil-chave2" type="password" placeholder="Repita a palavra-chave"><button class="perfil-chave-toggle" onclick="const i=document.getElementById('perfil-chave2');i.type=i.type==='password'?'text':'password'">👁</button></div>
         </div>
+      </div>
+      <div class="perfil-section-title" style="margin-top:14px">🐾 Recuperação de acesso</div>
+      <div class="perfil-field">
+        <label class="perfil-label">Pergunta secreta</label>
+        <select class="perfil-input" id="perfil-pergunta">
+          <option value="">Escolha uma pergunta...</option>
+          <option>Nome do meu primeiro animal de estimação</option>
+          <option>Cidade onde nasci</option>
+          <option>Nome da minha melhor amiga</option>
+          <option>Música favorita de infância</option>
+          <option>Apelido que minha mãe me chama</option>
+        </select>
+      </div>
+      <div class="perfil-field">
+        <label class="perfil-label">Resposta secreta</label>
+        <input class="perfil-input" id="perfil-resposta" type="text" placeholder="Só você sabe...">
+        <div class="perfil-hint">Guarde bem — usada para recuperar o acesso se esquecer a palavra-chave.</div>
       </div>
     </div>
 
@@ -1122,13 +1232,26 @@ body{font-family:'Inter',sans-serif}
 <!-- MODAL PALAVRA-CHAVE -->
 <div id="auth-overlay" class="auth-overlay" style="display:none">
   <div class="auth-modal">
-    <span class="auth-icon">🔑</span>
-    <div class="auth-title">Ei, é você?</div>
-    <div class="auth-sub">Para fazer esta ação, confirme que é você digitando sua palavra-chave.</div>
-    <input class="auth-input" id="auth-input" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')tentarAuth()">
-    <div class="auth-error" id="auth-error">Palavra-chave incorreta. Tente de novo! 🙅‍♀️</div>
-    <button class="auth-btn" onclick="tentarAuth()">✓ Confirmar</button>
-    <button class="auth-cancel" onclick="cancelarAuth()">Cancelar</button>
+    <!-- Tela principal -->
+    <div id="auth-tela-principal">
+      <span class="auth-icon">🔑</span>
+      <div class="auth-title">É você, Luísa?</div>
+      <div class="auth-sub">Digite sua palavra-chave para continuar.</div>
+      <input class="auth-input" id="auth-input" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')tentarAuth()">
+      <div class="auth-error" id="auth-error">Palavra-chave incorreta. Tente de novo! 🙅‍♀️</div>
+      <button class="auth-btn" onclick="tentarAuth()">✓ Entrar</button>
+      <button class="auth-cancel" onclick="document.getElementById('auth-tela-principal').style.display='none';document.getElementById('auth-tela-recuperar').style.display='block'">Esqueci minha palavra-chave</button>
+    </div>
+    <!-- Tela de recuperação -->
+    <div id="auth-tela-recuperar" style="display:none">
+      <span class="auth-icon">🐾</span>
+      <div class="auth-title">Recuperar acesso</div>
+      <div class="auth-sub" id="auth-pergunta-txt">Carregando pergunta...</div>
+      <input class="auth-input" id="auth-resposta" type="text" placeholder="Sua resposta..." onkeydown="if(event.key==='Enter')tentarRecuperar()">
+      <div class="auth-error" id="auth-recuperar-error">Resposta incorreta. Tente de novo!</div>
+      <button class="auth-btn" onclick="tentarRecuperar()">✓ Verificar</button>
+      <button class="auth-cancel" onclick="document.getElementById('auth-tela-recuperar').style.display='none';document.getElementById('auth-tela-principal').style.display='block'">← Voltar</button>
+    </div>
   </div>
 </div>
 
@@ -1413,6 +1536,7 @@ function showSection(id, btn, isMobile=false) {
   if (id==='revisoes') renderRevisoes();
   if (id==='metas') renderMetas();
   if (id==='plano') renderPlano();
+  if (id==='perfil') carregarPerfil();
 }
 
 // ═══════════════════════════════════════
@@ -1538,9 +1662,11 @@ async function lancarSessao(){
 
   // Redireciona para dashboard
   setTimeout(()=>{
-    showSection('dashboard', document.querySelector('.nav-btn'));
+    // Redireciona para dashboard
+    sincronizarPlanoComSessoes();
+    showLuia('dashboard', document.querySelector('.luia-nav-item'));
     document.querySelectorAll('.bnav-btn').forEach((b,i)=>{b.classList.remove('active');if(i===0)b.classList.add('active');});
-    verificarConquistas(); // verifica conquistas com notificação
+    verificarConquistas();
   }, 800);
 
   await syncSession(localId);
@@ -1697,8 +1823,8 @@ function renderRevisoes(){
       </div>
       <span class="review-status status-${r.status}">${r.status}</span>
       ${r.status==='pendente'
-        ?`<button class="review-btn" onclick="concluirRevisao(${r.id})">✓ Feita</button>`
-        :`<button class="review-btn" style="color:var(--warning);border-color:var(--warning)" onclick="reabrirRevisao(${r.id})">↩ Reabrir</button>`}
+        ?`<button class="review-btn" onclick="_authConcluir(${r.id})">✓ Feita</button>`
+        :`<button class="review-btn" style="color:var(--warning);border-color:var(--warning)" onclick="_authReabrir(${r.id})">↩ Reabrir</button>`}
     </div>`;
   }).join('');
 
@@ -2228,7 +2354,7 @@ function renderPlano(){
       else if(isPast) statusBadge='<span class="status-badge badge-atrasado">⚠️ Atrasado</span>';
 
       return '<div class="plano-dia" style="'+diaStyle+'">'
-        +'<div class="'+checkClass+'" onclick="togglePlano(\''+d.data+'\',this)"></div>'
+        +'<div class="'+checkClass+'" onclick="_authTogglePlano(\''+d.data+'\',this)"></div>'
         +'<div class="plano-dia-info">'
           +'<div class="plano-dia-data" style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">'+d.dia+', '+fmtDate(d.data)+statusBadge+'</div>'
           +'<div class="plano-dia-conteudo">'+d.conteudo+'</div>'
@@ -2917,9 +3043,18 @@ function showLuia(id, btn){
   // Atualiza sidebar
   document.querySelectorAll('.luia-nav-item').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
-  // Fecha mobile
-  document.getElementById('luia-sidebar').classList.remove('open');
-  // Chama showSection original
+  fecharSidebar();
+  // Seções novas (progresso, sobre, perfil) — trata aqui sem chamar showSection
+  if(id==='progresso'||id==='sobre'||id==='perfil'){
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    const sec=document.getElementById('sec-'+id);
+    if(sec) sec.classList.add('active');
+    if(id==='progresso') renderProgresso();
+    if(id==='sobre') renderSobreMim();
+    if(id==='perfil') setTimeout(carregarPerfil,100);
+    return;
+  }
+  // Seções originais — chama showSection normal
   showSection(id, null, false);
 }
 
@@ -2942,17 +3077,19 @@ function updateWelcome(){
   if(cd) cd.style.display='none';
 }
 
-// Fecha sidebar ao clicar fora (mobile)
-document.addEventListener('click',function(e){
-  const sb=document.getElementById('luia-sidebar');
-  const mb=document.querySelector('.luia-menu-btn');
-  if(sb&&sb.classList.contains('open')&&!sb.contains(e.target)&&mb&&!mb.contains(e.target))
-    sb.classList.remove('open');
-});
+// Sidebar mobile
+function abrirSidebar(){
+  document.getElementById('luia-sidebar').classList.add('open');
+  const ov=document.getElementById('sidebar-overlay');
+  if(ov) ov.style.display='block';
+}
+function fecharSidebar(){
+  document.getElementById('luia-sidebar').classList.remove('open');
+  const ov=document.getElementById('sidebar-overlay');
+  if(ov) ov.style.display='none';
+}
 
-// Hook no renderDashboard para atualizar welcome
-const _rd=renderDashboard;
-renderDashboard=function(){_rd.call(this);updateWelcome();};
+// Hook welcome atualizado no bloco WRAPPERS abaixo
 
 // ═══════════════════════════════════════
 //  PERFIL & AUTENTICAÇÃO POR PALAVRA-CHAVE
@@ -3027,12 +3164,31 @@ function salvarPerfil(){
   perfilData.sonho=document.getElementById('perfil-sonho').value.trim();
   perfilData.motivacao=document.getElementById('perfil-motivacao').value.trim();
   if(chave) perfilData.chave=chave;
+  const pergunta=document.getElementById('perfil-pergunta')?.value;
+  const resposta=document.getElementById('perfil-resposta')?.value.trim().toLowerCase();
+  if(pergunta) perfilData.pergunta=pergunta;
+  if(resposta) perfilData.resposta=resposta;
   localStorage.setItem('luia_perfil',JSON.stringify(perfilData));
   atualizarSidebar();
   atualizarStatusChave();
   document.getElementById('perfil-chave').value='';
   document.getElementById('perfil-chave2').value='';
   showToast('Perfil salvo! ✦','success');
+}
+
+function tentarRecuperar(){
+  const resp=document.getElementById('auth-resposta').value.trim().toLowerCase();
+  const err=document.getElementById('auth-recuperar-error');
+  if(resp===perfilData.resposta){
+    authDesbloqueado=true;
+    document.getElementById('auth-overlay').style.display='none';
+    showToast('Acesso liberado! Não esqueça de atualizar sua palavra-chave. ✦','success');
+    if(authCallback){authCallback();authCallback=null;}
+    setTimeout(()=>{authDesbloqueado=false;},30*60*1000);
+  } else {
+    err.style.display='block';
+    document.getElementById('auth-resposta').value='';
+  }
 }
 
 function toggleChaveVis(){
@@ -3048,6 +3204,12 @@ function comAuth(fn){
   const ov=document.getElementById('auth-overlay');
   const inp=document.getElementById('auth-input');
   const err=document.getElementById('auth-error');
+  // Reseta para tela principal
+  document.getElementById('auth-tela-principal').style.display='block';
+  document.getElementById('auth-tela-recuperar').style.display='none';
+  // Carrega pergunta
+  const perg=document.getElementById('auth-pergunta-txt');
+  if(perg) perg.textContent=perfilData.pergunta||'Como se chama sua melhor amiga?';
   ov.style.display='flex';
   err.style.display='none';
   inp.value='';
@@ -3081,14 +3243,125 @@ document.getElementById('auth-overlay').addEventListener('click',function(e){
 });
 
 // ── WRAPPERS PROTEGIDOS ──
-const _ls=lancarSessao;
-lancarSessao=function(){comAuth(()=>_ls());};
-const _tp=togglePlano;
-togglePlano=function(data,el){comAuth(()=>_tp(data,el));};
-const _cr=concluirRevisao;
-concluirRevisao=function(id){comAuth(()=>_cr(id));};
-const _rr=reabrirRevisao;
-reabrirRevisao=function(id){comAuth(()=>_rr(id));};
+// showSection estendido — via showLuia, sem sobrescrever
+// (não sobrescrever showSection evita recursão infinita)
+
+// Dropdown de planos
+function togglePlanDropdown(btn){
+  const dd=document.getElementById('plan-dropdown');
+  dd.style.display=dd.style.display==='none'?'block':'none';
+}
+document.addEventListener('click',function(e){
+  const dd=document.getElementById('plan-dropdown');
+  const btn=document.getElementById('plan-btn');
+  if(dd&&btn&&!btn.contains(e.target)&&!dd.contains(e.target)) dd.style.display='none';
+});
+
+// Render Progresso
+function renderProgresso(){
+  const ativas=sessions.filter(s=>!s.archived);
+  const wrap=document.getElementById('prog-materias-wrap');
+  const resumo=document.getElementById('prog-resumo-wrap');
+  if(!wrap||!ativas.length){
+    if(wrap) wrap.innerHTML='<p style="color:var(--text-dim);font-size:13px">Nenhuma sessão ainda.</p>';
+    return;
+  }
+  const MATS_CORES={'Português':'#A78BFA','Matemática':'#FBBF24','Ciências da Natureza':'#4ADE80','História':'#FB923C','Geografia':'#38BDF8'};
+  const porMat={};
+  ativas.forEach(s=>{
+    if(!porMat[s.materia]) porMat[s.materia]={acertos:0,erros:0,min:0,sessoes:0};
+    porMat[s.materia].acertos+=s.acertos||0;
+    porMat[s.materia].erros+=s.erros||0;
+    porMat[s.materia].min+=s.minutos||0;
+    porMat[s.materia].sessoes++;
+  });
+  wrap.innerHTML=Object.entries(porMat).map(([mat,d])=>{
+    const total=d.acertos+d.erros;
+    const pct=total>0?Math.round(d.acertos/total*100):0;
+    const cor=MATS_CORES[mat]||'#8B5CF6';
+    return`<div class="prog-materia-card">
+      <div class="prog-mat-header">
+        <div class="prog-mat-nome" style="color:${cor}">${mat}</div>
+        <div class="prog-mat-pct" style="color:${cor}">${pct}%</div>
+      </div>
+      <div style="height:6px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${cor};border-radius:99px;transition:width .6s"></div>
+      </div>
+      <div class="prog-detalhes">
+        <div class="prog-detalhe"><div class="prog-detalhe-val" style="color:${cor}">${d.sessoes}</div><div class="prog-detalhe-label">Sessões</div></div>
+        <div class="prog-detalhe"><div class="prog-detalhe-val" style="color:#4ADE80">${d.acertos}✓</div><div class="prog-detalhe-label">Acertos</div></div>
+        <div class="prog-detalhe"><div class="prog-detalhe-val">${Math.round(d.min/60*10)/10}h</div><div class="prog-detalhe-label">Estudado</div></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const totalMin=ativas.reduce((a,s)=>a+(s.minutos||0),0);
+  const totalQ=ativas.reduce((a,s)=>a+s.acertos+s.erros,0);
+  const totalA=ativas.reduce((a,s)=>a+s.acertos,0);
+  resumo.innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      <div class="prog-detalhe" style="background:#1E293B;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px">
+        <div class="prog-detalhe-val" style="font-size:1.6rem;color:#A78BFA">${ativas.length}</div>
+        <div class="prog-detalhe-label">Total de sessões</div>
+      </div>
+      <div class="prog-detalhe" style="background:#1E293B;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px">
+        <div class="prog-detalhe-val" style="font-size:1.6rem;color:#4ADE80">${totalQ>0?Math.round(totalA/totalQ*100):0}%</div>
+        <div class="prog-detalhe-label">Taxa de acertos</div>
+      </div>
+      <div class="prog-detalhe" style="background:#1E293B;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px">
+        <div class="prog-detalhe-val" style="font-size:1.6rem;color:#F59E0B">${Math.round(totalMin/60*10)/10}h</div>
+        <div class="prog-detalhe-label">Total estudado</div>
+      </div>
+    </div>`;
+}
+
+// Render Sobre Mim
+function renderSobreMim(){
+  const p=perfilData;
+  const apelido=p.apelido||p.nome?.split(' ')[0]||'Luísa';
+  const inicial=apelido[0]?.toUpperCase()||'L';
+  const foto=document.getElementById('sobre-foto');
+  const nome=document.getElementById('sobre-nome');
+  const signo=document.getElementById('sobre-signo');
+  const grid=document.getElementById('sobre-grid');
+  if(foto) foto.innerHTML=p.foto?`<img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:inicial;
+  if(nome) nome.textContent=p.nome||'Luísa Couto Mota';
+  if(signo) signo.textContent=(p.signo||'')+(p.signo?' · ':'')+' IFPE 2027';
+  const itens=[
+    {label:'Como gosta de ser chamada',val:p.apelido,icon:'👋'},
+    {label:'Idade',val:p.idade?p.idade+' anos':'—',icon:'🎂'},
+    {label:'Signo',val:p.signo||'—',icon:'✨'},
+    {label:'Música favorita',val:p.musica||'—',icon:'🎵'},
+    {label:'Cor favorita',val:p.cor||'—',icon:'🎨'},
+    {label:'Sonho',val:p.sonho||'—',icon:'💭',full:true},
+    {label:'Por que o IFPE?',val:p.motivacao||'—',icon:'🚀',full:true},
+  ].filter(i=>i.val&&i.val!=='—');
+
+  if(!itens.length){
+    if(grid) grid.innerHTML='<div class="sobre-mim-item sobre-mim-full" style="text-align:center;color:#64748B;font-size:13px">Preencha seu perfil para ver seus dados aqui ✨</div>';
+    return;
+  }
+  if(grid) grid.innerHTML=itens.map(i=>`
+    <div class="sobre-mim-item${i.full?' sobre-mim-full':''}">
+      <div class="sobre-mim-item-label">${i.icon} ${i.label}</div>
+      <div class="sobre-mim-item-val">${i.val}</div>
+    </div>`).join('');
+}
+
+// ── WRAPPERS PROTEGIDOS (sem recursão) ──
+function _authLancar(){comAuth(()=>lancarSessao());}
+function _authTogglePlano(data,el){comAuth(()=>togglePlano(data,el));}
+function _authConcluir(id){comAuth(()=>concluirRevisao(id));}
+function _authReabrir(id){comAuth(()=>reabrirRevisao(id));}
+
+// Atualiza welcome após renderDashboard — sem sobrescrever a função
+(function(){
+  const _orig=renderDashboard;
+  renderDashboard=function(){
+    _orig();
+    if(typeof updateWelcome==='function') updateWelcome();
+  };
+})();
 
 init();
 setTimeout(()=>{carregarPerfil();},600);
