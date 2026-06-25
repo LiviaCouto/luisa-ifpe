@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Luísa Couto Mota — IFPE 2027</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">
+<title>Luia — Luísa Couto Mota</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='10' fill='%230F172A'/><path d='M8 32 C8 32 4 28 4 22 C4 12 12 6 20 6' stroke='%236366F1' stroke-width='3' stroke-linecap='round' fill='none'/><path d='M14 8 L14 26 C14 28.5 16 30.5 18.5 31 L28 31' stroke='%238B5CF6' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/><path d='M28 11 L29.2 14.8 L33 16 L29.2 17.2 L28 21 L26.8 17.2 L23 16 L26.8 14.8 Z' fill='%23F59E0B'/></svg>">
 <link rel="alternate icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%237C3AED'/><text x='50%25' y='55%25' text-anchor='middle' dominant-baseline='middle' font-size='18' fill='white'>✦</text></svg>">
 <meta property="og:title" content="Luísa Couto Mota · IFPE 2027">
 <meta property="og:description" content="Preparatório Técnico Integrado · Ciclo de Estudos personalizado para o IFPE 2027">
@@ -14,17 +14,19 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Luísa Couto Mota · IFPE 2027">
 <meta name="twitter:description" content="Preparatório Técnico Integrado · Ciclo de Estudos personalizado">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito:wght@700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════ TOKENS ═══════════════ */
 [data-theme="dark"] {
-  --bg-primary:#07041A;--bg-card:rgba(26,10,62,0.7);--bg-card-solid:#120830;
-  --text-primary:#F0E8FF;--text-secondary:#9B8EC4;--text-dim:#5A4E7A;
-  --accent:#A855F7;--accent-light:#C084FC;--accent-pale:#E9D5FF;
-  --border:rgba(168,85,247,0.18);--border-strong:rgba(168,85,247,0.35);
-  --success:#4ADE80;--danger:#F87171;--warning:#FBBF24;--info:#38BDF8;
-  --input-bg:rgba(255,255,255,0.05);--shadow:rgba(0,0,0,0.4);
+  --bg-primary:#0F172A;--bg-card:#1E293B;--bg-card-solid:#1E293B;
+  --text-primary:#F1F5F9;--text-secondary:#94A3B8;--text-dim:#64748B;
+  --accent:#7C3AED;--accent-light:#8B5CF6;--accent-pale:#EDE9FE;
+  --border:rgba(255,255,255,0.08);--border-strong:rgba(255,255,255,0.15);
+  --success:#22C55E;--danger:#EF4444;--warning:#F59E0B;--info:#38BDF8;
+  --input-bg:rgba(255,255,255,0.06);--shadow:rgba(0,0,0,0.4);
   --nebula1:rgba(124,58,237,0.12);--nebula2:rgba(59,7,100,0.12);
+  --sidebar-bg:#0F172A;--card-white:#FFFFFF;--card-white-text:#1E293B;
+  --hero-from:#4C1D95;--hero-to:#1E1B4B;
 }
 [data-theme="light"] {
   --bg-primary:#2D1B69;--bg-card:rgba(255,255,255,0.12);--bg-card-solid:#3D2580;
@@ -412,6 +414,133 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
 .bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;font-family:'Inter',sans-serif;font-size:9px;border-radius:8px;transition:all .2s}
 .bnav-btn.active{color:var(--accent-light);background:rgba(168,85,247,.1)}
 .bnav-icon{width:20px;height:20px;flex-shrink:0}
+/* ═══════════════ LUIA — NOVA INTERFACE ═══════════════ */
+
+/* Fontes */
+body{font-family:'Inter',sans-serif}
+
+/* Sidebar */
+.luia-sidebar{position:fixed;top:0;left:0;width:220px;height:100vh;background:#0F172A;border-right:1px solid rgba(255,255,255,.07);z-index:40;display:flex;flex-direction:column;overflow-y:auto}
+.luia-sidebar-brand{padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px}
+.luia-logo-icon{width:40px;height:40px;flex-shrink:0}
+.luia-logo-name{font-family:'Nunito',sans-serif;font-size:24px;font-weight:800;color:#fff;letter-spacing:-.01em;line-height:1}
+.luia-user{padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:9px}
+.luia-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#4F46E5);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.luia-user-name{font-size:12.5px;font-weight:600;color:#F1F5F9;line-height:1.3}
+.luia-user-plan{font-size:10px;color:#8B5CF6;font-weight:500}
+.luia-nav{flex:1;padding:8px 0}
+.luia-nav-section{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#475569;padding:10px 18px 3px}
+.luia-nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;font-size:13px;font-weight:500;color:#94A3B8;cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:'Inter',sans-serif;border-left:2px solid transparent;transition:all .15s}
+.luia-nav-item:hover{background:rgba(255,255,255,.05);color:#F1F5F9}
+.luia-nav-item.active{background:rgba(124,58,237,.15);color:#A78BFA;border-left-color:#7C3AED}
+.luia-nav-item svg{width:16px;height:16px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.luia-sidebar-footer{padding:14px 18px;border-top:1px solid rgba(255,255,255,.07)}
+.luia-theme-row{display:flex;gap:4px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:99px;padding:3px;width:fit-content}
+
+/* Topbar */
+.luia-topbar{position:sticky;top:0;z-index:30;background:rgba(15,23,42,.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.07);height:56px;display:flex;align-items:center;padding:0 22px;gap:12px}
+.luia-plan-btn{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:7px 14px;font-size:13px;font-weight:600;color:#F1F5F9;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+.luia-plan-btn:hover{background:rgba(255,255,255,.1)}
+.luia-plan-dot{width:7px;height:7px;border-radius:50%;background:#8B5CF6}
+.luia-topbar-spacer{flex:1}
+.luia-sync{display:flex;align-items:center;gap:6px;font-size:11px;color:#64748B}
+
+/* Layout */
+.luia-main{margin-left:220px;min-height:100vh;display:flex;flex-direction:column}
+.luia-content{flex:1;padding:22px 24px 80px;max-width:900px;margin:0 auto;width:100%}
+
+/* Welcome hero — igual à referência */
+.luia-hero{background:linear-gradient(135deg,#4C1D95 0%,#3730A3 50%,#1E1B4B 100%);border-radius:16px;padding:24px 28px;margin-bottom:18px;position:relative;overflow:hidden}
+.luia-hero::after{content:'';position:absolute;right:-20px;top:-20px;width:160px;height:160px;background:radial-gradient(circle,rgba(255,255,255,.06),transparent 70%)}
+.luia-hero-greeting{font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:#fff;margin-bottom:4px;font-family:'Poppins',sans-serif}
+.luia-hero-sub{font-size:13px;color:rgba(255,255,255,.75);line-height:1.5;margin-bottom:12px}
+.luia-hero-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border-radius:99px;padding:4px 13px;font-size:11px;font-weight:600;color:#fff}
+
+/* Stat cards — BRANCOS como na referência */
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+.stat-card{background:#FFFFFF;border:1px solid #E2E8F0;border-radius:12px;padding:14px 16px;text-align:center;transition:all .2s;position:relative;cursor:default}
+.stat-card:hover{box-shadow:0 4px 20px rgba(124,58,237,.15);border-color:#C4B5FD}
+.stat-value{font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:700;color:#7C3AED;line-height:1;margin-bottom:3px}
+.stat-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:#94A3B8}
+.stat-card[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1E293B;border:1px solid rgba(255,255,255,.1);color:#94A3B8;font-size:11px;padding:5px 10px;border-radius:8px;white-space:nowrap;z-index:99;font-weight:400;letter-spacing:0;text-transform:none}
+
+/* Cards normais — levemente mais claros */
+.card{background:#1E293B;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px 20px;backdrop-filter:blur(8px);margin-bottom:12px}
+.card-title{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8B5CF6;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;font-weight:700}
+.card-title::before{content:'';width:3px;height:13px;background:#7C3AED;border-radius:2px;flex-shrink:0}
+
+/* Streak card */
+.streak-card{background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(245,158,11,.08));border:1px solid rgba(124,58,237,.3);border-radius:12px;padding:18px 20px;margin-bottom:12px}
+.streak-num{font-family:'Poppins',sans-serif;font-size:3.5rem;font-weight:700;color:#F59E0B;line-height:.9;letter-spacing:-.02em}
+.streak-record strong{font-family:'Poppins',sans-serif;font-size:1.2rem;color:#8B5CF6}
+
+/* Mobile */
+.luia-menu-btn{display:none;align-items:center;justify-content:center;width:34px;height:34px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;cursor:pointer;color:#94A3B8;flex-shrink:0}
+@media(max-width:768px){
+  .luia-sidebar{transform:translateX(-100%);transition:transform .3s}
+  .luia-sidebar.open{transform:translateX(0)}
+  .luia-main{margin-left:0}
+  .luia-menu-btn{display:flex}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .stats-grid .stat-card:last-child{grid-column:span 2}
+  .luia-content{padding:14px 14px 80px}
+  .header{display:none}
+  .nav{display:none}
+}
+@media(min-width:769px){
+  .header{display:none}
+  .nav{display:none}
+  .bottom-nav{display:none!important}
+}
+/* ═══════════════ PERFIL & AUTH ═══════════════ */
+.luia-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#4F46E5);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;cursor:pointer;transition:all .2s;border:2px solid transparent}
+.luia-avatar:hover{border-color:var(--accent-light)}
+.luia-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.luia-user{cursor:pointer}
+.luia-user:hover .luia-avatar{border-color:var(--accent-light)}
+
+/* Modal de palavra-chave */
+.auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px)}
+.auth-modal{background:#1E293B;border:1px solid rgba(139,92,246,.4);border-radius:20px;padding:36px 32px;width:100%;max-width:380px;text-align:center;box-shadow:0 20px 60px rgba(124,58,237,.3)}
+.auth-icon{font-size:3rem;margin-bottom:12px;display:block}
+.auth-title{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#F1F5F9;margin-bottom:6px}
+.auth-sub{font-size:13px;color:#94A3B8;margin-bottom:24px;line-height:1.6}
+.auth-input{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 16px;color:#F1F5F9;font-size:15px;font-family:'Inter',sans-serif;outline:none;text-align:center;letter-spacing:4px;transition:all .2s;margin-bottom:14px}
+.auth-input:focus{border-color:#8B5CF6;box-shadow:0 0 0 3px rgba(139,92,246,.2)}
+.auth-input.error{border-color:#EF4444;animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.auth-btn{width:100%;padding:12px;background:#7C3AED;border:none;border-radius:10px;color:#fff;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;margin-bottom:10px}
+.auth-btn:hover{background:#8B5CF6}
+.auth-cancel{font-size:12px;color:#64748B;cursor:pointer;background:none;border:none;font-family:'Inter',sans-serif;padding:4px}
+.auth-cancel:hover{color:#94A3B8}
+.auth-error{font-size:12px;color:#EF4444;margin-bottom:10px;display:none}
+
+/* Tela de perfil */
+.perfil-hero{background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(79,70,229,.1));border:1px solid rgba(139,92,246,.3);border-radius:16px;padding:28px;margin-bottom:16px;text-align:center}
+.perfil-foto-wrap{position:relative;width:90px;height:90px;margin:0 auto 14px;cursor:pointer}
+.perfil-foto{width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid #8B5CF6;background:linear-gradient(135deg,#7C3AED,#4F46E5);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;color:#fff;font-family:'Poppins',sans-serif;overflow:hidden}
+.perfil-foto img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.perfil-foto-edit{position:absolute;bottom:0;right:0;width:26px;height:26px;background:#7C3AED;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;border:2px solid #1E293B}
+.perfil-nome-display{font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#F1F5F9;margin-bottom:2px}
+.perfil-apelido{font-size:12px;color:#8B5CF6;font-weight:500}
+
+.perfil-section{background:#1E293B;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px 20px;margin-bottom:12px}
+.perfil-section-title{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8B5CF6;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.perfil-field{margin-bottom:14px}
+.perfil-field:last-child{margin-bottom:0}
+.perfil-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#8B5CF6;display:block;margin-bottom:5px}
+.perfil-input{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.08);border-radius:8px;padding:9px 12px;color:#F1F5F9;font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:all .2s}
+.perfil-input:focus{border-color:#8B5CF6;box-shadow:0 0 0 3px rgba(139,92,246,.15)}
+.perfil-input::placeholder{color:#475569}
+.perfil-chave-wrap{position:relative}
+.perfil-chave-wrap .perfil-input{letter-spacing:3px;padding-right:40px}
+.perfil-chave-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:#64748B;cursor:pointer;font-size:16px;padding:4px}
+.perfil-save-btn{width:100%;padding:11px;background:#7C3AED;border:none;border-radius:10px;color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:4px}
+.perfil-save-btn:hover{background:#8B5CF6;transform:translateY(-1px)}
+.perfil-hint{font-size:11px;color:#475569;margin-top:5px;line-height:1.5}
+.chave-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:99px;font-weight:600;margin-top:6px}
+.chave-ok{background:rgba(34,197,94,.1);color:#22C55E;border:1px solid rgba(34,197,94,.2)}
+.chave-nok{background:rgba(245,158,11,.1);color:#F59E0B;border:1px solid rgba(245,158,11,.2)}
 </style>
 </head>
 <body>
@@ -421,34 +550,102 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
   <canvas id="starCanvas"></canvas>
 </div>
 
-<div class="app">
-  <div class="header">
-    <div class="header-crown">✦ &nbsp; IFPE 2027 &nbsp; ✦</div>
-    <div class="header-name">Luísa Couto Mota</div>
-    <div class="header-sub">Preparatório Técnico Integrado · Ciclo de Estudos</div>
-    <div class="theme-toggle">
+<!-- SIDEBAR -->
+<aside class="luia-sidebar" id="luia-sidebar">
+  <div class="luia-sidebar-brand">
+    <svg class="luia-logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Arco de lua (curva inferior) -->
+      <path d="M8 32 C8 32 4 28 4 22 C4 12 12 6 20 6" stroke="url(#lunaGrad)" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+      <!-- L cursivo principal -->
+      <path d="M14 8 L14 26 C14 28.5 16 30.5 18.5 31 L28 31" stroke="url(#lGrad)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <!-- Estrela de 4 pontas dourada -->
+      <path d="M28 11 L29.2 14.8 L33 16 L29.2 17.2 L28 21 L26.8 17.2 L23 16 L26.8 14.8 Z" fill="#F59E0B"/>
+      <defs>
+        <linearGradient id="lGrad" x1="14" y1="8" x2="28" y2="31" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#818CF8"/>
+          <stop offset="100%" stop-color="#7C3AED"/>
+        </linearGradient>
+        <linearGradient id="lunaGrad" x1="4" y1="6" x2="20" y2="32" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#6366F1" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="#4F46E5" stop-opacity="0.3"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="luia-logo-name">Luia</div>
+  </div>
+  <div class="luia-user" onclick="showLuia('perfil',document.querySelector('.luia-nav-item:nth-child(8)'))">
+    <div class="luia-avatar" id="sidebar-avatar">L</div>
+    <div>
+      <div class="luia-user-name" id="sidebar-nome">Luísa Couto Mota</div>
+      <div class="luia-user-plan">✦ IFPE 2027</div>
+    </div>
+  </div>
+  <nav class="luia-nav">
+    <div class="luia-nav-section">Principal</div>
+    <button class="luia-nav-item active" onclick="showLuia('dashboard',this)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Início
+    </button>
+    <button class="luia-nav-item" onclick="showLuia('plano',this)">
+      <svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Meu Plano
+    </button>
+    <button class="luia-nav-item" onclick="showLuia('cronograma',this)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Horário
+    </button>
+    <button class="luia-nav-item" onclick="showLuia('lancar',this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Lançar Sessão
+    </button>
+    <button class="luia-nav-item" onclick="showLuia('historico',this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Histórico
+    </button>
+    <button class="luia-nav-item" onclick="showLuia('revisoes',this)">
+      <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Revisões
+    </button>
+    <div class="luia-nav-section">Configurações</div>
+    <button class="luia-nav-item" onclick="showLuia('perfil',this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>Perfil
+    </button>
+    <button class="luia-nav-item" onclick="showLuia('metas',this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>Metas
+    </button>
+  </nav>
+  <div class="luia-sidebar-footer">
+    <div class="luia-theme-row">
       <button class="theme-btn active" onclick="setTheme('dark',this)">🌙</button>
       <button class="theme-btn" onclick="setTheme('light',this)">☀️</button>
     </div>
   </div>
+</aside>
 
-  <div id="sync-bar" class="sync-bar">
-    <div class="sync-dot loading" id="sync-dot"></div>
-    <span id="sync-msg">Conectando ao banco de dados...</span>
-  </div>
+<!-- MAIN -->
+<div class="luia-main">
+  <header class="luia-topbar">
+    <button class="luia-menu-btn" onclick="document.getElementById('luia-sidebar').classList.toggle('open')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <button class="luia-plan-btn">
+      <div class="luia-plan-dot"></div>
+      IFPE 2027
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="luia-topbar-spacer"></div>
+    <div class="luia-sync">
+      <div class="sync-dot loading" id="sync-dot"></div>
+      <span id="sync-msg">Conectando...</span>
+    </div>
+  </header>
 
-  <nav class="nav">
-    <button class="nav-btn active" onclick="showSection('dashboard',this)">✦ Dash</button>
-    <button class="nav-btn" onclick="showSection('cronograma',this)">Horário</button>
-    <button class="nav-btn" onclick="showSection('lancar',this)">Lançar</button>
-    <button class="nav-btn" onclick="showSection('historico',this)">Histórico</button>
-    <button class="nav-btn" onclick="showSection('revisoes',this)">Revisões</button>
-    <button class="nav-btn" onclick="showSection('plano',this)">Plano</button>
-    <button class="nav-btn" onclick="showSection('metas',this)">Metas</button>
-  </nav>
+  <div class="luia-content">
 
   <!-- DASHBOARD -->
   <div id="sec-dashboard" class="section active">
+    <div class="luia-hero">
+      <div class="luia-hero-greeting">Bem-vinda, Luísa! 👋</div>
+      <div class="luia-hero-sub" id="welcome-sub">Carregando seu progresso...</div>
+      <div class="luia-hero-pill" id="welcome-countdown">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        Calculando...
+      </div>
+    </div>
     <div class="stats-grid">
       <div class="stat-card" data-tip="Total de registros de estudo lançados no app"><div class="stat-value" id="st-sess">0</div><div class="stat-label">Registros</div></div>
       <div class="stat-card" data-tip="Total de questões resolvidas (certas + erradas)"><div class="stat-value" id="st-q">0</div><div class="stat-label">Questões</div></div>
@@ -496,12 +693,6 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
         <div class="analytics-card"><div class="analytics-label">Tempo médio/sessão</div><div class="analytics-value" id="an-avg">—</div><div class="analytics-sub"></div></div>
         <div class="analytics-card"><div class="analytics-label">Dia mais produtivo</div><div class="analytics-value" id="an-day">—</div><div class="analytics-sub" id="an-day-sub"></div></div>
       </div>
-    </div>
-
-    <!-- RECADO DO DIA -->
-    <div class="card">
-      <div class="card-title">✦ Recados</div>
-      <div id="recado-content"></div>
     </div>
 
     <!-- REVISÕES PENDENTES -->
@@ -677,6 +868,102 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
     <div id="plano-list"></div>
   </div>
 
+  <!-- PERFIL -->
+  <div id="sec-perfil" class="section">
+    <div class="perfil-hero">
+      <div class="perfil-foto-wrap" onclick="document.getElementById('perfil-url-wrap').style.display=document.getElementById('perfil-url-wrap').style.display==='none'?'block':'none'">
+        <div class="perfil-foto" id="perfil-foto-preview">L</div>
+        <div class="perfil-foto-edit">✏️</div>
+      </div>
+      <div class="perfil-nome-display" id="perfil-nome-display">Luísa</div>
+      <div class="perfil-apelido" id="perfil-apelido-display">✦ IFPE 2027</div>
+    </div>
+
+    <!-- Foto URL (escondido por padrão) -->
+    <div id="perfil-url-wrap" style="display:none;margin-bottom:12px">
+      <div class="perfil-section">
+        <div class="perfil-section-title">📷 Foto de perfil</div>
+        <div class="perfil-field">
+          <label class="perfil-label">Cole o link da sua foto</label>
+          <input class="perfil-input" id="perfil-foto-url" type="url" placeholder="https://...">
+          <div class="perfil-hint">Use um link público de foto (Google Fotos, iCloud, etc)</div>
+        </div>
+        <button class="perfil-save-btn" onclick="salvarFoto()" style="margin-top:8px">✓ Atualizar foto</button>
+      </div>
+    </div>
+
+    <!-- Dados pessoais -->
+    <div class="perfil-section">
+      <div class="perfil-section-title">🌟 Sobre mim</div>
+      <div class="form-row">
+        <div class="perfil-field">
+          <label class="perfil-label">Nome completo</label>
+          <input class="perfil-input" id="perfil-nome" placeholder="Luísa Couto Mota">
+        </div>
+        <div class="perfil-field">
+          <label class="perfil-label">Como gosta de ser chamada</label>
+          <input class="perfil-input" id="perfil-apelido" placeholder="Lu, Luísa...">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="perfil-field">
+          <label class="perfil-label">Idade</label>
+          <input class="perfil-input" id="perfil-idade" type="number" placeholder="14">
+        </div>
+        <div class="perfil-field">
+          <label class="perfil-label">Signo ✨</label>
+          <select class="perfil-input" id="perfil-signo">
+            <option value="">Selecione...</option>
+            <option>♈ Áries</option><option>♉ Touro</option><option>♊ Gêmeos</option>
+            <option>♋ Câncer</option><option>♌ Leão</option><option>♍ Virgem</option>
+            <option>♎ Libra</option><option>♏ Escorpião</option><option>♐ Sagitário</option>
+            <option>♑ Capricórnio</option><option>♒ Aquário</option><option>♓ Peixes</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="perfil-field">
+          <label class="perfil-label">Música favorita 🎵</label>
+          <input class="perfil-input" id="perfil-musica" placeholder="Artista ou música...">
+        </div>
+        <div class="perfil-field">
+          <label class="perfil-label">Cor favorita 🎨</label>
+          <input class="perfil-input" id="perfil-cor" placeholder="Roxo, azul...">
+        </div>
+      </div>
+      <div class="perfil-field">
+        <label class="perfil-label">Sonho / objetivo de vida 💭</label>
+        <input class="perfil-input" id="perfil-sonho" placeholder="O que você quer ser quando crescer?">
+      </div>
+      <div class="perfil-field">
+        <label class="perfil-label">Motivação para o IFPE 🚀</label>
+        <input class="perfil-input" id="perfil-motivacao" placeholder="Por que você quer entrar no IFPE?">
+      </div>
+    </div>
+
+    <!-- Palavra-chave -->
+    <div class="perfil-section">
+      <div class="perfil-section-title">🔑 Palavra-chave de acesso</div>
+      <div class="perfil-field">
+        <label class="perfil-label">Crie sua palavra-chave secreta</label>
+        <div class="perfil-chave-wrap">
+          <input class="perfil-input" id="perfil-chave" type="password" placeholder="Só você sabe...">
+          <button class="perfil-chave-toggle" onclick="toggleChaveVis()" id="chave-eye">👁</button>
+        </div>
+        <div class="perfil-hint">Qualquer pessoa que tentar fazer uma ação no app vai precisar digitar essa palavra. Guarde bem!</div>
+        <div id="chave-status"></div>
+      </div>
+      <div class="perfil-field">
+        <label class="perfil-label">Confirmar palavra-chave</label>
+        <div class="perfil-chave-wrap">
+          <input class="perfil-input" id="perfil-chave2" type="password" placeholder="Repita a palavra-chave">
+        </div>
+      </div>
+    </div>
+
+    <button class="perfil-save-btn" onclick="salvarPerfil()">✦ Salvar perfil</button>
+  </div><!-- /sec-perfil -->
+
   <!-- METAS -->
   <div id="sec-metas" class="section">
     <div class="card">
@@ -801,6 +1088,9 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
   </div>
 </div>
 
+  </div><!-- /luia-content -->
+</div><!-- /luia-main -->
+
 <footer>
   <div class="footer-made">Feito com ♥ por Lívia Couto · <em>Product Manager</em> / Eng.ª de Software</div>
   <div class="footer-rights">© 2026 · Todos os direitos reservados · Luísa Couto Mota · IFPE 2027</div>
@@ -828,6 +1118,19 @@ footer{text-align:center;padding:1.75rem 1rem 1.25rem;border-top:1px solid var(-
     Revisões
   </button>
 </nav>
+
+<!-- MODAL PALAVRA-CHAVE -->
+<div id="auth-overlay" class="auth-overlay" style="display:none">
+  <div class="auth-modal">
+    <span class="auth-icon">🔑</span>
+    <div class="auth-title">Ei, é você?</div>
+    <div class="auth-sub">Para fazer esta ação, confirme que é você digitando sua palavra-chave.</div>
+    <input class="auth-input" id="auth-input" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')tentarAuth()">
+    <div class="auth-error" id="auth-error">Palavra-chave incorreta. Tente de novo! 🙅‍♀️</div>
+    <button class="auth-btn" onclick="tentarAuth()">✓ Confirmar</button>
+    <button class="auth-cancel" onclick="cancelarAuth()">Cancelar</button>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -976,18 +1279,22 @@ async function syncSession(localId) {
 
 async function createReviews(sessionId, dataStr, assunto) {
   const base = new Date(dataStr + 'T12:00:00');
-  const dates = [1, 7, 30].map(d => {
-    const dt = new Date(base); dt.setDate(dt.getDate() + d);
-    return dateToLocal(dt);
-  });
+  const ciclos = [
+    {dias:1,  tipo:'1d',  label:'24h'},
+    {dias:7,  tipo:'7d',  label:'7 dias'},
+    {dias:15, tipo:'15d', label:'15 dias'},
+    {dias:30, tipo:'30d', label:'30 dias'},
+  ];
   try {
-    for (const rd of dates) {
-      const rev = await sbPost('reviews', {session_id: sessionId, review_date: rd, status: 'pendente'});
-      reviews.push(rev[0]);
+    for (const c of ciclos) {
+      const dt = new Date(base); dt.setDate(dt.getDate() + c.dias);
+      const rd = dateToLocal(dt);
+      const rev = await sbPost('reviews', {session_id: sessionId, review_date: rd, status: 'pendente', tipo: c.tipo});
+      if(rev && rev[0]) reviews.push(rev[0]);
     }
     saveLocal();
     renderRevisoes();
-  } catch(e) {}
+  } catch(e) { console.error('createReviews error:', e); }
 }
 
 // ═══════════════════════════════════════
@@ -1340,24 +1647,58 @@ function setRevFilter(m,btn){revFilter2=m;document.querySelectorAll('#sec-reviso
 function renderRevisoes(){
   const wrap=document.getElementById('revisoes-list');
   const today=todayLocal();
+
+  // Infere tipo se não veio do banco (revisões antigas)
+  function infereTipo(r){
+    if(r.tipo) return r.tipo;
+    const sess=sessions.find(s=>s.id===r.session_id);
+    if(!sess) return '?';
+    const base=new Date(sess.data+'T12:00:00');
+    const rev=new Date(r.review_date+'T12:00:00');
+    const diff=Math.round((rev-base)/(1000*60*60*24));
+    if(diff<=1) return '1d';
+    if(diff<=7) return '7d';
+    if(diff<=15) return '15d';
+    return '30d';
+  }
+  function tipoLabel(tipo){
+    return {
+      '1d':'📅 Revisão 24h',
+      '7d':'📅 Revisão 7 dias',
+      '15d':'📅 Revisão 15 dias',
+      '30d':'📅 Revisão 30 dias',
+    }[tipo]||'📅 Revisão';
+  }
+  function tipoColor(tipo){
+    return {'1d':'var(--info)','7d':'var(--accent-light)','15d':'var(--warning)','30d':'var(--success)'}[tipo]||'var(--text-dim)';
+  }
+
   let list=reviews.filter(r=>{
     if(revFilter2==='pendente') return r.status==='pendente';
     if(revFilter2==='concluida') return r.status==='concluida';
     return true;
   }).sort((a,b)=>a.review_date.localeCompare(b.review_date));
+
   if(!list.length){wrap.innerHTML='<p style="color:var(--text-dim);font-size:13px;padding:1rem 0">Nenhuma revisão nesta categoria.</p>';return;}
+
   wrap.innerHTML=list.map(r=>{
     const sess=sessions.find(s=>s.id===r.session_id);
     const isToday=r.review_date===today;
     const isPast=r.review_date<today&&r.status==='pendente';
+    const tipo=infereTipo(r);
     return`<div class="review-item" style="${isPast?'border-color:rgba(248,113,113,.3)':''}${isToday?'border-color:rgba(251,191,36,.4)':''}">
-      <div class="review-date" style="${isPast?'color:var(--danger)':''}${isToday?'color:var(--warning)':''}">${fmtDate(r.review_date)}${isToday?' 📌':''}</div>
+      <div style="display:flex;flex-direction:column;gap:3px;min-width:90px">
+        <div class="review-date" style="${isPast?'color:var(--danger)':''}${isToday?'color:var(--warning)':''}">${fmtDate(r.review_date)}${isToday?' 📌':''}</div>
+        <div style="font-size:9px;font-weight:700;color:${tipoColor(tipo)};letter-spacing:.05em">${tipoLabel(tipo)}</div>
+      </div>
       <div class="review-info">
         <div class="review-title">${sess?.assunto||'Sessão removida'}</div>
         <div class="review-sub">${sess?.materia||''} · ${sess?.topico||''}</div>
       </div>
       <span class="review-status status-${r.status}">${r.status}</span>
-      ${r.status==='pendente'?'<button class="review-btn" onclick="concluirRevisao('+r.id+')">✓ Feita</button>':'<button class="review-btn" style="color:var(--warning);border-color:var(--warning)" onclick="reabrirRevisao('+r.id+')">↩ Reabrir</button>'}
+      ${r.status==='pendente'
+        ?`<button class="review-btn" onclick="concluirRevisao(${r.id})">✓ Feita</button>`
+        :`<button class="review-btn" style="color:var(--warning);border-color:var(--warning)" onclick="reabrirRevisao(${r.id})">↩ Reabrir</button>`}
     </div>`;
   }).join('');
 
@@ -1365,10 +1706,19 @@ function renderRevisoes(){
   const pendHoje=reviews.filter(r=>r.review_date===today&&r.status==='pendente');
   const card=document.getElementById('rev-dash-card');
   const list2=document.getElementById('rev-dash-list');
-  if(pendHoje.length){
-    card.style.display='block';
-    list2.innerHTML=pendHoje.map(r=>{const s=sessions.find(x=>x.id===r.session_id);return`<div style="font-size:12px;padding:6px 0;border-bottom:1px solid var(--border);color:var(--text-primary)">${s?.assunto||'—'} <span style="color:var(--text-secondary)">· ${s?.materia||''}</span></div>`;}).join('');
-  } else card.style.display='none';
+  if(card){
+    if(pendHoje.length){
+      card.style.display='block';
+      list2.innerHTML=pendHoje.map(r=>{
+        const s=sessions.find(x=>x.id===r.session_id);
+        const tipo=infereTipo(r);
+        return`<div style="font-size:12px;padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+          <span style="color:var(--text-primary)">${s?.assunto||'—'} <span style="color:var(--text-secondary)">· ${s?.materia||''}</span></span>
+          <span style="font-size:9px;font-weight:700;color:${tipoColor(tipo)}">${tipoLabel(tipo)}</span>
+        </div>`;
+      }).join('');
+    } else card.style.display='none';
+  }
 }
 async function concluirRevisao(id){
   const idx=reviews.findIndex(r=>r.id===id);
@@ -1911,7 +2261,8 @@ function renderPlano(){
 function sincronizarPlanoComSessoes(){
   let mudou=false;
   const diasComSessao=new Set(sessions.filter(s=>!s.archived).map(s=>s.data));
-  // Para cada dia do plano que tem sessão registrada, marca automaticamente
+
+  // Marca dias do PLANO_DATA que têm sessão
   PLANO_DATA.forEach(sem=>{
     sem.dias.forEach(d=>{
       if(diasComSessao.has(d.data) && !planoFeitos.includes(d.data)){
@@ -1920,6 +2271,16 @@ function sincronizarPlanoComSessoes(){
       }
     });
   });
+
+  // TAMBÉM marca qualquer dia com sessão diretamente — mesmo que não esteja no plano
+  // Isso garante que o streak conta mesmo se o dia não tem conteúdo no plano
+  diasComSessao.forEach(data=>{
+    if(!planoFeitos.includes(data)){
+      planoFeitos.push(data);
+      mudou=true;
+    }
+  });
+
   if(mudou){
     savePlano();
     return true;
@@ -2287,7 +2648,7 @@ function renderDashboard(){
   renderStreak();
   renderDashMetas();
   renderProgressMat();renderTagsDash();renderChartTempo();renderChartMateria();
-  renderAnalytics();renderRevisoes();renderRecado();
+  renderAnalytics();renderRevisoes();
   verificarConquistas(true);
 }
 
@@ -2550,39 +2911,187 @@ async function init(){
   await loadFromSupabase();
 }
 // ═══════════════════════════════════════
-//  RECADOS
+//  LUIA — SIDEBAR & WELCOME
 // ═══════════════════════════════════════
-let recadoOrdem='desc';
-function renderRecado(){
-  const wrap=document.getElementById('recado-content');
-  if(!wrap) return;
-  const comObs=sessions.filter(s=>!s.archived&&s.obs&&s.obs.trim()!=='');
-  if(!comObs.length){
-    wrap.innerHTML='<p style="font-size:13px;color:var(--text-dim);font-style:italic;text-align:center;padding:10px 0">✦ Deixe um recado no campo observação ao lançar uma sessão!</p>';
-    return;
-  }
-  const sorted=[...comObs].sort((a,b)=>recadoOrdem==='desc'?(a.data>b.data?-1:1):(a.data>b.data?1:-1));
-  const today=todayLocal();
-  const btn='<div style="display:flex;justify-content:flex-end;margin-bottom:8px">'
-    +'<button onclick="toggleRecadoOrdem()" style="background:none;border:1px solid var(--border);border-radius:99px;padding:3px 10px;font-size:10px;color:var(--text-secondary);cursor:pointer;font-family:\'Inter\',sans-serif">'
-    +(recadoOrdem==='desc'?'↑ Mais antigo primeiro':'↓ Mais recente primeiro')
-    +'</button></div>';
-  const items=sorted.map(s=>{
-    const isToday=s.data===today;
-    return '<div style="padding:10px 0;border-bottom:1px solid rgba(168,85,247,.08)">'
-      +'<div style="font-size:10px;font-weight:600;color:'+(isToday?'var(--warning)':'var(--accent)')+';margin-bottom:4px">'
-      +fmtDate(s.data)+(isToday?' · Hoje':'')+' <span style="color:var(--text-dim);font-weight:400">· '+s.materia+'</span></div>'
-      +'<div style="font-size:13px;color:var(--text-primary);font-style:italic;padding:8px 12px;background:rgba(168,85,247,.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0">"'+s.obs+'"</div>'
-      +'</div>';
-  }).join('');
-  wrap.innerHTML=btn+'<div style="max-height:220px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent">'+items+'</div>';
-}
-function toggleRecadoOrdem(){
-  recadoOrdem=recadoOrdem==='desc'?'asc':'desc';
-  renderRecado();
+function showLuia(id, btn){
+  // Atualiza sidebar
+  document.querySelectorAll('.luia-nav-item').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  // Fecha mobile
+  document.getElementById('luia-sidebar').classList.remove('open');
+  // Chama showSection original
+  showSection(id, null, false);
 }
 
+function updateWelcome(){
+  const prova=new Date('2026-12-20');
+  const diff=Math.ceil((prova-new Date())/(1000*60*60*24));
+  const sub=document.getElementById('welcome-sub');
+  const cd=document.getElementById('welcome-countdown');
+  if(!sub) return;
+  const ativas=(sessions||[]).filter(s=>!s.archived);
+  if(ativas.length>0){
+    const totalQ=ativas.reduce((a,s)=>a+s.acertos+s.erros,0);
+    const totalA=ativas.reduce((a,s)=>a+s.acertos,0);
+    const pct=totalQ>0?Math.round(totalA/totalQ*100):0;
+    sub.textContent='Você tem '+ativas.length+' registro'+(ativas.length>1?'s':'')+', '+pct+'% de acertos e '+diff+' dias para a prova. Bora!';
+  } else {
+    sub.textContent='Faltam '+diff+' dias para o IFPE 2027. Vamos começar!';
+  }
+  // Remove o pill duplicado
+  if(cd) cd.style.display='none';
+}
+
+// Fecha sidebar ao clicar fora (mobile)
+document.addEventListener('click',function(e){
+  const sb=document.getElementById('luia-sidebar');
+  const mb=document.querySelector('.luia-menu-btn');
+  if(sb&&sb.classList.contains('open')&&!sb.contains(e.target)&&mb&&!mb.contains(e.target))
+    sb.classList.remove('open');
+});
+
+// Hook no renderDashboard para atualizar welcome
+const _rd=renderDashboard;
+renderDashboard=function(){_rd.call(this);updateWelcome();};
+
+// ═══════════════════════════════════════
+//  PERFIL & AUTENTICAÇÃO POR PALAVRA-CHAVE
+// ═══════════════════════════════════════
+let perfilData=JSON.parse(localStorage.getItem('luia_perfil')||'{}');
+let authDesbloqueado=false;
+let authCallback=null;
+
+function carregarPerfil(){
+  const p=perfilData;
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||'';};
+  set('perfil-nome',p.nome); set('perfil-apelido',p.apelido);
+  set('perfil-idade',p.idade); set('perfil-musica',p.musica);
+  set('perfil-cor',p.cor); set('perfil-sonho',p.sonho);
+  set('perfil-motivacao',p.motivacao);
+  if(document.getElementById('perfil-signo')&&p.signo) document.getElementById('perfil-signo').value=p.signo;
+  atualizarStatusChave();
+  atualizarSidebar();
+}
+
+function atualizarSidebar(){
+  const p=perfilData;
+  const apelido=p.apelido||p.nome?.split(' ')[0]||'Luísa';
+  const inicial=(apelido[0]||'L').toUpperCase();
+  // Nome na sidebar
+  const nomeEl=document.getElementById('sidebar-nome');
+  if(nomeEl) nomeEl.textContent=p.nome||'Luísa Couto Mota';
+  // Avatar
+  const av=document.getElementById('sidebar-avatar');
+  if(av) av.innerHTML=p.foto?`<img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentElement.textContent='${inicial}'">`  :inicial;
+  // Preview no perfil
+  const fp=document.getElementById('perfil-foto-preview');
+  if(fp) fp.innerHTML=p.foto?`<img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentElement.textContent='${inicial}'">`  :inicial;
+  // Displays
+  const nd=document.getElementById('perfil-nome-display');
+  if(nd) nd.textContent=apelido;
+  const ad=document.getElementById('perfil-apelido-display');
+  if(ad) ad.textContent=(p.signo?p.signo+' · ':'')+' IFPE 2027';
+  // Welcome hero
+  const g=document.querySelector('.luia-hero-greeting');
+  if(g) g.innerHTML='Bem-vinda, <em>'+apelido+'!</em> 👋';
+}
+
+function atualizarStatusChave(){
+  const el=document.getElementById('chave-status');
+  if(!el) return;
+  el.innerHTML=perfilData.chave
+    ?'<span class="chave-status chave-ok">🔒 Palavra-chave definida</span>'
+    :'<span class="chave-status chave-nok">⚠️ Sem palavra-chave — qualquer pessoa pode editar</span>';
+}
+
+function salvarFoto(){
+  const url=document.getElementById('perfil-foto-url').value.trim();
+  if(!url){showToast('Cole um link de foto!','error');return;}
+  perfilData.foto=url;
+  localStorage.setItem('luia_perfil',JSON.stringify(perfilData));
+  atualizarSidebar();
+  document.getElementById('perfil-url-wrap').style.display='none';
+  showToast('Foto atualizada! ✦','success');
+}
+
+function salvarPerfil(){
+  const chave=document.getElementById('perfil-chave').value.trim();
+  const chave2=document.getElementById('perfil-chave2').value.trim();
+  if(chave&&chave!==chave2){showToast('As palavras-chave não coincidem!','error');return;}
+  perfilData.nome=document.getElementById('perfil-nome').value.trim()||perfilData.nome;
+  perfilData.apelido=document.getElementById('perfil-apelido').value.trim();
+  perfilData.idade=document.getElementById('perfil-idade').value.trim();
+  perfilData.signo=document.getElementById('perfil-signo').value;
+  perfilData.musica=document.getElementById('perfil-musica').value.trim();
+  perfilData.cor=document.getElementById('perfil-cor').value.trim();
+  perfilData.sonho=document.getElementById('perfil-sonho').value.trim();
+  perfilData.motivacao=document.getElementById('perfil-motivacao').value.trim();
+  if(chave) perfilData.chave=chave;
+  localStorage.setItem('luia_perfil',JSON.stringify(perfilData));
+  atualizarSidebar();
+  atualizarStatusChave();
+  document.getElementById('perfil-chave').value='';
+  document.getElementById('perfil-chave2').value='';
+  showToast('Perfil salvo! ✦','success');
+}
+
+function toggleChaveVis(){
+  const i=document.getElementById('perfil-chave');
+  i.type=i.type==='password'?'text':'password';
+}
+
+// ── AUTH ──
+function comAuth(fn){
+  if(!perfilData.chave){fn();return;}
+  if(authDesbloqueado){fn();return;}
+  authCallback=fn;
+  const ov=document.getElementById('auth-overlay');
+  const inp=document.getElementById('auth-input');
+  const err=document.getElementById('auth-error');
+  ov.style.display='flex';
+  err.style.display='none';
+  inp.value='';
+  setTimeout(()=>inp.focus(),150);
+}
+
+function tentarAuth(){
+  const inp=document.getElementById('auth-input');
+  const err=document.getElementById('auth-error');
+  if(inp.value.trim()===perfilData.chave){
+    authDesbloqueado=true;
+    document.getElementById('auth-overlay').style.display='none';
+    showToast('Acesso confirmado! ✦','success');
+    if(authCallback){authCallback();authCallback=null;}
+    setTimeout(()=>{authDesbloqueado=false;},30*60*1000);
+  } else {
+    inp.classList.add('error');
+    err.style.display='block';
+    inp.value='';
+    setTimeout(()=>inp.classList.remove('error'),500);
+  }
+}
+
+function cancelarAuth(){
+  document.getElementById('auth-overlay').style.display='none';
+  authCallback=null;
+}
+
+document.getElementById('auth-overlay').addEventListener('click',function(e){
+  if(e.target===this) cancelarAuth();
+});
+
+// ── WRAPPERS PROTEGIDOS ──
+const _ls=lancarSessao;
+lancarSessao=function(){comAuth(()=>_ls());};
+const _tp=togglePlano;
+togglePlano=function(data,el){comAuth(()=>_tp(data,el));};
+const _cr=concluirRevisao;
+concluirRevisao=function(id){comAuth(()=>_cr(id));};
+const _rr=reabrirRevisao;
+reabrirRevisao=function(id){comAuth(()=>_rr(id));};
+
 init();
+setTimeout(()=>{carregarPerfil();},600);
 </script>
 </body>
 </html>
