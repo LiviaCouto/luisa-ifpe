@@ -478,12 +478,15 @@ body{font-family:'Inter',sans-serif}
 .streak-record strong{font-family:'Poppins',sans-serif;font-size:1.2rem;color:#8B5CF6}
 
 /* Mobile */
-.luia-menu-btn{display:none;align-items:center;justify-content:center;width:34px;height:34px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;cursor:pointer;color:#94A3B8;flex-shrink:0}
+.luia-menu-btn{display:flex;align-items:center;justify-content:center;width:34px;height:34px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;cursor:pointer;color:#94A3B8;flex-shrink:0;transition:all .2s}
+.luia-menu-btn:hover{background:rgba(255,255,255,.12);color:#F1F5F9}
+/* Sidebar colapsada no desktop */
+.luia-sidebar.collapsed{width:0;overflow:hidden;border-right:none}
+.luia-main.expanded{margin-left:0}
 @media(max-width:768px){
   .luia-sidebar{transform:translateX(-100%)}
   .luia-sidebar.open{transform:translateX(0);box-shadow:4px 0 24px rgba(0,0,0,.5)}
   .luia-main{margin-left:0}
-  .luia-menu-btn{display:flex}
   .stats-grid{grid-template-columns:repeat(2,1fr)}
   .stats-grid .stat-card:last-child{grid-column:span 2}
   .luia-content{padding:14px 14px 80px}
@@ -494,7 +497,6 @@ body{font-family:'Inter',sans-serif}
   .header{display:none}
   .nav{display:none}
   .bottom-nav{display:none!important}
-  .luia-menu-btn{display:none}
   #sidebar-overlay{display:none!important}
 }
 /* Overlay escuro sidebar mobile */
@@ -569,7 +571,21 @@ body{font-family:'Inter',sans-serif}
 .chave-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:99px;font-weight:600;margin-top:6px}
 .chave-ok{background:rgba(34,197,94,.1);color:#22C55E;border:1px solid rgba(34,197,94,.2)}
 .chave-nok{background:rgba(245,158,11,.1);color:#F59E0B;border:1px solid rgba(245,158,11,.2)}
-/* Dropdown planos */
+/* Banner aviso palavra-chave */
+.chave-banner{display:flex;align-items:center;gap:14px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-left:4px solid #F59E0B;border-radius:12px;padding:14px 18px;margin-bottom:16px;transition:all .4s}
+.chave-banner-icon{font-size:1.4rem;flex-shrink:0}
+.chave-banner-text{flex:1}
+.chave-banner-title{font-size:13px;font-weight:600;color:#FCD34D;margin-bottom:2px}
+.chave-banner-sub{font-size:12px;color:#94A3B8;line-height:1.5}
+.chave-banner-btn{background:linear-gradient(135deg,#F59E0B,#D97706);border:none;border-radius:8px;padding:8px 14px;color:#1A0A3E;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;flex-shrink:0;transition:all .2s}
+.chave-banner-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(245,158,11,.3)}
+/* Sobre mim bloqueado */
+.sobre-locked{text-align:center;padding:40px 20px;background:rgba(139,92,246,.05);border:1px dashed rgba(139,92,246,.2);border-radius:12px}
+.sobre-locked-icon{font-size:2.5rem;margin-bottom:10px;display:block}
+.sobre-locked-title{font-size:14px;font-weight:600;color:#F1F5F9;margin-bottom:6px}
+.sobre-locked-sub{font-size:12px;color:#64748B;margin-bottom:16px;line-height:1.6}
+.sobre-locked-btn{background:linear-gradient(135deg,#7C3AED,#6D28D9);border:none;border-radius:10px;padding:10px 20px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
+.sobre-locked-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(124,58,237,.4)}
 .plano-dropdown{position:absolute;top:calc(100% + 8px);left:0;background:#1E293B;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px;min-width:220px;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,.4)}
 .plano-dropdown-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;transition:all .15s;font-size:13px;font-weight:500;color:#94A3B8}
 .plano-dropdown-item:hover{background:rgba(255,255,255,.06)}
@@ -607,6 +623,11 @@ select.perfil-input,select.perfil-input option{background:#1E293B!important;colo
 select.form-control,select.form-control option{background:#1E293B!important;color:#F1F5F9!important}
 select option{background:#1E293B!important;color:#F1F5F9!important}
 .perfil-input select{background:#1E293B!important}
+.avatar-option{border-radius:12px;padding:8px;cursor:pointer;border:2px solid transparent;transition:all .2s;text-align:center;background:rgba(255,255,255,.04)}
+.avatar-option:hover{border-color:#8B5CF6;background:rgba(139,92,246,.1)}
+.avatar-option.selecionado{border-color:#8B5CF6;background:rgba(139,92,246,.15)}
+.avatar-option svg{width:52px;height:52px;display:block;margin:0 auto 4px}
+.avatar-option-label{font-size:10px;color:#94A3B8;font-weight:500}
 </style>
 </head>
 <body>
@@ -738,6 +759,17 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
       </div>
       <div class="luia-hero-avatar" id="hero-avatar" onclick="showLuia('perfil',null)">L</div>
     </div>
+
+    <!-- BANNER PALAVRA-CHAVE -->
+    <div class="chave-banner" id="chave-banner" style="display:none">
+      <div class="chave-banner-icon">🔓</div>
+      <div class="chave-banner-text">
+        <div class="chave-banner-title">Seu app está sem proteção</div>
+        <div class="chave-banner-sub">Qualquer pessoa com este link pode lançar dados. Crie uma palavra-chave no Perfil para proteger seus estudos.</div>
+      </div>
+      <button class="chave-banner-btn" onclick="showLuia('perfil',null)">✦ Proteger agora</button>
+    </div>
+
     <div class="stats-grid">
       <div class="stat-card" data-tip="Total de registros de estudo lançados no app"><div class="stat-value" id="st-sess">0</div><div class="stat-label">Registros</div></div>
       <div class="stat-card" data-tip="Total de questões resolvidas (certas + erradas)"><div class="stat-value" id="st-q">0</div><div class="stat-label">Questões</div></div>
@@ -962,7 +994,17 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
 
   <!-- SOBRE MIM -->
   <div id="sec-sobre" class="section">
-    <div class="sobre-mim-card" id="sobre-mim-card">
+    <!-- Conteúdo bloqueado (aparece quando não tem auth) -->
+    <div id="sobre-locked-wrap" style="display:none">
+      <div class="sobre-locked">
+        <span class="sobre-locked-icon">🔒</span>
+        <div class="sobre-locked-title">Conteúdo pessoal</div>
+        <div class="sobre-locked-sub">Esta seção tem informações suas.<br>Confirme sua identidade para continuar.</div>
+        <button class="sobre-locked-btn" onclick="comAuth(()=>{document.getElementById('sobre-locked-wrap').style.display='none';document.getElementById('sobre-mim-card').style.display='block';renderSobreMim();})">🔓 Confirmar identidade</button>
+      </div>
+    </div>
+    <!-- Conteúdo real -->
+    <div class="sobre-mim-card" id="sobre-mim-card" style="display:none">
       <div class="sobre-mim-foto" id="sobre-foto">L</div>
       <div class="sobre-mim-nome" id="sobre-nome">Luísa</div>
       <div class="sobre-mim-signo" id="sobre-signo">✦ IFPE 2027</div>
@@ -991,7 +1033,7 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
   <!-- PERFIL -->
   <div id="sec-perfil" class="section">
     <div class="perfil-hero">
-      <div class="perfil-foto-wrap" onclick="document.getElementById('perfil-url-wrap').style.display=document.getElementById('perfil-url-wrap').style.display==='none'?'block':'none'">
+      <div class="perfil-foto-wrap" onclick="toggleAvatarPicker()">
         <div class="perfil-foto" id="perfil-foto-preview">L</div>
         <div class="perfil-foto-edit">✏️</div>
       </div>
@@ -999,16 +1041,12 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
       <div class="perfil-apelido" id="perfil-apelido-display">✦ IFPE 2027</div>
     </div>
 
-    <!-- Foto URL (escondido por padrão) -->
-    <div id="perfil-url-wrap" style="display:none;margin-bottom:12px">
+    <!-- Seletor de avatares -->
+    <div id="perfil-avatar-picker" style="display:none;margin-bottom:12px">
       <div class="perfil-section">
-        <div class="perfil-section-title">📷 Foto de perfil</div>
-        <div class="perfil-field">
-          <label class="perfil-label">Cole o link da sua foto</label>
-          <input class="perfil-input" id="perfil-foto-url" type="url" placeholder="https://...">
-          <div class="perfil-hint">Use um link público de foto (Google Fotos, iCloud, etc)</div>
-        </div>
-        <button class="perfil-save-btn" onclick="salvarFoto()" style="margin-top:8px">✓ Atualizar foto</button>
+        <div class="perfil-section-title">✨ Escolha seu avatar</div>
+        <div id="avatar-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px"></div>
+        <button class="perfil-save-btn" onclick="fecharAvatarPicker()" style="background:rgba(255,255,255,.06);color:#94A3B8;margin-top:0">Cancelar</button>
       </div>
     </div>
 
@@ -3123,14 +3161,27 @@ function updateWelcome(){
 
 // Sidebar mobile
 function abrirSidebar(){
-  document.getElementById('luia-sidebar').classList.add('open');
-  const ov=document.getElementById('sidebar-overlay');
-  if(ov) ov.style.display='block';
+  const sb=document.getElementById('luia-sidebar');
+  const main=document.querySelector('.luia-main');
+  const isMobile=window.innerWidth<=768;
+  if(isMobile){
+    sb.classList.add('open');
+    const ov=document.getElementById('sidebar-overlay');
+    if(ov) ov.style.display='block';
+  } else {
+    // Desktop: toggle collapse
+    sb.classList.toggle('collapsed');
+    if(main) main.classList.toggle('expanded');
+  }
 }
 function fecharSidebar(){
-  document.getElementById('luia-sidebar').classList.remove('open');
-  const ov=document.getElementById('sidebar-overlay');
-  if(ov) ov.style.display='none';
+  const sb=document.getElementById('luia-sidebar');
+  const isMobile=window.innerWidth<=768;
+  if(isMobile){
+    sb.classList.remove('open');
+    const ov=document.getElementById('sidebar-overlay');
+    if(ov) ov.style.display='none';
+  }
 }
 
 // Hook welcome atualizado no bloco WRAPPERS abaixo
@@ -3142,7 +3193,15 @@ let perfilData=JSON.parse(localStorage.getItem('luia_perfil')||'{}');
 let authDesbloqueado=false;
 let authCallback=null;
 
+function atualizarBanner(){
+  const banner=document.getElementById('chave-banner');
+  if(!banner) return;
+  // Mostra se não tem palavra-chave, esconde se tem
+  banner.style.display=perfilData.chave?'none':'flex';
+}
+
 function carregarPerfil(){
+  atualizarBanner();
   const p=perfilData;
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v||'';};
   set('perfil-nome',p.nome); set('perfil-apelido',p.apelido);
@@ -3158,21 +3217,19 @@ function atualizarSidebar(){
   const p=perfilData;
   const apelido=p.apelido||p.nome?.split(' ')[0]||'Luísa';
   const inicial=(apelido[0]||'L').toUpperCase();
-  const fotoHTML=p.foto
-    ?`<img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentElement.textContent='${inicial}'">`
-    :inicial;
+  const svgContent=p.avatarSvg||'';
 
-  // Avatar no hero
+  // Hero avatar
   const heroAv=document.getElementById('hero-avatar');
-  if(heroAv) heroAv.innerHTML=fotoHTML;
+  if(heroAv) heroAv.innerHTML=svgContent||inicial;
 
   // Preview no perfil
   const fp=document.getElementById('perfil-foto-preview');
-  if(fp) fp.innerHTML=p.foto?`<img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentElement.textContent='${inicial}'">`  :inicial;
+  if(fp) fp.innerHTML=svgContent||inicial;
 
-  // Sobre mim foto
+  // Sobre mim
   const sf=document.getElementById('sobre-foto');
-  if(sf) sf.innerHTML=p.foto?`<img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:inicial;
+  if(sf) sf.innerHTML=svgContent||inicial;
 
   // Displays do perfil
   const nd=document.getElementById('perfil-nome-display');
@@ -3193,14 +3250,67 @@ function atualizarStatusChave(){
     :'<span class="chave-status chave-nok">⚠️ Sem palavra-chave — qualquer pessoa pode editar</span>';
 }
 
-function salvarFoto(){
-  const url=document.getElementById('perfil-foto-url').value.trim();
-  if(!url){showToast('Cole um link de foto!','error');return;}
-  perfilData.foto=url;
+// ── AVATARES SVG ──
+const AVATARES=[
+  {id:'gatinho',label:'Gatinho',svg:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="40" fill="#1E1B4B"/><ellipse cx="40" cy="46" rx="22" ry="18" fill="#A78BFA"/><ellipse cx="40" cy="44" rx="19" ry="16" fill="#C4B5FD"/><circle cx="40" cy="36" r="14" fill="#A78BFA"/><polygon points="26,26 20,14 32,22" fill="#A78BFA"/><polygon points="54,26 60,14 48,22" fill="#A78BFA"/><circle cx="33" cy="34" r="4" fill="#1E1B4B"/><circle cx="47" cy="34" r="4" fill="#1E1B4B"/><circle cx="34" cy="33" r="1.5" fill="white"/><circle cx="48" cy="33" r="1.5" fill="white"/><ellipse cx="40" cy="39" rx="3" ry="2" fill="#F9A8D4"/><line x1="28" y1="38" x2="18" y2="36" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round"/><line x1="28" y1="40" x2="17" y2="40" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round"/><line x1="28" y1="42" x2="18" y2="44" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round"/><line x1="52" y1="38" x2="62" y2="36" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round"/><line x1="52" y1="40" x2="63" y2="40" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round"/><line x1="52" y1="42" x2="62" y2="44" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round"/></svg>`},
+  {id:'astronauta',label:'Astronauta',svg:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="40" fill="#0F172A"/><circle cx="40" cy="38" r="20" fill="#E2E8F0"/><circle cx="40" cy="38" r="16" fill="#1E293B"/><circle cx="40" cy="38" r="13" fill="#38BDF8" opacity=".3"/><circle cx="36" cy="35" r="3" fill="white" opacity=".8"/><rect x="25" y="52" width="30" height="12" rx="6" fill="#E2E8F0"/><rect x="20" y="42" width="8" height="18" rx="4" fill="#CBD5E1"/><rect x="52" y="42" width="8" height="18" rx="4" fill="#CBD5E1"/><circle cx="40" cy="14" r="3" fill="#F59E0B"/><circle cx="55" cy="20" r="2" fill="#A78BFA"/><circle cx="24" cy="22" r="1.5" fill="white" opacity=".6"/><path d="M50 65 Q40 72 30 65" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`},
+  {id:'lua',label:'Lua',svg:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="40" fill="#0F172A"/><path d="M50 20 A22 22 0 1 0 50 60 A14 14 0 1 1 50 20Z" fill="#FCD34D"/><circle cx="34" cy="32" r="3" fill="#F59E0B" opacity=".5"/><circle cx="42" cy="50" r="2" fill="#F59E0B" opacity=".4"/><circle cx="30" cy="48" r="1.5" fill="#F59E0B" opacity=".3"/><circle cx="18" cy="18" r="2" fill="white" opacity=".8"/><circle cx="62" cy="24" r="1.5" fill="white" opacity=".6"/><circle cx="65" cy="55" r="2" fill="white" opacity=".7"/><circle cx="15" cy="55" r="1" fill="white" opacity=".5"/><circle cx="55" cy="65" r="1.5" fill="#A78BFA" opacity=".8"/><path d="M14 40 L18 38 L14 36" stroke="#A78BFA" stroke-width="1" fill="none" opacity=".4"/></svg>`},
+  {id:'estrela',label:'Estrela',svg:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="40" fill="#1E1B4B"/><path d="M40 12 L45 30 L64 30 L49 41 L55 59 L40 48 L25 59 L31 41 L16 30 L35 30 Z" fill="#F59E0B"/><circle cx="40" cy="40" r="8" fill="#FCD34D"/><circle cx="20" cy="20" r="2" fill="white" opacity=".6"/><circle cx="60" cy="15" r="1.5" fill="white" opacity=".5"/><circle cx="65" cy="60" r="2" fill="#A78BFA" opacity=".7"/><circle cx="15" cy="58" r="1.5" fill="white" opacity=".4"/><circle cx="58" cy="65" r="1" fill="#FCD34D" opacity=".6"/></svg>`},
+  {id:'foguete',label:'Foguete',svg:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="40" fill="#0F172A"/><path d="M40 10 C40 10 28 24 28 42 L52 42 C52 24 40 10 40 10Z" fill="#A78BFA"/><rect x="32" y="40" width="16" height="16" rx="2" fill="#8B5CF6"/><circle cx="40" cy="36" r="6" fill="#38BDF8" opacity=".8"/><path d="M28 50 L20 60 L32 54Z" fill="#7C3AED" opacity=".8"/><path d="M52 50 L60 60 L48 54Z" fill="#7C3AED" opacity=".8"/><ellipse cx="40" cy="57" rx="8" ry="5" fill="#F59E0B" opacity=".7"/><ellipse cx="40" cy="60" rx="5" ry="4" fill="#EF4444" opacity=".6"/><circle cx="20" cy="20" r="1.5" fill="white" opacity=".5"/><circle cx="60" cy="25" r="2" fill="white" opacity=".6"/><circle cx="65" cy="55" r="1" fill="#A78BFA" opacity=".7"/></svg>`},
+  {id:'flor',label:'Florzinha',svg:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="40" fill="#1E1B4B"/><ellipse cx="40" cy="26" rx="7" ry="11" fill="#F9A8D4"/><ellipse cx="40" cy="54" rx="7" ry="11" fill="#F9A8D4"/><ellipse cx="26" cy="40" rx="11" ry="7" fill="#C084FC"/><ellipse cx="54" cy="40" rx="11" ry="7" fill="#C084FC"/><ellipse cx="29" cy="29" rx="7" ry="11" transform="rotate(45 29 29)" fill="#FDA4AF"/><ellipse cx="51" cy="29" rx="7" ry="11" transform="rotate(-45 51 29)" fill="#FDA4AF"/><ellipse cx="29" cy="51" rx="7" ry="11" transform="rotate(-45 29 51)" fill="#FDA4AF"/><ellipse cx="51" cy="51" rx="7" ry="11" transform="rotate(45 51 51)" fill="#FDA4AF"/><circle cx="40" cy="40" r="10" fill="#FCD34D"/><circle cx="40" cy="40" r="6" fill="#F59E0B"/></svg>`},
+  {id:'planeta',label:'Planeta',svg:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="40" fill="#0F172A"/><ellipse cx="40" cy="40" rx="38" ry="10" fill="none" stroke="#A78BFA" stroke-width="2" opacity=".4" transform="rotate(-20 40 40)"/><circle cx="40" cy="40" r="18" fill="#6D28D9"/><circle cx="40" cy="40" r="16" fill="#7C3AED"/><ellipse cx="35" cy="35" rx="8" ry="5" fill="#8B5CF6" opacity=".6" transform="rotate(-20 35 35)"/><ellipse cx="45" cy="46" rx="6" ry="3" fill="#4C1D95" opacity=".8"/><circle cx="18" cy="18" r="2" fill="white" opacity=".7"/><circle cx="62" cy="22" r="1.5" fill="white" opacity=".5"/><circle cx="65" cy="58" r="2" fill="#A78BFA" opacity=".6"/><circle cx="14" cy="56" r="1" fill="white" opacity=".4"/></svg>`},
+  {id:'coracao',label:'Coração',svg:`<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="40" fill="#1E1B4B"/><path d="M40 58 C40 58 18 46 18 32 C18 24 24 18 32 18 C36 18 40 22 40 22 C40 22 44 18 48 18 C56 18 62 24 62 32 C62 46 40 58 40 58Z" fill="#F43F5E"/><path d="M40 52 C40 52 22 42 22 32 C22 26 27 22 32 22 C36 22 40 26 40 26" fill="#FB7185" opacity=".5"/><circle cx="20" cy="20" r="1.5" fill="white" opacity=".5"/><circle cx="60" cy="18" r="2" fill="white" opacity=".6"/><circle cx="63" cy="58" r="1.5" fill="#A78BFA" opacity=".7"/><path d="M34 36 L38 40 L46 30" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".6"/></svg>`},
+];
+
+function toggleAvatarPicker(){
+  const picker=document.getElementById('perfil-avatar-picker');
+  const grid=document.getElementById('avatar-grid');
+  if(picker.style.display==='none'){
+    // Renderiza grid de avatares
+    grid.innerHTML=AVATARES.map(a=>`
+      <div class="avatar-option${perfilData.avatarId===a.id?' selecionado':''}" onclick="selecionarAvatar('${a.id}')">
+        ${a.svg}
+        <div class="avatar-option-label">${a.label}</div>
+      </div>`).join('');
+    picker.style.display='block';
+  } else {
+    picker.style.display='none';
+  }
+}
+
+function fecharAvatarPicker(){
+  document.getElementById('perfil-avatar-picker').style.display='none';
+}
+
+function selecionarAvatar(id){
+  const av=AVATARES.find(a=>a.id===id);
+  if(!av) return;
+  perfilData.avatarId=id;
+  perfilData.avatarSvg=av.svg;
+  perfilData.foto=''; // remove foto URL
   localStorage.setItem('luia_perfil',JSON.stringify(perfilData));
-  atualizarSidebar();
-  document.getElementById('perfil-url-wrap').style.display='none';
-  showToast('Foto atualizada! ✦','success');
+  atualizarAvatares();
+  fecharAvatarPicker();
+  showToast('Avatar '+av.label+' selecionado! ✦','success');
+}
+
+function atualizarAvatares(){
+  const p=perfilData;
+  const apelido=p.apelido||p.nome?.split(' ')[0]||'Luísa';
+  const inicial=(apelido[0]||'L').toUpperCase();
+  const svgContent=p.avatarSvg||'';
+
+  // Hero avatar
+  const heroAv=document.getElementById('hero-avatar');
+  if(heroAv) heroAv.innerHTML=svgContent||inicial;
+
+  // Perfil preview
+  const fp=document.getElementById('perfil-foto-preview');
+  if(fp) fp.innerHTML=svgContent||inicial;
+
+  // Sobre foto
+  const sf=document.getElementById('sobre-foto');
+  if(sf) sf.innerHTML=svgContent||inicial;
 }
 
 function salvarPerfil(){
@@ -3223,6 +3333,7 @@ function salvarPerfil(){
   localStorage.setItem('luia_perfil',JSON.stringify(perfilData));
   atualizarSidebar();
   atualizarStatusChave();
+  atualizarBanner();
   document.getElementById('perfil-chave').value='';
   document.getElementById('perfil-chave2').value='';
   showToast('Perfil salvo! ✦','success');
@@ -3402,6 +3513,16 @@ function renderProgresso(){
 
 // Render Sobre Mim
 function renderSobreMim(){
+  // Controla lock
+  const locked=document.getElementById('sobre-locked-wrap');
+  const card=document.getElementById('sobre-mim-card');
+  if(perfilData.chave && !authDesbloqueado){
+    if(locked) locked.style.display='block';
+    if(card) card.style.display='none';
+    return;
+  }
+  if(locked) locked.style.display='none';
+  if(card) card.style.display='block';
   const p=perfilData;
   const apelido=p.apelido||p.nome?.split(' ')[0]||'Luísa';
   const inicial=apelido[0]?.toUpperCase()||'L';
@@ -3449,7 +3570,7 @@ function _authReabrir(id){comAuth(()=>reabrirRevisao(id));}
 })();
 
 init();
-setTimeout(()=>{carregarPerfil();},600);
+setTimeout(()=>{carregarPerfil();atualizarBanner();},600);
 </script>
 </body>
 </html>
