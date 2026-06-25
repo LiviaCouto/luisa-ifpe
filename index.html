@@ -450,8 +450,11 @@ body{font-family:'Inter',sans-serif}
 .luia-content{flex:1;padding:22px 24px 80px;max-width:900px;margin:0 auto;width:100%}
 
 /* Welcome hero — igual à referência */
-.luia-hero{background:linear-gradient(135deg,#4C1D95 0%,#3730A3 50%,#1E1B4B 100%);border-radius:16px;padding:24px 28px;margin-bottom:18px;position:relative;overflow:hidden}
-.luia-hero::after{content:'';position:absolute;right:-20px;top:-20px;width:160px;height:160px;background:radial-gradient(circle,rgba(255,255,255,.06),transparent 70%)}
+.luia-hero{background:linear-gradient(135deg,#4C1D95 0%,#3730A3 50%,#1E1B4B 100%);border-radius:16px;padding:24px 28px;margin-bottom:18px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.luia-hero-left{flex:1}
+.luia-hero-avatar{width:72px;height:72px;border-radius:50%;border:3px solid rgba(255,255,255,.3);background:linear-gradient(135deg,rgba(139,92,246,.5),rgba(79,70,229,.5));display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif}
+.luia-hero-avatar:hover{border-color:rgba(255,255,255,.6);transform:scale(1.05)}
+.luia-hero-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .luia-hero-greeting{font-family:'Poppins',sans-serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:-.01em}
 .luia-hero-sub{font-size:13px;color:rgba(255,255,255,.75);line-height:1.5;margin-bottom:12px}
 .luia-hero-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border-radius:99px;padding:4px 13px;font-size:11px;font-weight:600;color:#fff}
@@ -504,8 +507,29 @@ body{font-family:'Inter',sans-serif}
 .luia-user:hover .luia-avatar{border-color:var(--accent-light)}
 
 /* Modal de palavra-chave */
-.auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px)}
-.auth-modal{background:#1E293B;border:1px solid rgba(139,92,246,.4);border-radius:20px;padding:36px 32px;width:100%;max-width:380px;text-align:center;box-shadow:0 20px 60px rgba(124,58,237,.3)}
+.auth-overlay{position:fixed;inset:0;background:rgba(7,4,26,.7);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px) brightness(.7)}
+.auth-modal{background:linear-gradient(160deg,#1A1035 0%,#0F0A2A 100%);border:1px solid rgba(139,92,246,.4);border-radius:24px;padding:40px 32px;width:100%;max-width:400px;text-align:center;box-shadow:0 24px 80px rgba(124,58,237,.4);position:relative;overflow:hidden}
+.auth-modal::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(139,92,246,.15),transparent 70%);pointer-events:none}
+.auth-modal::after{content:'';position:absolute;bottom:-60px;left:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(245,158,11,.08),transparent 70%);pointer-events:none}
+.auth-icon{font-size:2.8rem;margin-bottom:10px;display:block;position:relative;z-index:1}
+.auth-logo{font-family:'Nunito',sans-serif;font-size:2rem;font-weight:800;color:#fff;margin-bottom:4px;position:relative;z-index:1}
+.auth-title{font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:600;color:#F1F5F9;margin-bottom:6px;position:relative;z-index:1}
+.auth-sub{font-size:13px;color:#94A3B8;margin-bottom:22px;line-height:1.6;position:relative;z-index:1}
+.auth-input{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(139,92,246,.3);border-radius:12px;padding:13px 16px;color:#F1F5F9;font-size:15px;font-family:'Inter',sans-serif;outline:none;text-align:center;letter-spacing:4px;transition:all .2s;margin-bottom:6px;position:relative;z-index:1}
+.auth-input:focus{border-color:#8B5CF6;box-shadow:0 0 0 3px rgba(139,92,246,.2)}
+.auth-input.shake{animation:shake .3s}
+.auth-input-wrap{position:relative;margin-bottom:6px}
+.auth-input-wrap .auth-input{letter-spacing:4px;padding-right:44px;margin-bottom:0}
+.auth-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#64748B;cursor:pointer;font-size:18px;z-index:2;padding:4px}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.auth-btn{width:100%;padding:13px;background:linear-gradient(135deg,#7C3AED,#6D28D9);border:none;border-radius:12px;color:#fff;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:10px;position:relative;z-index:1}
+.auth-btn:hover{background:linear-gradient(135deg,#8B5CF6,#7C3AED);transform:translateY(-1px);box-shadow:0 4px 20px rgba(124,58,237,.4)}
+.auth-cancel{font-size:12px;color:#64748B;cursor:pointer;background:none;border:none;font-family:'Inter',sans-serif;padding:8px;margin-top:4px;display:block;width:100%;transition:color .2s;position:relative;z-index:1}
+.auth-cancel:hover{color:#94A3B8}
+.auth-error{font-size:12px;color:#EF4444;margin:6px 0;display:none;position:relative;z-index:1}
+.auth-chave-reveal{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.3);border-radius:10px;padding:12px 16px;margin:10px 0;font-family:'Inter',sans-serif;font-size:18px;font-weight:700;color:#A78BFA;letter-spacing:4px;position:relative;z-index:1}
+.auth-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.auth-star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:twinkle 2s infinite}
 .auth-icon{font-size:3rem;margin-bottom:12px;display:block}
 .auth-title{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:700;color:#F1F5F9;margin-bottom:6px}
 .auth-sub{font-size:13px;color:#94A3B8;margin-bottom:24px;line-height:1.6}
@@ -577,6 +601,12 @@ body{font-family:'Inter',sans-serif}
 .prog-detalhe{background:rgba(255,255,255,.03);border-radius:8px;padding:8px 10px;text-align:center}
 .prog-detalhe-val{font-size:15px;font-weight:700;color:#F1F5F9;font-family:'Instrument Serif',serif}
 .prog-detalhe-label{font-size:9px;color:#64748B;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+
+/* Fix selects e options — força fundo escuro */
+select.perfil-input,select.perfil-input option{background:#1E293B!important;color:#F1F5F9!important}
+select.form-control,select.form-control option{background:#1E293B!important;color:#F1F5F9!important}
+select option{background:#1E293B!important;color:#F1F5F9!important}
+.perfil-input select{background:#1E293B!important}
 </style>
 </head>
 <body>
@@ -612,13 +642,7 @@ body{font-family:'Inter',sans-serif}
     </svg>
     <div class="luia-logo-name">Luia</div>
   </div>
-  <div class="luia-user" onclick="showLuia('perfil',document.querySelector('.luia-nav-item:nth-child(8)'))">
-    <div class="luia-avatar" id="sidebar-avatar">L</div>
-    <div>
-      <div class="luia-user-name" id="sidebar-nome">Luísa Couto Mota</div>
-      <div class="luia-user-plan">✦ IFPE 2027</div>
-    </div>
-  </div>
+  <!-- user removido da sidebar — aparece no hero -->
   <nav class="luia-nav">
     <div class="luia-nav-section">Principal</div>
     <button class="luia-nav-item active" onclick="showLuia('dashboard',this)">
@@ -704,12 +728,15 @@ body{font-family:'Inter',sans-serif}
   <!-- DASHBOARD -->
   <div id="sec-dashboard" class="section active">
     <div class="luia-hero">
-      <div class="luia-hero-greeting">Bem-vinda, Luísa! 👋</div>
-      <div class="luia-hero-sub" id="welcome-sub">Carregando seu progresso...</div>
-      <div class="luia-hero-pill" id="welcome-countdown">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-        Calculando...
+      <div class="luia-hero-left">
+        <div class="luia-hero-greeting">Bem-vinda, Luísa! 👋</div>
+        <div class="luia-hero-sub" id="welcome-sub">Carregando seu progresso...</div>
+        <div class="luia-hero-pill" id="welcome-countdown">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          Calculando...
+        </div>
       </div>
+      <div class="luia-hero-avatar" id="hero-avatar" onclick="showLuia('perfil',null)">L</div>
     </div>
     <div class="stats-grid">
       <div class="stat-card" data-tip="Total de registros de estudo lançados no app"><div class="stat-value" id="st-sess">0</div><div class="stat-label">Registros</div></div>
@@ -1232,25 +1259,42 @@ body{font-family:'Inter',sans-serif}
 <!-- MODAL PALAVRA-CHAVE -->
 <div id="auth-overlay" class="auth-overlay" style="display:none">
   <div class="auth-modal">
-    <!-- Tela principal -->
+    <!-- Estrelinhas decorativas -->
+    <div class="auth-stars" id="auth-stars-bg"></div>
+
+    <!-- Tela principal: palavra-chave -->
     <div id="auth-tela-principal">
-      <span class="auth-icon">🔑</span>
-      <div class="auth-title">É você, Luísa?</div>
-      <div class="auth-sub">Digite sua palavra-chave para continuar.</div>
-      <input class="auth-input" id="auth-input" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')tentarAuth()">
+      <span class="auth-icon">✦</span>
+      <div class="auth-logo">Luia</div>
+      <div class="auth-title">Olá! Digite sua palavra-chave</div>
+      <div class="auth-sub">Para inserir ou alterar dados, confirme que é você.</div>
+      <div class="auth-input-wrap">
+        <input class="auth-input" id="auth-input" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')tentarAuth()">
+        <button class="auth-eye" onclick="const i=document.getElementById('auth-input');i.type=i.type==='password'?'text':'password'">👁</button>
+      </div>
       <div class="auth-error" id="auth-error">Palavra-chave incorreta. Tente de novo! 🙅‍♀️</div>
-      <button class="auth-btn" onclick="tentarAuth()">✓ Entrar</button>
-      <button class="auth-cancel" onclick="document.getElementById('auth-tela-principal').style.display='none';document.getElementById('auth-tela-recuperar').style.display='block'">Esqueci minha palavra-chave</button>
+      <button class="auth-btn" onclick="tentarAuth()">✦ Confirmar acesso</button>
+      <button class="auth-cancel" onclick="irParaRecuperacao()">Esqueci minha palavra-chave</button>
     </div>
-    <!-- Tela de recuperação -->
+
+    <!-- Tela de recuperação: pergunta secreta -->
     <div id="auth-tela-recuperar" style="display:none">
-      <span class="auth-icon">🐾</span>
+      <span class="auth-icon">🔐</span>
       <div class="auth-title">Recuperar acesso</div>
-      <div class="auth-sub" id="auth-pergunta-txt">Carregando pergunta...</div>
-      <input class="auth-input" id="auth-resposta" type="text" placeholder="Sua resposta..." onkeydown="if(event.key==='Enter')tentarRecuperar()">
-      <div class="auth-error" id="auth-recuperar-error">Resposta incorreta. Tente de novo!</div>
-      <button class="auth-btn" onclick="tentarRecuperar()">✓ Verificar</button>
-      <button class="auth-cancel" onclick="document.getElementById('auth-tela-recuperar').style.display='none';document.getElementById('auth-tela-principal').style.display='block'">← Voltar</button>
+      <div class="auth-sub" id="auth-pergunta-txt">Responda sua pergunta secreta:</div>
+      <input class="auth-input" id="auth-resposta" type="text" placeholder="Sua resposta..." style="letter-spacing:normal" onkeydown="if(event.key==='Enter')tentarRecuperar()">
+      <div class="auth-error" id="auth-recuperar-error">Resposta incorreta. Tente novamente!</div>
+      <button class="auth-btn" onclick="tentarRecuperar()">✓ Verificar resposta</button>
+      <button class="auth-cancel" onclick="voltarParaChave()">← Voltar</button>
+    </div>
+
+    <!-- Tela de revelação: mostra a palavra-chave -->
+    <div id="auth-tela-reveal" style="display:none">
+      <span class="auth-icon">🎉</span>
+      <div class="auth-title">Sua palavra-chave é:</div>
+      <div class="auth-chave-reveal" id="auth-chave-reveal">••••••</div>
+      <div class="auth-sub" style="margin-top:8px">Anote e não esqueça mais! Use para entrar.</div>
+      <button class="auth-btn" onclick="voltarParaChave()">← Voltar e entrar</button>
     </div>
   </div>
 </div>
@@ -3114,21 +3158,29 @@ function atualizarSidebar(){
   const p=perfilData;
   const apelido=p.apelido||p.nome?.split(' ')[0]||'Luísa';
   const inicial=(apelido[0]||'L').toUpperCase();
-  // Nome na sidebar
-  const nomeEl=document.getElementById('sidebar-nome');
-  if(nomeEl) nomeEl.textContent=p.nome||'Luísa Couto Mota';
-  // Avatar
-  const av=document.getElementById('sidebar-avatar');
-  if(av) av.innerHTML=p.foto?`<img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentElement.textContent='${inicial}'">`  :inicial;
+  const fotoHTML=p.foto
+    ?`<img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentElement.textContent='${inicial}'">`
+    :inicial;
+
+  // Avatar no hero
+  const heroAv=document.getElementById('hero-avatar');
+  if(heroAv) heroAv.innerHTML=fotoHTML;
+
   // Preview no perfil
   const fp=document.getElementById('perfil-foto-preview');
   if(fp) fp.innerHTML=p.foto?`<img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentElement.textContent='${inicial}'">`  :inicial;
-  // Displays
+
+  // Sobre mim foto
+  const sf=document.getElementById('sobre-foto');
+  if(sf) sf.innerHTML=p.foto?`<img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:inicial;
+
+  // Displays do perfil
   const nd=document.getElementById('perfil-nome-display');
   if(nd) nd.textContent=apelido;
   const ad=document.getElementById('perfil-apelido-display');
   if(ad) ad.textContent=(p.signo?p.signo+' · ':'')+' IFPE 2027';
-  // Welcome hero
+
+  // Welcome hero greeting
   const g=document.querySelector('.luia-hero-greeting');
   if(g) g.innerHTML='Bem-vinda, <em>'+apelido+'!</em> 👋';
 }
@@ -3180,14 +3232,13 @@ function tentarRecuperar(){
   const resp=document.getElementById('auth-resposta').value.trim().toLowerCase();
   const err=document.getElementById('auth-recuperar-error');
   if(resp===perfilData.resposta){
-    authDesbloqueado=true;
-    document.getElementById('auth-overlay').style.display='none';
-    showToast('Acesso liberado! Não esqueça de atualizar sua palavra-chave. ✦','success');
-    if(authCallback){authCallback();authCallback=null;}
-    setTimeout(()=>{authDesbloqueado=false;},30*60*1000);
+    // Mostra a palavra-chave na tela de reveal
+    document.getElementById('auth-chave-reveal').textContent=perfilData.chave;
+    mostrarTela('auth-tela-reveal');
   } else {
     err.style.display='block';
     document.getElementById('auth-resposta').value='';
+    setTimeout(()=>document.getElementById('auth-resposta').focus(),100);
   }
 }
 
@@ -3197,23 +3248,56 @@ function toggleChaveVis(){
 }
 
 // ── AUTH ──
+function mostrarTela(id){
+  ['auth-tela-principal','auth-tela-recuperar','auth-tela-reveal'].forEach(t=>{
+    const el=document.getElementById(t);
+    if(el) el.style.display=t===id?'block':'none';
+  });
+}
+
+function irParaRecuperacao(){
+  const perg=perfilData.pergunta||'Como se chama sua melhor amiga?';
+  const el=document.getElementById('auth-pergunta-txt');
+  if(el) el.textContent='Responda: '+perg;
+  const err=document.getElementById('auth-recuperar-error');
+  if(err) err.style.display='none';
+  const resp=document.getElementById('auth-resposta');
+  if(resp) resp.value='';
+  mostrarTela('auth-tela-recuperar');
+  setTimeout(()=>resp&&resp.focus(),100);
+}
+
+function voltarParaChave(){
+  const err=document.getElementById('auth-error');
+  if(err) err.style.display='none';
+  const inp=document.getElementById('auth-input');
+  if(inp) inp.value='';
+  mostrarTela('auth-tela-principal');
+  setTimeout(()=>inp&&inp.focus(),100);
+}
+
 function comAuth(fn){
   if(!perfilData.chave){fn();return;}
   if(authDesbloqueado){fn();return;}
   authCallback=fn;
   const ov=document.getElementById('auth-overlay');
-  const inp=document.getElementById('auth-input');
   const err=document.getElementById('auth-error');
-  // Reseta para tela principal
-  document.getElementById('auth-tela-principal').style.display='block';
-  document.getElementById('auth-tela-recuperar').style.display='none';
-  // Carrega pergunta
-  const perg=document.getElementById('auth-pergunta-txt');
-  if(perg) perg.textContent=perfilData.pergunta||'Como se chama sua melhor amiga?';
+  const inp=document.getElementById('auth-input');
+  if(err) err.style.display='none';
+  if(inp) inp.value='';
+  mostrarTela('auth-tela-principal');
+  // Estrelinhas decorativas
+  const bg=document.getElementById('auth-stars-bg');
+  if(bg&&!bg.children.length){
+    for(let i=0;i<18;i++){
+      const s=document.createElement('div');
+      s.className='auth-star';
+      s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;opacity:${.2+Math.random()*.5};animation-delay:${Math.random()*2}s;animation-duration:${1.5+Math.random()*2}s`;
+      bg.appendChild(s);
+    }
+  }
   ov.style.display='flex';
-  err.style.display='none';
-  inp.value='';
-  setTimeout(()=>inp.focus(),150);
+  setTimeout(()=>inp&&inp.focus(),150);
 }
 
 function tentarAuth(){
@@ -3226,10 +3310,11 @@ function tentarAuth(){
     if(authCallback){authCallback();authCallback=null;}
     setTimeout(()=>{authDesbloqueado=false;},30*60*1000);
   } else {
-    inp.classList.add('error');
-    err.style.display='block';
+    inp.classList.add('shake');
+    if(err) err.style.display='block';
     inp.value='';
-    setTimeout(()=>inp.classList.remove('error'),500);
+    setTimeout(()=>inp.classList.remove('shake'),400);
+    setTimeout(()=>inp.focus(),100);
   }
 }
 
