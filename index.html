@@ -3213,9 +3213,14 @@ function renderDashboard(){
 
   const ativas=sessions.filter(s=>!s.archived);
   const total=ativas.length;
-  const totalQ=ativas.reduce((a,s)=>a+s.acertos+s.erros,0);
-  const totalA=ativas.reduce((a,s)=>a+s.acertos,0);
+  const totalQSess=ativas.reduce((a,s)=>a+s.acertos+s.erros,0);
+  const totalASess=ativas.reduce((a,s)=>a+s.acertos,0);
   const totalMin=ativas.reduce((a,s)=>a+(s.minutos||0),0);
+  // Soma questões dos simulados
+  const totalQSim=simHistorico.reduce((a,s)=>a+(s.total||0),0);
+  const totalASim=simHistorico.reduce((a,s)=>a+(s.acertos||0),0);
+  const totalQ=totalQSess+totalQSim;
+  const totalA=totalASess+totalASim;
   const pct=totalQ>0?Math.round(totalA/totalQ*100)+'%':'—';
   document.getElementById('st-sess').textContent=total;
   document.getElementById('st-q').textContent=totalQ;
@@ -4766,6 +4771,38 @@ function atualizarTimer(){
   if(el) el.textContent=m+':'+s;
 }
 
+function formatEnunciado(txt){
+  if(!txt) return '';
+  // Separa texto-base da pergunta pelo separador ---
+  const partes = txt.split(/---+/);
+  if(partes.length>=3){
+    const intro = partes[0].trim();
+    const textoBase = partes[1].trim();
+    const pergunta = partes[2].trim();
+    return `
+      ${intro?`<p style="margin-bottom:10px;font-size:13px;color:var(--text-secondary)">${intro}</p>`:''}
+      <div style="background:rgba(139,92,246,.07);border-left:3px solid #7C3AED;border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:14px;font-size:13px;line-height:1.9;color:var(--text-primary)">
+        ${textoBase.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}
+      </div>
+      <p style="font-size:14px;font-weight:600;color:var(--text-primary);line-height:1.7">${pergunta.replace(/\n/g,'<br>')}</p>
+    `;
+  }
+  // Sem separador: renderiza direto com quebras de linha
+  return `<p style="font-size:14px;line-height:1.8">${txt.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}</p>`;
+}
+
+function formatExplicacao(txt){
+  if(!txt) return '';
+  // Formata marcadores ✅ ❌ como blocos separados
+  let html = txt
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/(✅[^\n❌✅⚠️💡]*)/g,'<span style="display:block;margin:6px 0;padding:6px 10px;background:rgba(74,222,128,.08);border-radius:6px">$1</span>')
+    .replace(/(❌[^\n❌✅⚠️💡]*)/g,'<span style="display:block;margin:6px 0;padding:6px 10px;background:rgba(239,68,68,.08);border-radius:6px">$1</span>')
+    .replace(/\n\n/g,'</p><p style="margin-top:8px">')
+    .replace(/\n/g,'<br>');
+  return `<div style="font-size:13px;line-height:1.8">💡 <strong>Explicação:</strong><p style="margin-top:8px">${html}</p></div>`;
+}
+
 function renderQuestao(){
   const q=simQuestoes[simAtual];
   if(!q) return;
@@ -4803,9 +4840,9 @@ function renderQuestao(){
   document.getElementById('sim-questao-wrap').innerHTML=`
     <div class="sim-questao-card">
       <div class="sim-materia-tag">${q.materia||simConfig.materia} · ${q.topico||simConfig.topico}</div>
-      <div class="sim-enunciado">${q.enunciado}</div>
+      <div class="sim-enunciado">${formatEnunciado(q.enunciado)}</div>
       <div class="sim-alternativas">${altsHtml}</div>
-      ${respondida&&q.explicacao?`<div class="sim-explicacao" id="sim-exp" style="display:block">💡 <strong>Explicação:</strong> ${q.explicacao}</div>`:''}
+      ${respondida&&q.explicacao?`<div class="sim-explicacao" id="sim-exp" style="display:block">${formatExplicacao(q.explicacao)}</div>`:''}
     </div>
     ${com?`<div style="background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--info);margin-top:-4px;margin-bottom:4px">💬 ${com}</div>`:''}`;
 
