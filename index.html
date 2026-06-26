@@ -5318,7 +5318,7 @@ function verSimulado(idx){
   if(!s||!s.questoes||!s.questoes.length){showToast('Questões não disponíveis para este simulado.','info');return;}
   const letras=['A','B','C','D','E'];
   const cor=s.pct>=80?'#4ADE80':s.pct>=60?'#FBBF24':'#F87171';
-  let html=`<div id="ver-sim-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9998;display:flex;flex-direction:column" onclick="if(event.target.id==='ver-sim-overlay')this.remove()">
+  let html=`<div id="ver-sim-overlay" style="position:fixed;inset:0;background:#0F172A;z-index:9999;display:flex;flex-direction:column" onclick="if(event.target.id==='ver-sim-overlay')this.remove()">
     <div style="background:linear-gradient(135deg,#0F172A,#1E1B4B);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid rgba(124,58,237,.3)">
       <div style="display:flex;align-items:center;gap:12px">
         <button onclick="document.getElementById('ver-sim-overlay').remove()" style="background:rgba(255,255,255,.08);border:none;border-radius:8px;color:#fff;font-size:13px;cursor:pointer;padding:6px 12px;font-weight:600">← Voltar</button>
@@ -5353,8 +5353,6 @@ function verSimulado(idx){
       }).join('')}
     </div>
   </div>`;
-  // Fecha os divs do scroll e do overlay
-  html += '</div></div>';
   const div=document.createElement('div');
   div.innerHTML=html;
   document.body.appendChild(div.firstElementChild);
