@@ -614,7 +614,7 @@ body{font-family:'Inter',sans-serif}
 .sobre-mim-card{background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(79,70,229,.08));border:1px solid rgba(139,92,246,.3);border-radius:16px;padding:24px;margin-bottom:14px;text-align:center}
 .sobre-mim-foto{width:80px;height:80px;border-radius:50%;border:3px solid #8B5CF6;background:linear-gradient(135deg,#7C3AED,#4F46E5);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;color:#fff;margin:0 auto 12px;overflow:hidden}
 .sobre-mim-foto img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.sobre-mim-nome{font-family:'Instrument Serif',serif;font-size:1.6rem;color:#F1F5F9;margin-bottom:4px}
+.sobre-mim-nome{font-family:'Playfair Display','Georgia',serif;font-size:1.5rem;color:#F1F5F9;margin-bottom:4px;font-weight:700}
 .sobre-mim-signo{font-size:12px;color:#8B5CF6;font-weight:500;margin-bottom:14px}
 .sobre-mim-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left}
 .sobre-mim-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:10px 14px}
@@ -1267,10 +1267,7 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
         <button class="filter-tab" onclick="setProgPeriodo(30,this)">30 dias</button>
         <button class="filter-tab" onclick="setProgPeriodo(0,this)">Total</button>
       </div>
-      <button onclick="_authExportarRelatorio()" style="display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,#7C3AED,#6D28D9);border:none;border-radius:10px;padding:9px 16px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/></svg>
-        Exportar relatório
-      </button>
+
     </div>
 
     <!-- 1. Alerta da semana -->
@@ -1819,16 +1816,17 @@ async function loadFromSupabase() {
       if(goalRows[0].access_resposta) perfilData.resposta = goalRows[0].access_resposta;
       if(goalRows[0].perfil_json){
         const pj = goalRows[0].perfil_json;
-        perfilData.nome = pj.nome || perfilData.nome || '';
-        perfilData.apelido = pj.apelido || perfilData.apelido || '';
-        perfilData.idade = pj.idade || perfilData.idade || '';
-        perfilData.signo = pj.signo || perfilData.signo || '';
-        perfilData.musica = pj.musica || perfilData.musica || '';
-        perfilData.cor = pj.cor || perfilData.cor || '';
-        perfilData.sonho = pj.sonho || perfilData.sonho || '';
-        perfilData.motivacao = pj.motivacao || perfilData.motivacao || '';
-        perfilData.avatarId = pj.avatarId || perfilData.avatarId || '';
-        perfilData.avatarSvg = pj.avatarSvg || perfilData.avatarSvg || '';
+        // Sobrescreve sempre com dados do Supabase (fonte da verdade)
+        if(pj.nome) perfilData.nome = pj.nome;
+        if(pj.apelido) perfilData.apelido = pj.apelido;
+        if(pj.idade) perfilData.idade = pj.idade;
+        if(pj.signo) perfilData.signo = pj.signo;
+        if(pj.musica) perfilData.musica = pj.musica;
+        if(pj.cor) perfilData.cor = pj.cor;
+        if(pj.sonho) perfilData.sonho = pj.sonho;
+        if(pj.motivacao) perfilData.motivacao = pj.motivacao;
+        if(pj.avatarId) perfilData.avatarId = pj.avatarId;
+        if(pj.avatarSvg) perfilData.avatarSvg = pj.avatarSvg;
       }
       localStorage.setItem('luia_perfil', JSON.stringify(perfilData));
     }
@@ -2465,11 +2463,17 @@ function saveConquistas(){localStorage.setItem('luisa_conquistas',JSON.stringify
 
 function calcStatsConquistas(){
   const ativas=sessions.filter(s=>!s.archived);
-  const totalQ=ativas.reduce((a,s)=>a+s.acertos+s.erros,0);
-  const totalA=ativas.reduce((a,s)=>a+s.acertos,0);
+  const totalQSess=ativas.reduce((a,s)=>a+s.acertos+s.erros,0);
+  const totalASess=ativas.reduce((a,s)=>a+s.acertos,0);
   const totalMin=ativas.reduce((a,s)=>a+(s.minutos||0),0);
+  // Soma questões dos simulados
+  const simAtivos=(simHistorico||[]).filter(s=>!s.arquivado);
+  const totalQSim=simAtivos.reduce((a,s)=>a+(s.total||0),0);
+  const totalASim=simAtivos.reduce((a,s)=>a+(s.acertos||0),0);
+  const totalQ=totalQSess+totalQSim;
+  const totalA=totalASess+totalASim;
   const mediaGeral=totalQ>0?Math.round(totalA/totalQ*100):0;
-  const temSessao100pct=ativas.some(s=>s.erros===0&&s.acertos>=5);
+  const temSessao100pct=ativas.some(s=>s.erros===0&&s.acertos>=5)||simAtivos.some(s=>s.pct===100&&s.total>=5);
   const {streak,record}=calcStreak();
   const diasPlano=planoFeitos.length;
   return{totalQ,totalA,totalMin,mediaGeral,temSessao100pct,streak,record,diasPlano};
@@ -2963,8 +2967,9 @@ function togglePlano(data, el){
     else showToast('Dia concluído! 🔥','success');
   }
   savePlano();
-  // st-sem removido
   renderStreak();
+  renderDashboard();
+  atualizarContador();
   verificarConquistas();
 }
 
@@ -4405,7 +4410,7 @@ function renderSobreMim(){
   const nome=document.getElementById('sobre-nome');
   const signo=document.getElementById('sobre-signo');
   const grid=document.getElementById('sobre-grid');
-  if(foto) foto.innerHTML=p.foto?`<img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:inicial;
+  if(foto) foto.innerHTML=p.foto?`<img src="${p.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:(p.avatarSvg||inicial);
   if(nome) nome.textContent=p.nome||'Luísa Couto Mota';
   if(signo) signo.textContent=(p.signo||'')+(p.signo?' · ':'')+' IFPE 2027';
   const itens=[
@@ -5003,12 +5008,23 @@ function renderQuestao(){
   btnProx.textContent=isUltima?(respondida?'✓ Finalizar':'Finalizar →'):'Próxima →';
   btnProx.style.background=isUltima&&respondida?'linear-gradient(135deg,#4ADE80,#22C55E)':'';
 
-  const altsHtml=letras.slice(0,5).map(l=>{
-    const alt=q.alternativas?.[l];
+  const altsHtml=letras.slice(0,5).map((l,li)=>{
+    // Suporta alternativas como objeto {A:,B:,C:} ou como array
+    let alt='';
+    if(q.alternativas){
+      if(typeof q.alternativas==='object'&&!Array.isArray(q.alternativas)){
+        alt=q.alternativas[l]||'';
+      } else if(Array.isArray(q.alternativas)){
+        const item=q.alternativas[li];
+        // Remove prefixo "A) " se já vier na string
+        alt=item?String(item).replace(/^[A-E][)\.]\s*/,''):'';
+      }
+    }
     if(!alt) return '';
     let cls='sim-alt';
     if(respondida){
-      if(l===q.gabarito) cls+=' correta';
+      const gab=q.gabarito||q.resposta_correta||"";
+      if(l===gab) cls+=' correta';
       else if(l===resp) cls+=' errada';
     } else if(l===resp) cls+=' selecionada';
     return`<div class="${cls}" onclick="${respondida?'':'responderQuestao(\''+l+'\')'}" style="${respondida?'cursor:default':''}">
@@ -5020,7 +5036,7 @@ function renderQuestao(){
   document.getElementById('sim-questao-wrap').innerHTML=`
     <div class="sim-questao-card">
       <div class="sim-materia-tag">${q.materia||simConfig.materia} · ${q.topico||simConfig.topico}</div>
-      <div class="sim-enunciado">${formatEnunciado(q.enunciado)}</div>
+      <div class="sim-enunciado">${formatEnunciado(q.enunciado||q.pergunta||"")}</div>
       <div class="sim-alternativas">${altsHtml}</div>
       ${respondida&&q.explicacao?`<div class="sim-explicacao" id="sim-exp" style="display:block">${formatExplicacao(q.explicacao)}</div>`:''}
     </div>
@@ -5034,9 +5050,9 @@ function renderQuestao(){
 function responderQuestao(letra){
   simRespostas[simAtual]=letra;
   const q=simQuestoes[simAtual];
-  const certa=letra===q.gabarito;
+  const certa=letra===(q.gabarito||q.resposta_correta);
   if(certa) showToast('Correto! ✓','success');
-  else showToast('Errado. A resposta é '+q.gabarito,'error');
+  else showToast('Errado. A resposta é '+(q.gabarito||q.resposta_correta),'error');
   renderQuestao();
   renderMapa();
 }
@@ -5243,16 +5259,19 @@ function renderSimHistorico(mostrarArquivados=false){
       </div>
       <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
         ${temQuestoes?`<button onclick="verSimulado(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);border-radius:8px;color:#A78BFA;cursor:pointer;font-weight:600">📖 Ver questões</button>`:''}
-        ${s.pct<100&&temQuestoes&&!s.arquivado?`<button onclick="refazerErros(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:8px;color:#A78BFA;cursor:pointer">🔁 Refazer erros</button>`:''}
+        ${s.pct<100&&temQuestoes&&!s.arquivado?`<button onclick="_authRefazerErros(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:8px;color:#A78BFA;cursor:pointer">🔁 Refazer erros</button>`:''}
         ${!s.arquivado
-          ?`<button onclick="arquivarSimulado(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--text-dim);cursor:pointer">📦 Arquivar</button>`
-          :`<button onclick="desarquivarSimulado(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:8px;color:#4ADE80;cursor:pointer">↩ Restaurar</button>`
+          ?`<button onclick="_authArquivarSim(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--text-dim);cursor:pointer">📦 Arquivar</button>`
+          :`<button onclick="_authDesarquivarSim(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:8px;color:#4ADE80;cursor:pointer">↩ Restaurar</button>`
         }
       </div>
     </div>`;
   }).join('');
 }
 
+function _authRefazerErros(idx){if(_visitanteBlocked('refazer simulado'))return;refazerErros(idx);}
+function _authArquivarSim(idx){if(_visitanteBlocked('arquivar simulado'))return;arquivarSimulado(idx);}
+function _authDesarquivarSim(idx){if(_visitanteBlocked('restaurar simulado'))return;desarquivarSimulado(idx);}
 function refazerErros(idx){
   if(_visitanteBlocked('refazer simulado')) return;
   const s=simHistorico[idx];
