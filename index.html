@@ -4604,9 +4604,6 @@ async function exportarRelatorio(winPreAberta){
   const win = winPreAberta || window.open('','_blank');
   if(!win){ showToast('Permita popups para gerar o relatório.','error'); return; }
   if(!winPreAberta) win.document.write('<html><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#0F172A;color:#fff;font-size:18px"><div style="text-align:center"><div style="font-size:3rem;margin-bottom:16px">✦</div><div>Gerando diagnóstico com IA...</div><div style="font-size:13px;color:#94A3B8;margin-top:8px">Isso pode levar alguns segundos</div></div></body></html>');
-  // linha corrigida
-</body>
-</html>`;
 
   win.document.open();
   win.document.write(html);
