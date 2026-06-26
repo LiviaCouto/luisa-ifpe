@@ -875,20 +875,13 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
     </div>
 
     <!-- BANNER PALAVRA-CHAVE -->
-    <div class="chave-banner" id="chave-banner" style="display:none">
-      <div class="chave-banner-icon">🔓</div>
-      <div class="chave-banner-text">
-        <div class="chave-banner-title">Seu app está sem proteção</div>
-        <div class="chave-banner-sub">Qualquer pessoa com este link pode lançar dados. Crie uma palavra-chave no Perfil para proteger seus estudos.</div>
-      </div>
-      <button class="chave-banner-btn" onclick="showLuia('perfil',null)">✦ Proteger agora</button>
-    </div>
+
 
     <div class="stats-grid">
-      <div class="stat-card" data-tip="Total de registros de estudo lançados no app"><div class="stat-value" id="st-sess">0</div><div class="stat-label">Registros</div></div>
-      <div class="stat-card" data-tip="Total de questões resolvidas (certas + erradas)"><div class="stat-value" id="st-q">0</div><div class="stat-label">Questões</div></div>
-      <div class="stat-card" data-tip="Percentual de questões certas sobre o total resolvido"><div class="stat-value" id="st-pct">—</div><div class="stat-label">% Acertos</div></div>
-      <div class="stat-card" data-tip="Soma de todas as horas registradas nas sessões"><div class="stat-value" id="st-min">0</div><div class="stat-label">Horas estudadas</div></div>
+      <div class="stat-card"><div class="stat-value" id="st-sess">0</div><div class="stat-label">Registros</div></div>
+      <div class="stat-card"><div class="stat-value" id="st-q">0</div><div class="stat-label">Questões</div></div>
+      <div class="stat-card"><div class="stat-value" id="st-pct">—</div><div class="stat-label">% Acertos</div></div>
+      <div class="stat-card"><div class="stat-value" id="st-min">0</div><div class="stat-label">Horas estudadas</div></div>
       <div style="display:none" id="st-sem-hidden"></div>
     </div>
 
@@ -1757,42 +1750,15 @@ function setSyncStatus(status, msg) {
 async function loadFromSupabase() {
   setSyncStatus('loading','Carregando dados...');
   try {
-    const [sess, revs, cics, goalRows, simRows] = await Promise.all([
+    const [sess, revs, cics, goalRows] = await Promise.all([
       sbGet('sessions','order=created_at.desc'),
       sbGet('reviews','order=review_date.asc'),
       sbGet('ciclos_feitos','select=ciclo_key'),
-      sbGet('study_goals','id=eq.1').catch(()=>[]),
-      sbGet('simulados','order=created_at.desc&limit=50').catch(()=>[])
+      sbGet('study_goals','id=eq.1').catch(()=>[])
     ]);
     sessions = sess.map(s => ({...s, tags: s.tags || []}));
     reviews = revs;
     semanasFeitas = cics.map(c => c.ciclo_key);
-
-    // Carrega histórico de simulados do Supabase
-    if(simRows && simRows.length){
-      simHistorico = simRows.map(s=>({
-        data: (s.created_at||'').substring(0,10),
-        materia: s.materia||'',
-        topico: s.topico||'',
-        nivel: s.nivel||'',
-        total: s.total||0,
-        acertos: s.acertos||0,
-        pct: s.total>0?Math.round(s.acertos/s.total*100):0,
-        tempo: s.tempo_seg||0
-      }));
-      localStorage.setItem('luia_sim_hist', JSON.stringify(simHistorico));
-    }
-
-    // Carrega goals (metas semanais, data prova) do banco
-    if(goalRows && goalRows[0]){
-      const gr = goalRows[0];
-      if(gr.weekly_hours) goals.weekly_hours = gr.weekly_hours;
-      if(gr.weekly_sessions) goals.weekly_sessions = gr.weekly_sessions;
-      if(gr.weekly_questions) goals.weekly_questions = gr.weekly_questions;
-      if(gr.data_prova) goals.data_prova = gr.data_prova;
-      if(gr.objetivo) goals.objetivo = gr.objetivo;
-      localStorage.setItem('luisa_goals', JSON.stringify(goals));
-    }
 
     // Carrega plano do banco — não perde em aba anônima
     if(goalRows && goalRows[0] && goalRows[0].plano_feitos){
@@ -2977,7 +2943,7 @@ async function salvarMetas(){
   const objetivo=document.getElementById('g-objetivo')?.value.trim()||goals.objetivo||'IFPE 2027';
   goals={...goals,weekly_hours:h,weekly_sessions:s,weekly_questions:q,data_prova:dataProva,objetivo};
   saveLocal();renderMetas();renderDashMetas();atualizarContador();showToast('Metas salvas! ✦','success');
-  try{await sbUpsert('study_goals',{id:1,weekly_hours:goals.weekly_hours,weekly_sessions:goals.weekly_sessions,weekly_questions:goals.weekly_questions,data_prova:goals.data_prova||'',objetivo:goals.objetivo||''},'id');}catch(e){}
+  try{await sbUpsert('study_goals',{id:1,...goals},'id');}catch(e){}
 }
 function renderMetas(){
   document.getElementById('g-hours').value=goals.weekly_hours||'';
@@ -3649,11 +3615,7 @@ async function bvEntrar(){
     setTimeout(()=>{authDesbloqueado=false;localStorage.removeItem('luia_auth_exp');},24*60*60*1000);
     bvFechar();
     await loadFromSupabase();
-    // Re-renderiza sidebar com dados do perfil
-    if(typeof atualizarSidebar==='function') atualizarSidebar();
-    if(typeof atualizarBanner==='function') atualizarBanner();
-    if(typeof renderDashboard==='function') renderDashboard();
-    showToast('Bem-vinda de volta' + (perfilData.nome?', '+perfilData.nome.split(' ')[0]:'')+'! ✦','success');
+    showToast('Bem-vinda de volta' + (perfilData.nome?' , '+perfilData.nome.split(' ')[0]:'')+'! ✦','success');
   } catch(e){
     err.textContent='Erro de conexão. Tente novamente.';
     err.style.display='block';
@@ -3674,13 +3636,9 @@ async function init(){
   document.getElementById('f-data').value=todayLocal();
   // Carrega dados do Supabase primeiro (pega chave e perfil se existirem)
   await loadFromSupabase();
-  // Mostra modal de boas-vindas — pula se auth 24h ainda válida
+  // Mostra modal de boas-vindas — só pula se já estava autenticado nessa sessão
   if(!authDesbloqueado){
     bvMostrar();
-  } else {
-    // Auth ainda válida — só re-renderiza com dados atuais
-    if(typeof atualizarSidebar==='function') atualizarSidebar();
-    if(typeof atualizarBanner==='function') atualizarBanner();
   }
 }
 // ═══════════════════════════════════════
@@ -4483,7 +4441,7 @@ function filtrarSessoesPeriodo(){
   return ativas.filter(s=>s.data>=cutoff);
 }
 
-async function exportarRelatorio(){
+async function exportarRelatorio(winPreAberta){
   const periodo=progPeriodo===0?'Total':('Últimos '+progPeriodo+' dias');
   const ativas=filtrarSessoesPeriodo();
   const today=todayLocal();
@@ -4535,10 +4493,10 @@ async function exportarRelatorio(){
   const simMedia=simPeriodo.length?Math.round(simPeriodo.reduce((a,s)=>a+s.pct,0)/simPeriodo.length):0;
   const simMelhor=simPeriodo.length?Math.max(...simPeriodo.map(s=>s.pct)):0;
 
-  // Abre janela de loading — deve ser chamado direto do click (sem await antes)
-  const win=window.open('','_blank');
+  // Usa janela pré-aberta ou abre nova
+  const win = winPreAberta || window.open('','_blank');
   if(!win){ showToast('Permita popups para gerar o relatório.','error'); return; }
-  win.document.write('<html><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#0F172A;color:#fff;font-size:18px"><div style="text-align:center"><div style="font-size:3rem;margin-bottom:16px">✦</div><div>Gerando diagnóstico com IA...</div><div style="font-size:13px;color:#94A3B8;margin-top:8px">Isso pode levar alguns segundos</div></div></body></html>');
+  if(!winPreAberta) win.document.write('<html><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#0F172A;color:#fff;font-size:18px"><div style="text-align:center"><div style="font-size:3rem;margin-bottom:16px">✦</div><div>Gerando diagnóstico com IA...</div><div style="font-size:13px;color:#94A3B8;margin-top:8px">Isso pode levar alguns segundos</div></div></body></html>');
 
   // Gera diagnóstico com Claude
   let diagnostico='';
@@ -5143,20 +5101,23 @@ function encerrarSimulado(){
   const pct=Math.round(acertos/total*100);
   const cor=pct>=80?'#4ADE80':pct>=60?'#FBBF24':'#F87171';
 
-  // Salva no histórico
+  // Salva no histórico com questões completas
   const registro={
     data:todayLocal(),
     materia:simConfig.materia,
     topico:simConfig.topico,
     nivel:simConfig.nivel,
     total,acertos,pct,
-    tempo:simTimerSeg
+    tempo:simTimerSeg,
+    questoes:simQuestoes,
+    respostas:[...simRespostas],
+    favoritas:[...simFavoritas],
+    comentarios:{...simComentarios},
+    arquivado:false
   };
   simHistorico.unshift(registro);
   if(simHistorico.length>50) simHistorico=simHistorico.slice(0,50);
   localStorage.setItem('luia_sim_hist',JSON.stringify(simHistorico));
-  // Salva favoritas no Supabase junto com histrico resumido
-  sbUpsert('study_goals',{id:1,sim_favoritas:simFavSalvas},'id').catch(()=>{});
 
   // Salva favoritas
   const favs=simQuestoes.filter((_,i)=>simFavoritas[i]).map((q,i)=>({
@@ -5173,6 +5134,9 @@ function encerrarSimulado(){
     sbPost('simulados',{materia:simConfig.materia,topico:simConfig.topico,nivel:simConfig.nivel,total,acertos,tempo_seg:simTimerSeg}).then(res=>{
       if(res&&res[0]){
         const simId=res[0].id;
+        // Salva o id do Supabase no registro local para poder arquivar depois
+        if(simHistorico[0]) simHistorico[0].supabase_id=simId;
+        localStorage.setItem('luia_sim_hist',JSON.stringify(simHistorico));
         simQuestoes.forEach((q,i)=>{
           sbPost('questoes_respondidas',{
             simulado_id:simId,enunciado:q.enunciado,
@@ -5236,21 +5200,82 @@ function novoSimulado(somenteErros=false){
 
 function renderSimHistorico(){
   const el=document.getElementById('sim-historico-list');
-  if(!el||!simHistorico.length) return;
-  el.innerHTML=simHistorico.slice(0,10).map(s=>{
+  if(!el) return;
+  const visiveis=simHistorico.filter(s=>!s.arquivado);
+  if(!visiveis.length){el.innerHTML='<p style="color:var(--text-dim);font-size:13px">Nenhum simulado ainda.</p>';return;}
+  el.innerHTML=visiveis.slice(0,20).map((s,i)=>{
     const cor=s.pct>=80?'#4ADE80':s.pct>=60?'#FBBF24':'#F87171';
     const m=Math.floor((s.tempo||0)/60);
+    const idx=simHistorico.indexOf(s);
+    const temQuestoes=s.questoes&&s.questoes.length>0;
     return`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)">
-      <div style="flex:1;min-width:0">
+      <div style="flex:1;min-width:0;cursor:${temQuestoes?'pointer':'default'}" onclick="${temQuestoes?`verSimulado(${idx})`:''}">
         <div style="font-size:12px;font-weight:600;color:var(--text-primary)">${s.materia} · ${s.topico}</div>
         <div style="font-size:10px;color:var(--text-dim)">${fmtDate(s.data)} · ${s.nivel} · ${m}min</div>
+        ${temQuestoes?'<div style="font-size:10px;color:#A78BFA;margin-top:2px">📖 Ver questões</div>':''}
       </div>
-      <div style="text-align:right">
+      <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
         <div style="font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:${cor}">${s.pct}%</div>
         <div style="font-size:10px;color:var(--text-dim)">${s.acertos}/${s.total}</div>
+        <button onclick="arquivarSimulado(${idx})" style="font-size:9px;background:rgba(255,255,255,.06);border:none;border-radius:4px;color:var(--text-dim);cursor:pointer;padding:2px 6px">📦 Arquivar</button>
       </div>
     </div>`;
   }).join('');
+}
+
+function arquivarSimulado(idx){
+  if(!confirm('Arquivar este simulado? Ele ficará oculto mas não será apagado.')) return;
+  simHistorico[idx].arquivado=true;
+  localStorage.setItem('luia_sim_hist',JSON.stringify(simHistorico));
+  // Arquivar no Supabase se tiver id
+  if(simHistorico[idx].supabase_id){
+    fetch(`${SUPA_URL}/rest/v1/simulados?id=eq.${simHistorico[idx].supabase_id}`,{
+      method:'PATCH',
+      headers:{...H,'Prefer':'return=minimal'},
+      body:JSON.stringify({arquivado:true})
+    }).catch(()=>{});
+  }
+  renderSimHistorico();
+  showToast('Simulado arquivado.','info');
+}
+
+function verSimulado(idx){
+  const s=simHistorico[idx];
+  if(!s||!s.questoes||!s.questoes.length){showToast('Questões não disponíveis para este simulado.','info');return;}
+  // Monta modal de revisão do simulado
+  const letras=['A','B','C','D','E'];
+  let html=`<div style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9998;overflow-y:auto;padding:20px" onclick="if(event.target===this)this.remove()">
+    <div style="max-width:700px;margin:0 auto;background:var(--surface-1);border-radius:16px;padding:24px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <div>
+          <div style="font-size:16px;font-weight:700;color:var(--text-primary)">${s.materia} · ${s.topico}</div>
+          <div style="font-size:12px;color:var(--text-dim)">${fmtDate(s.data)} · ${s.nivel} · ${s.acertos}/${s.total} (${s.pct}%)</div>
+        </div>
+        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:var(--text-dim);font-size:20px;cursor:pointer">✕</button>
+      </div>
+      ${s.questoes.map((q,qi)=>{
+        const resp=s.respostas?s.respostas[qi]:null;
+        const certa=resp===q.gabarito;
+        return`<div style="margin-bottom:20px;padding:16px;background:rgba(255,255,255,.03);border-radius:10px;border-left:3px solid ${certa?'#4ADE80':'#F87171'}">
+          <div style="font-size:11px;font-weight:700;color:${certa?'#4ADE80':'#F87171'};margin-bottom:8px">${qi+1}. ${certa?'✓ Correto':'✗ Errado'}${s.favoritas&&s.favoritas[qi]?' ⭐':''}</div>
+          <div style="font-size:13px;color:var(--text-primary);margin-bottom:10px;line-height:1.6">${q.enunciado.replace(/---+/g,'<hr style="border-color:rgba(255,255,255,.1);margin:8px 0">').replace(/\n/g,'<br>')}</div>
+          ${letras.slice(0,5).map(l=>{
+            const alt=q.alternativas&&q.alternativas[l]?l+') '+q.alternativas[l]:(q.alternativas&&Array.isArray(q.alternativas)?q.alternativas[letras.indexOf(l)]||'':'');
+            const isCorreta=l===q.gabarito;
+            const isResp=l===resp;
+            const bg=isCorreta?'rgba(74,222,128,.12)':isResp?'rgba(248,113,113,.12)':'transparent';
+            const border=isCorreta?'rgba(74,222,128,.4)':isResp?'rgba(248,113,113,.4)':'rgba(255,255,255,.06)';
+            return`<div style="padding:8px 12px;margin:4px 0;border-radius:8px;background:${bg};border:1px solid ${border};font-size:12px;color:var(--text-secondary)">${alt}</div>`;
+          }).join('')}
+          ${q.explicacao?`<div style="margin-top:10px;padding:10px;background:rgba(74,222,128,.06);border-radius:8px;font-size:12px;color:var(--text-secondary);line-height:1.6">💡 ${q.explicacao}</div>`:''}
+          ${s.comentarios&&s.comentarios[qi]?`<div style="margin-top:6px;font-size:11px;color:var(--info)">💬 ${s.comentarios[qi]}</div>`:''}
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+  const div=document.createElement('div');
+  div.innerHTML=html;
+  document.body.appendChild(div.firstElementChild);
 }
 
 function renderSimFavoritas(){
@@ -5295,6 +5320,10 @@ function renderSimDash(){
         <div style="font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#4ADE80">${mediaAcertos}%</div>
         <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em">Média</div>
       </div>
+      <div style="text-align:center;padding:10px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.15);border-radius:10px">
+        <div style="font-family:'Poppins',sans-serif;font-size:.8rem;font-weight:700;color:#FBBF24;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(()=>{const mp={};simHistorico.filter(s=>!s.arquivado).forEach(s=>{if(!mp[s.materia])mp[s.materia]={t:0,a:0};mp[s.materia].t+=s.total||0;mp[s.materia].a+=s.acertos||0;});const best=Object.entries(mp).sort((a,b)=>(b[1].a/b[1].t)-(a[1].a/a[1].t))[0];return best?best[0].split(' ')[0]:'—';})()}</div>
+        <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em">Melhor matéria</div>
+      </div>
       <div style="text-align:center;padding:10px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.15);border-radius:10px">
         <div style="font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#F59E0B">${melhor}%</div>
         <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em">Melhor</div>
@@ -5320,7 +5349,18 @@ function _authArquivar(uid){if(_visitanteBlocked('arquivar sessão'))return;comA
 function _authZerar(mat){if(_visitanteBlocked('zerar matéria'))return;comAuth(()=>zerarMateria(mat));}
 function _authSalvarMetas(){if(_visitanteBlocked('salvar metas'))return;comAuth(()=>salvarMetas());}
 function _authIniciarSimulado(){if(_visitanteBlocked('gerar simulado'))return;comAuth(()=>iniciarSimulado());}
-function _authExportarRelatorio(){if(_visitanteBlocked('gerar relatório'))return;comAuth(()=>exportarRelatorio());}
+function _authExportarRelatorio(){
+  if(_visitanteBlocked('gerar relatório'))return;
+  // Abre janela ANTES do comAuth (popup só funciona no clique direto)
+  const win=window.open('','_blank');
+  if(!win){showToast('Permita popups para gerar o relatório.','error');return;}
+  win.document.write('<html><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#0F172A;color:#fff;font-size:18px"><div style="text-align:center"><div style="font-size:3rem;margin-bottom:16px">✦</div><div>Gerando diagnóstico com IA...</div><div style="font-size:13px;color:#94A3B8;margin-top:8px">Isso pode levar alguns segundos</div></div></body></html>');
+  if(authDesbloqueado){
+    exportarRelatorio(win);
+  } else {
+    comAuth(()=>exportarRelatorio(win));
+  }
+}
 function _authTimerStart(){if(_visitanteBlocked('iniciar cronômetro'))return;comAuth(()=>timerStart());}
 
 // ── BANCO DE FRASES MOTIVACIONAIS ──
