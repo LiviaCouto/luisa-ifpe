@@ -1270,58 +1270,6 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
   </div>
 
   <!-- SOBRE MIM -->
-  <div id="sec-feedback" class="section">
-    <div class="card" style="margin-bottom:12px">
-      <div class="card-title" style="display:flex;align-items:center;gap:8px">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        Feedbacks & Ideias
-      </div>
-      <p style="font-size:13px;color:var(--text-dim);margin-bottom:16px;line-height:1.6">Encontrou um bug ou teve uma ideia? Registra aqui! Sua mãe vai ver e resolver.</p>
-      <div class="fb-form">
-        <div>
-          <div class="form-label" style="margin-bottom:8px">Tipo</div>
-          <div class="fb-tipo-grid">
-            <button class="fb-tipo-btn on" onclick="fbSetTipo(this,'bug')">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2l1.5 1.5M15.5 2 14 3.5M12 8c-2.2 0-4 1.8-4 4v3h8v-3c0-2.2-1.8-4-4-4z"/><path d="M8 15H4M20 15h-4M8 11H5M19 11h-3M10 19v2M14 19v2"/></svg>
-              Bug
-            </button>
-            <button class="fb-tipo-btn" onclick="fbSetTipo(this,'ideia')">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-              Ideia
-            </button>
-            <button class="fb-tipo-btn" onclick="fbSetTipo(this,'melhoria')">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-              Melhoria
-            </button>
-          </div>
-        </div>
-        <div>
-          <div class="form-label" style="margin-bottom:8px">Prioridade</div>
-          <div class="fb-prior-grid">
-            <button class="fb-prior-btn urgente" onclick="fbSetPrior(this,'urgente')">Urgente</button>
-            <button class="fb-prior-btn normal on" onclick="fbSetPrior(this,'normal')">Normal</button>
-            <button class="fb-prior-btn calma" onclick="fbSetPrior(this,'calma')">Com calma</button>
-          </div>
-        </div>
-        <div>
-          <div class="form-label" style="margin-bottom:8px">Descreva</div>
-          <textarea class="fb-textarea" id="fb-texto" placeholder="O que aconteceu? Qual é a ideia?"></textarea>
-        </div>
-        <button class="btn-primary" onclick="fbEnviar()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          Enviar feedback
-        </button>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title" style="display:flex;align-items:center;gap:8px">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        Enviados
-      </div>
-      <div id="fb-lista" style="margin-top:8px"><p style="font-size:13px;color:var(--text-dim)">Nenhum feedback ainda.</p></div>
-    </div>
-  </div>
-
   <div id="sec-sobre" class="section">
     <!-- Conteúdo bloqueado (aparece quando não tem auth) -->
     <div id="sobre-locked-wrap" style="display:none">
@@ -4656,14 +4604,58 @@ async function exportarRelatorio(winPreAberta){
   const win = winPreAberta || window.open('','_blank');
   if(!win){ showToast('Permita popups para gerar o relatório.','error'); return; }
   if(!winPreAberta) win.document.write('<html><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#0F172A;color:#fff;font-size:18px"><div style="text-align:center"><div style="font-size:3rem;margin-bottom:16px">✦</div><div>Gerando diagnóstico com IA...</div><div style="font-size:13px;color:#94A3B8;margin-top:8px">Isso pode levar alguns segundos</div></div>
+<!-- SEÇÃO FEEDBACK -->
+<div id="sec-feedback" class="section">
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title" style="display:flex;align-items:center;gap:8px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Feedbacks &amp; Ideias
+    </div>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:16px;line-height:1.6">Encontrou um bug ou teve uma ideia? Registra aqui! Sua mãe vai ver e resolver.</p>
+    <div class="fb-form">
+      <div>
+        <div class="form-label" style="margin-bottom:8px">Tipo</div>
+        <div class="fb-tipo-grid">
+          <button class="fb-tipo-btn on" onclick="fbSetTipo(this,'bug')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2l1.5 1.5M15.5 2 14 3.5M12 8c-2.2 0-4 1.8-4 4v3h8v-3c0-2.2-1.8-4-4-4z"/><path d="M8 15H4M20 15h-4M8 11H5M19 11h-3M10 19v2M14 19v2"/></svg>Bug</button>
+          <button class="fb-tipo-btn" onclick="fbSetTipo(this,'ideia')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>Ideia</button>
+          <button class="fb-tipo-btn" onclick="fbSetTipo(this,'melhoria')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Melhoria</button>
+        </div>
+      </div>
+      <div>
+        <div class="form-label" style="margin-bottom:8px">Prioridade</div>
+        <div class="fb-prior-grid">
+          <button class="fb-prior-btn urgente" onclick="fbSetPrior(this,'urgente')">Urgente</button>
+          <button class="fb-prior-btn normal on" onclick="fbSetPrior(this,'normal')">Normal</button>
+          <button class="fb-prior-btn calma" onclick="fbSetPrior(this,'calma')">Com calma</button>
+        </div>
+      </div>
+      <div>
+        <div class="form-label" style="margin-bottom:8px">Descreva</div>
+        <textarea class="fb-textarea" id="fb-texto" placeholder="O que aconteceu? Qual é a ideia?"></textarea>
+      </div>
+      <button class="btn-primary" onclick="fbEnviar()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Enviar feedback
+      </button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="display:flex;align-items:center;gap:8px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Enviados
+    </div>
+    <div id="fb-lista" style="margin-top:8px"><p style="font-size:13px;color:var(--text-dim)">Nenhum feedback ainda.</p></div>
+  </div>
+</div>
+
 <!-- MODAL RELATÓRIO -->
-<div id="modal-relatorio" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9990;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+<div id="modal-relatorio" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9990;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
   <div style="background:linear-gradient(135deg,#0F172A,#1E1B4B);border:1px solid rgba(124,58,237,.3);border-radius:16px;padding:28px;width:90%;max-width:380px">
     <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:6px;display:flex;align-items:center;gap:8px">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/></svg>
       Gerar relatório
     </div>
-    <p style="font-size:13px;color:rgba(167,139,250,.7);margin-bottom:20px">Escolha o período dos dados que deseja incluir no relatório.</p>
+    <p style="font-size:13px;color:rgba(167,139,250,.7);margin-bottom:20px">Escolha o período dos dados.</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">
       <button class="rel-per-btn on" onclick="relSetPeriodo(this,7)" style="padding:12px;border:1.5px solid #7C3AED;background:rgba(124,58,237,.2);border-radius:10px;color:#A78BFA;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Últimos 7 dias</button>
       <button class="rel-per-btn" onclick="relSetPeriodo(this,15)" style="padding:12px;border:1.5px solid rgba(255,255,255,.1);background:transparent;border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Últimos 15 dias</button>
@@ -4672,8 +4664,8 @@ async function exportarRelatorio(winPreAberta){
     </div>
     <div style="display:flex;gap:8px">
       <button onclick="document.getElementById('modal-relatorio').style.display='none'" style="flex:1;padding:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Cancelar</button>
-      <button onclick="gerarRelatorio()" style="flex:2;padding:11px;background:linear-gradient(135deg,#7C3AED,#6D28D9);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-right:6px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/></svg>
+      <button onclick="gerarRelatorio()" style="flex:2;padding:11px;background:linear-gradient(135deg,#7C3AED,#6D28D9);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/></svg>
         Gerar PDF
       </button>
     </div>
@@ -5731,312 +5723,6 @@ function atualizarContador(){
   if(pctEl) pctEl.textContent = pct+'% do tempo percorrido · '+diasPassados+' dias estudando';
 }
 
-
-// ═══════════════════════════════════════
-//  RELATÓRIO PDF
-// ═══════════════════════════════════════
-let relPeriodoDias = 7;
-
-function abrirModalRelatorio(){
-  document.getElementById('modal-relatorio').style.display='flex';
-}
-
-function relSetPeriodo(btn, dias){
-  relPeriodoDias = dias;
-  document.querySelectorAll('.rel-per-btn').forEach(b=>{
-    b.style.border='1.5px solid rgba(255,255,255,.1)';
-    b.style.background='transparent';
-    b.style.color='rgba(255,255,255,.5)';
-  });
-  btn.style.border='1.5px solid #7C3AED';
-  btn.style.background='rgba(124,58,237,.2)';
-  btn.style.color='#A78BFA';
-}
-
-function gerarRelatorio(){
-  document.getElementById('modal-relatorio').style.display='none';
-  const win = window.open('','_blank');
-  if(!win){ showToast('Permita popups para gerar o relatório.','error'); return; }
-
-  const dias = relPeriodoDias;
-  const hoje = new Date();
-  const corte = dias > 0 ? new Date(hoje.getTime() - dias*24*60*60*1000) : null;
-  const periodoLabel = dias===7?'Últimos 7 dias':dias===15?'Últimos 15 dias':dias===30?'Últimos 30 dias':'Todo o período';
-  const dataGer = hoje.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}) + ' às ' + hoje.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-
-  // Filtra dados pelo período
-  const ativas = sessions.filter(s=>!s.archived && (!corte || new Date(s.data)>=corte));
-  const simFilt = simHistorico.filter(s=>!s.arquivado && (!corte || new Date(s.data)>=corte));
-  const revFilt = reviews.filter(r=> !corte || new Date(r.review_date)>=corte);
-
-  // Stats gerais
-  const totalSess = ativas.length;
-  const totalQ = ativas.reduce((a,s)=>a+s.acertos+s.erros,0) + simFilt.reduce((a,s)=>a+(s.total||0),0);
-  const totalA = ativas.reduce((a,s)=>a+s.acertos,0) + simFilt.reduce((a,s)=>a+(s.acertos||0),0);
-  const totalMin = ativas.reduce((a,s)=>a+(s.minutos||0),0);
-  const pctAcertos = totalQ>0?Math.round(totalA/totalQ*100):0;
-  const horas = Math.floor(totalMin/60);
-  const mins = totalMin%60;
-  const horasStr = horas>0?`${horas}h${mins>0?mins+'m':''}`:`${totalMin}min`;
-  const {streak} = calcStreak();
-
-  // Por matéria
-  const porMat = {};
-  ativas.forEach(s=>{
-    if(!porMat[s.materia]) porMat[s.materia]={acertos:0,erros:0,sessoes:0,minutos:0};
-    porMat[s.materia].acertos+=s.acertos; porMat[s.materia].erros+=s.erros;
-    porMat[s.materia].sessoes++; porMat[s.materia].minutos+=(s.minutos||0);
-  });
-  simFilt.forEach(s=>{
-    if(!porMat[s.materia]) porMat[s.materia]={acertos:0,erros:0,sessoes:0,minutos:0};
-    porMat[s.materia].acertos+=s.acertos||0; porMat[s.materia].erros+=(s.total||0)-(s.acertos||0);
-  });
-
-  // Revisões
-  const today = todayLocal();
-  const revConcluidas = revFilt.filter(r=>r.status==='concluida').length;
-  const revAtrasadas = revFilt.filter(r=>r.status==='pendente'&&r.review_date<=today).length;
-
-  // Plano
-  const diasPlano = planoFeitos.filter(d=>!corte||new Date(d)>=corte).length;
-  const totalDiasPlano = dias>0?dias:planoFeitos.length||1;
-  const pctPlano = Math.min(100,Math.round(diasPlano/totalDiasPlano*100));
-
-  // Projeção de prontidão
-  const scoreAcertos = pctAcertos * 0.40;
-  const scorePlano = pctPlano * 0.30;
-  const sessPorSemana = dias>0?(totalSess/(dias/7)):totalSess/4;
-  const scoreConsist = Math.min(100, sessPorSemana/5*100) * 0.20;
-  const revScore = revConcluidas+revAtrasadas>0?Math.round(revConcluidas/(revConcluidas+revAtrasadas)*100):100;
-  const scoreRev = revScore * 0.10;
-  const prontidao = Math.round(scoreAcertos+scorePlano+scoreConsist+scoreRev);
-  const corPront = prontidao>=70?'#4ADE80':prontidao>=50?'#FBBF24':'#F87171';
-  const textoPront = prontidao>=70
-    ? 'Excelente ritmo! Luísa está mantendo consistência e bom aproveitamento.'
-    : prontidao>=50
-    ? 'Progresso satisfatório. Há espaço para melhorar a consistência e revisões.'
-    : 'Atenção necessária. Recomenda-se aumentar a frequência de estudos e revisões.';
-
-  // Matérias negligenciadas (sem sessão no período)
-  const todasMaterias = ['Português','Matemática','Ciências da Natureza','História','Geografia'];
-  const negligenciadas = todasMaterias.filter(m=>!porMat[m]);
-
-  const nome = perfilData.nome || 'Luísa';
-  const objetivo = goals.objetivo || 'IFPE 2027';
-  const prova = new Date((goals.data_prova||'2027-01-01')+'T00:00:00');
-  const diasProva = Math.ceil((prova-hoje)/(1000*60*60*24));
-
-  const html = `<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Relatório — ${nome}</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',sans-serif;background:#F8F9FF;color:#1E1B4B;padding:0}
-.page{max-width:720px;margin:0 auto;padding:32px 24px}
-.header{background:linear-gradient(135deg,#0F172A,#1E1B4B);padding:28px 32px;display:flex;align-items:center;justify-content:space-between;border-radius:0 0 0 0}
-.header-logo{font-family:'Poppins',sans-serif;font-size:32px;font-weight:800;color:#fff}
-.header-logo span{color:#A78BFA}
-.header-info{text-align:right}
-.header-nome{font-size:16px;font-weight:700;color:#fff}
-.header-sub{font-size:11px;color:rgba(167,139,250,.7);margin-top:2px}
-.header-data{font-size:11px;color:rgba(255,255,255,.4);margin-top:6px}
-.periodo-badge{display:inline-block;background:rgba(124,58,237,.3);color:#A78BFA;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;margin-top:4px}
-section{margin:24px 0}
-h2{font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-h2::after{content:'';flex:1;height:1px;background:rgba(109,40,217,.15)}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.stat-card{background:#fff;border-radius:12px;padding:16px;text-align:center;border:1px solid rgba(109,40,217,.1)}
-.stat-val{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:800;color:#6D28D9}
-.stat-lbl{font-size:10px;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
-.pront-card{background:#fff;border-radius:12px;padding:20px;border:1px solid rgba(109,40,217,.1)}
-.pront-bar-bg{height:12px;background:#F1F5F9;border-radius:99px;overflow:hidden;margin:12px 0}
-.pront-bar-fill{height:100%;border-radius:99px;transition:width .6s}
-.mat-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.mat-nome{width:140px;font-size:12px;font-weight:600;color:#1E1B4B;flex-shrink:0}
-.mat-bar-bg{flex:1;height:8px;background:#F1F5F9;border-radius:99px;overflow:hidden}
-.mat-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#7C3AED,#A78BFA)}
-.mat-pct{width:36px;text-align:right;font-size:12px;font-weight:600;color:#6D28D9}
-.mat-q{width:50px;text-align:right;font-size:11px;color:#94A3B8}
-.sim-table{width:100%;border-collapse:collapse;font-size:12px}
-.sim-table th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#94A3B8;padding:6px 10px;border-bottom:2px solid #E2E8F0}
-.sim-table td{padding:8px 10px;border-bottom:1px solid #F1F5F9;color:#374151}
-.sim-table tr:last-child td{border-bottom:none}
-.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600}
-.badge-green{background:#DCFCE7;color:#16A34A}
-.badge-yellow{background:#FEF9C3;color:#CA8A04}
-.badge-red{background:#FEE2E2;color:#DC2626}
-.alerta{background:#FEF9C3;border-left:3px solid #F59E0B;padding:10px 14px;border-radius:0 8px 8px 0;font-size:12px;color:#92400E;margin-bottom:8px}
-.ok{background:#DCFCE7;border-left:3px solid #4ADE80;padding:10px 14px;border-radius:0 8px 8px 0;font-size:12px;color:#166534}
-.footer{margin-top:32px;padding-top:16px;border-top:1px solid #E2E8F0;display:flex;justify-content:space-between;font-size:11px;color:#94A3B8}
-@media print{body{background:#fff}.page{padding:20px 16px}}
-</style>
-</head>
-<body>
-<div class="header">
-  <div class="header-logo">Luia<span>✦</span></div>
-  <div class="header-info">
-    <div class="header-nome">${nome}</div>
-    <div class="header-sub">${objetivo} · ${diasProva} dias para a prova</div>
-    <div class="header-data">Gerado em ${dataGer}</div>
-    <div class="periodo-badge">${periodoLabel}</div>
-  </div>
-</div>
-<div class="page">
-
-<section>
-  <h2>Resumo geral</h2>
-  <div class="stats-grid">
-    <div class="stat-card"><div class="stat-val">${totalSess}</div><div class="stat-lbl">Sessões</div></div>
-    <div class="stat-card"><div class="stat-val">${horasStr}</div><div class="stat-lbl">Horas</div></div>
-    <div class="stat-card"><div class="stat-val">${totalQ}</div><div class="stat-lbl">Questões</div></div>
-    <div class="stat-card"><div class="stat-val">${pctAcertos}%</div><div class="stat-lbl">Acertos</div></div>
-  </div>
-</section>
-
-<section>
-  <h2>Projeção de prontidão</h2>
-  <div class="pront-card">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div>
-        <div style="font-size:13px;color:#64748B;margin-bottom:4px">Índice de prontidão estimado</div>
-        <div style="font-family:'Poppins',sans-serif;font-size:2rem;font-weight:800;color:${corPront}">${prontidao}%</div>
-      </div>
-      <div style="text-align:right;font-size:11px;color:#94A3B8;max-width:200px;line-height:1.5">${textoPront}</div>
-    </div>
-    <div class="pront-bar-bg"><div class="pront-bar-fill" style="width:${prontidao}%;background:${corPront}"></div></div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px">
-      <div style="text-align:center"><div style="font-size:13px;font-weight:700;color:#6D28D9">${pctAcertos}%</div><div style="font-size:10px;color:#94A3B8">Acertos (40%)</div></div>
-      <div style="text-align:center"><div style="font-size:13px;font-weight:700;color:#6D28D9">${pctPlano}%</div><div style="font-size:10px;color:#94A3B8">Plano (30%)</div></div>
-      <div style="text-align:center"><div style="font-size:13px;font-weight:700;color:#6D28D9">${Math.round(Math.min(100,sessPorSemana/5*100))}%</div><div style="font-size:10px;color:#94A3B8">Consist. (20%)</div></div>
-      <div style="text-align:center"><div style="font-size:13px;font-weight:700;color:#6D28D9">${revScore}%</div><div style="font-size:10px;color:#94A3B8">Revisões (10%)</div></div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <h2>Desempenho por matéria</h2>
-  ${Object.entries(porMat).sort((a,b)=>{const pa=a[1].acertos/(a[1].acertos+a[1].erros||1);const pb=b[1].acertos/(b[1].acertos+b[1].erros||1);return pb-pa;}).map(([mat,d])=>{
-    const t=d.acertos+d.erros;
-    const p=t>0?Math.round(d.acertos/t*100):0;
-    const cor=p>=80?'#4ADE80':p>=60?'#FBBF24':'#F87171';
-    return `<div class="mat-row">
-      <div class="mat-nome">${mat}</div>
-      <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:${p}%;background:${cor}"></div></div>
-      <div class="mat-pct" style="color:${cor}">${p}%</div>
-      <div class="mat-q">${t}q</div>
-    </div>`;
-  }).join('')}
-  ${Object.keys(porMat).length===0?'<p style="font-size:13px;color:#94A3B8">Nenhuma sessão no período.</p>':''}
-</section>
-
-${simFilt.length>0?`<section>
-  <h2>Simulados</h2>
-  <table class="sim-table">
-    <thead><tr><th>Data</th><th>Matéria</th><th>Tópico</th><th>Nível</th><th>Resultado</th></tr></thead>
-    <tbody>${simFilt.map(s=>{
-      const cor=s.pct>=80?'badge-green':s.pct>=60?'badge-yellow':'badge-red';
-      return `<tr><td>${fmtDate(s.data)}</td><td>${s.materia}</td><td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.topico}</td><td>${s.nivel}</td><td><span class="badge ${cor}">${s.pct}% (${s.acertos}/${s.total})</span></td></tr>`;
-    }).join('')}</tbody>
-  </table>
-</section>`:''}
-
-<section>
-  <h2>Revisões & Alertas</h2>
-  ${revAtrasadas>0?`<div class="alerta">${revAtrasadas} revisão(ões) atrasada(s) — verificar o módulo de Revisões.</div>`:'<div class="ok">Revisões em dia!</div>'}
-  ${streak>=5?`<div class="ok">Sequência de ${streak} dias estudando consecutivos!</div>`:streak>0?`<div class="alerta">Streak atual: ${streak} dia(s). Meta sugerida: 5 dias seguidos.</div>`:''}
-  ${negligenciadas.length>0?`<div class="alerta">Matérias sem estudo no período: ${negligenciadas.join(', ')}.</div>`:''}
-  ${pctPlano<50?`<div class="alerta">Plano cumprido: ${pctPlano}%. Tente marcar mais dias para manter o ritmo.</div>`:pctPlano>=80?`<div class="ok">Plano cumprido: ${pctPlano}% — ótima consistência!</div>`:''}
-</section>
-
-<div class="footer">
-  <span>Luia — Plataforma de estudos</span>
-  <span>Gerado em ${dataGer}</span>
-</div>
-</div>
-<script>window.onload=()=>setTimeout(()=>window.print(),400)</script>
-</body></html>`;
-
-  win.document.write(html);
-  win.document.close();
-}
-
-// ═══════════════════════════════════════
-//  FEEDBACK
-// ═══════════════════════════════════════
-let fbTipo='bug', fbPrior='normal';
-
-function fbSetTipo(btn,tipo){
-  document.querySelectorAll('.fb-tipo-btn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  fbTipo=tipo;
-}
-
-function fbSetPrior(btn,prior){
-  document.querySelectorAll('.fb-prior-btn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  fbPrior=prior;
-}
-
-async function fbEnviar(){
-  const texto=document.getElementById('fb-texto').value.trim();
-  if(!texto){showToast('Descreve o feedback antes de enviar!','error');return;}
-  const btn=document.querySelector('#sec-feedback .btn-primary');
-  if(btn){btn.disabled=true;btn.textContent='Enviando...';}
-  try{
-    await sbPost('feedbacks',{
-      access_key:perfilData.chave||'visitante',
-      texto,
-      tipo:fbTipo,
-      prioridade:fbPrior,
-      resolvido:false
-    });
-    document.getElementById('fb-texto').value='';
-    showToast('Feedback enviado! Sua mãe vai ver em breve.','success');
-    renderFeedbacks();
-  }catch(e){
-    showToast('Erro ao enviar. Tente novamente.','error');
-  }finally{
-    if(btn){btn.disabled=false;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar feedback';}
-  }
-}
-
-async function renderFeedbacks(){
-  const el=document.getElementById('fb-lista');
-  if(!el) return;
-  try{
-    const rows=await sbGet('feedbacks','order=created_at.desc&limit=20');
-    if(!rows||!rows.length){
-      el.innerHTML='<p style="font-size:13px;color:var(--text-dim)">Nenhum feedback ainda.</p>';
-      return;
-    }
-    const tipoIcon={
-      bug:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2l1.5 1.5M15.5 2 14 3.5M12 8c-2.2 0-4 1.8-4 4v3h8v-3c0-2.2-1.8-4-4-4z"/><path d="M8 15H4M20 15h-4M8 11H5M19 11h-3M10 19v2M14 19v2"/></svg>',
-      ideia:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>',
-      melhoria:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>'
-    };
-    const priorCor={urgente:'#F87171',normal:'#FBBF24',calma:'#4ADE80'};
-    el.innerHTML=rows.map(r=>`
-      <div class="fb-item ${r.resolvido?'resolvido':''}" style="margin-bottom:8px">
-        <div class="fb-item-icon" style="background:rgba(139,92,246,.12);color:#A78BFA">${tipoIcon[r.tipo]||tipoIcon.bug}</div>
-        <div style="flex:1;min-width:0">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
-            <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#A78BFA">${r.tipo}</span>
-            <span style="font-size:10px;padding:1px 7px;border-radius:99px;background:rgba(0,0,0,.2);color:${priorCor[r.prioridade]||'#94A3B8'};font-weight:600">${r.prioridade}</span>
-            ${r.resolvido?'<span style="font-size:10px;color:#4ADE80;display:flex;align-items:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Resolvido</span>':''}
-            <span style="font-size:10px;color:var(--text-dim);margin-left:auto">${(r.created_at||'').substring(0,10)}</span>
-          </div>
-          <div style="font-size:13px;color:var(--text-secondary);line-height:1.5">${r.texto}</div>
-        </div>
-      </div>`).join('');
-  }catch(e){
-    el.innerHTML='<p style="font-size:13px;color:var(--text-dim)">Erro ao carregar feedbacks.</p>';
-  }
-}
-
 // ── BADGE DE REVISÕES PENDENTES ──
 function atualizarRevBadge(){
   const today = todayLocal();
@@ -6072,6 +5758,102 @@ function updateWelcome(){
 
 init();
 setTimeout(()=>{carregarPerfil();atualizarBanner();},600);
+
+// ═══════════════════════════════════════
+//  FEEDBACK
+// ═══════════════════════════════════════
+let fbTipo='bug', fbPrior='normal';
+function fbSetTipo(btn,tipo){document.querySelectorAll('.fb-tipo-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');fbTipo=tipo;}
+function fbSetPrior(btn,prior){document.querySelectorAll('.fb-prior-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');fbPrior=prior;}
+async function fbEnviar(){
+  if(_visitanteBlocked('enviar feedback')) return;
+  const texto=document.getElementById('fb-texto').value.trim();
+  if(!texto){showToast('Descreve o feedback antes de enviar!','error');return;}
+  const btn=document.querySelector('#sec-feedback .btn-primary');
+  if(btn){btn.disabled=true;btn.textContent='Enviando...';}
+  try{
+    await sbPost('feedbacks',{access_key:perfilData.chave||'visitante',texto,tipo:fbTipo,prioridade:fbPrior,resolvido:false});
+    document.getElementById('fb-texto').value='';
+    showToast('Feedback enviado! Sua mãe vai ver em breve.','success');
+    renderFeedbacks();
+  }catch(e){showToast('Erro ao enviar. Tente novamente.','error');}
+  finally{if(btn){btn.disabled=false;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar feedback';}}
+}
+async function renderFeedbacks(){
+  const el=document.getElementById('fb-lista');
+  if(!el) return;
+  try{
+    const rows=await sbGet('feedbacks','order=created_at.desc&limit=20');
+    if(!rows||!rows.length){el.innerHTML='<p style="font-size:13px;color:var(--text-dim)">Nenhum feedback ainda.</p>';return;}
+    const tIcon={bug:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2l1.5 1.5M15.5 2 14 3.5M12 8c-2.2 0-4 1.8-4 4v3h8v-3c0-2.2-1.8-4-4-4z"/></svg>',ideia:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2"/></svg>',melhoria:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>'};
+    const pCor={urgente:'#F87171',normal:'#FBBF24',calma:'#4ADE80'};
+    el.innerHTML=rows.map(r=>`<div class="fb-item ${r.resolvido?'resolvido':''}" style="margin-bottom:8px"><div class="fb-item-icon" style="background:rgba(139,92,246,.12);color:#A78BFA">${tIcon[r.tipo]||tIcon.bug}</div><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#A78BFA">${r.tipo}</span><span style="font-size:10px;padding:1px 7px;border-radius:99px;background:rgba(0,0,0,.2);color:${pCor[r.prioridade]||'#94A3B8'};font-weight:600">${r.prioridade}</span>${r.resolvido?'<span style="font-size:10px;color:#4ADE80">Resolvido</span>':''}<span style="font-size:10px;color:var(--text-dim);margin-left:auto">${(r.created_at||'').substring(0,10)}</span></div><div style="font-size:13px;color:var(--text-secondary);line-height:1.5">${r.texto}</div></div></div>`).join('');
+  }catch(e){el.innerHTML='<p style="font-size:13px;color:var(--text-dim)">Erro ao carregar feedbacks.</p>';}
+}
+
+// ═══════════════════════════════════════
+//  RELATÓRIO PDF
+// ═══════════════════════════════════════
+let relPeriodoDias=7;
+function abrirModalRelatorio(){document.getElementById('modal-relatorio').style.display='flex';}
+function relSetPeriodo(btn,dias){
+  relPeriodoDias=dias;
+  document.querySelectorAll('.rel-per-btn').forEach(b=>{b.style.border='1.5px solid rgba(255,255,255,.1)';b.style.background='transparent';b.style.color='rgba(255,255,255,.5)';});
+  btn.style.border='1.5px solid #7C3AED';btn.style.background='rgba(124,58,237,.2)';btn.style.color='#A78BFA';
+}
+function gerarRelatorio(){
+  document.getElementById('modal-relatorio').style.display='none';
+  const win=window.open('','_blank');
+  if(!win){showToast('Permita popups para gerar o relatório.','error');return;}
+  const dias=relPeriodoDias;
+  const hoje=new Date();
+  const corte=dias>0?new Date(hoje.getTime()-dias*24*60*60*1000):null;
+  const periodoLabel=dias===7?'Últimos 7 dias':dias===15?'Últimos 15 dias':dias===30?'Últimos 30 dias':'Todo o período';
+  const dataGer=hoje.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'})+' às '+hoje.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const ativas=sessions.filter(s=>!s.archived&&(!corte||new Date(s.data+'T12:00')>=corte));
+  const simFilt=(simHistorico||[]).filter(s=>!s.arquivado&&(!corte||new Date((s.data||'')+'T12:00')>=corte));
+  const revFilt=reviews.filter(r=>!corte||new Date((r.review_date||'')+'T12:00')>=corte);
+  const totalSess=ativas.length;
+  const totalQ=ativas.reduce((a,s)=>a+s.acertos+s.erros,0)+simFilt.reduce((a,s)=>a+(s.total||0),0);
+  const totalA=ativas.reduce((a,s)=>a+s.acertos,0)+simFilt.reduce((a,s)=>a+(s.acertos||0),0);
+  const totalMin=ativas.reduce((a,s)=>a+(s.minutos||0),0);
+  const pctAcertos=totalQ>0?Math.round(totalA/totalQ*100):0;
+  const horas=Math.floor(totalMin/60);const mins=totalMin%60;
+  const horasStr=horas>0?`${horas}h${mins>0?mins+'m':''}`:`${totalMin}min`;
+  const {streak}=calcStreak();
+  const porMat={};
+  ativas.forEach(s=>{if(!porMat[s.materia])porMat[s.materia]={acertos:0,erros:0,sessoes:0,minutos:0};porMat[s.materia].acertos+=s.acertos;porMat[s.materia].erros+=s.erros;porMat[s.materia].sessoes++;porMat[s.materia].minutos+=(s.minutos||0);});
+  simFilt.forEach(s=>{if(!porMat[s.materia])porMat[s.materia]={acertos:0,erros:0,sessoes:0,minutos:0};porMat[s.materia].acertos+=s.acertos||0;porMat[s.materia].erros+=(s.total||0)-(s.acertos||0);});
+  const today=todayLocal();
+  const revConcluidas=revFilt.filter(r=>r.status==='concluida').length;
+  const revAtrasadas=revFilt.filter(r=>r.status==='pendente'&&r.review_date<=today).length;
+  const diasPlanoFilt=planoFeitos.filter(d=>!corte||new Date(d+'T12:00')>=corte).length;
+  const totalDiasBase=dias>0?dias:Math.max(planoFeitos.length,1);
+  const pctPlano=Math.min(100,Math.round(diasPlanoFilt/totalDiasBase*100));
+  const sessPorSemana=dias>0?(totalSess/(dias/7)):totalSess/4;
+  const revScore=revConcluidas+revAtrasadas>0?Math.round(revConcluidas/(revConcluidas+revAtrasadas)*100):100;
+  const prontidao=Math.round(pctAcertos*.40+pctPlano*.30+Math.min(100,sessPorSemana/5*100)*.20+revScore*.10);
+  const corPront=prontidao>=70?'#4ADE80':prontidao>=50?'#FBBF24':'#F87171';
+  const textoPront=prontidao>=70?'Excelente ritmo! Luísa mantém consistência e bom aproveitamento.':prontidao>=50?'Progresso satisfatório. Há espaço para melhorar consistência e revisões.':'Atenção necessária. Recomenda-se aumentar frequência de estudos.';
+  const todasMat=['Português','Matemática','Ciências da Natureza','História','Geografia'];
+  const negligenciadas=todasMat.filter(m=>!porMat[m]);
+  const nome=perfilData.nome||'Luísa';
+  const objetivo=goals.objetivo||'IFPE 2027';
+  const prova=new Date(((goals.data_prova||'2027-01-01')+'T00:00:00'));
+  const diasProva=Math.ceil((prova-hoje)/(1000*60*60*24));
+  const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Relatório — ${nome}</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background:#F8F9FF;color:#1E1B4B}.header{background:linear-gradient(135deg,#0F172A,#1E1B4B);padding:24px 32px;display:flex;align-items:center;justify-content:space-between}.logo{font-family:'Poppins',sans-serif;font-size:28px;font-weight:800;color:#fff}.logo span{color:#A78BFA}.h-info{text-align:right}.h-nome{font-size:15px;font-weight:700;color:#fff}.h-sub{font-size:11px;color:rgba(167,139,250,.7);margin-top:2px}.h-data{font-size:10px;color:rgba(255,255,255,.4);margin-top:4px}.periodo{display:inline-block;background:rgba(124,58,237,.3);color:#A78BFA;font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;margin-top:4px}.page{max-width:720px;margin:0 auto;padding:28px 24px}section{margin:20px 0}h2{font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;display:flex;align-items:center;gap:8px}h2::after{content:'';flex:1;height:1px;background:rgba(109,40,217,.15)}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.sc{background:#fff;border-radius:10px;padding:14px;text-align:center;border:1px solid rgba(109,40,217,.1)}.sv{font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:800;color:#6D28D9}.sl{font-size:10px;color:#94A3B8;text-transform:uppercase;letter-spacing:.05em;margin-top:3px}.pcard{background:#fff;border-radius:10px;padding:18px;border:1px solid rgba(109,40,217,.1)}.pbar{height:10px;background:#F1F5F9;border-radius:99px;overflow:hidden;margin:10px 0}.pbfill{height:100%;border-radius:99px}.mrow{display:flex;align-items:center;gap:10px;margin-bottom:8px}.mnome{width:130px;font-size:12px;font-weight:600;color:#1E1B4B;flex-shrink:0}.mbar{flex:1;height:7px;background:#F1F5F9;border-radius:99px;overflow:hidden}.mbfill{height:100%;border-radius:99px}.mpct{width:34px;text-align:right;font-size:12px;font-weight:600;color:#6D28D9}.mq{width:44px;text-align:right;font-size:10px;color:#94A3B8}table{width:100%;border-collapse:collapse;font-size:12px}th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#94A3B8;padding:5px 8px;border-bottom:2px solid #E2E8F0}td{padding:7px 8px;border-bottom:1px solid #F1F5F9;color:#374151}.badge{display:inline-block;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:600}.bg{background:#DCFCE7;color:#16A34A}.by{background:#FEF9C3;color:#CA8A04}.br{background:#FEE2E2;color:#DC2626}.alerta{background:#FEF9C3;border-left:3px solid #F59E0B;padding:9px 12px;border-radius:0 8px 8px 0;font-size:12px;color:#92400E;margin-bottom:7px}.ok{background:#DCFCE7;border-left:3px solid #4ADE80;padding:9px 12px;border-radius:0 8px 8px 0;font-size:12px;color:#166534;margin-bottom:7px}.footer{margin-top:28px;padding-top:14px;border-top:1px solid #E2E8F0;display:flex;justify-content:space-between;font-size:10px;color:#94A3B8}@media print{body{background:#fff}.page{padding:16px}}</style></head><body>
+<div class="header"><div class="logo">Luia<span>✦</span></div><div class="h-info"><div class="h-nome">${nome}</div><div class="h-sub">${objetivo} · ${diasProva} dias para a prova</div><div class="h-data">Gerado em ${dataGer}</div><div class="periodo">${periodoLabel}</div></div></div>
+<div class="page">
+<section><h2>Resumo geral</h2><div class="grid4"><div class="sc"><div class="sv">${totalSess}</div><div class="sl">Sessões</div></div><div class="sc"><div class="sv">${horasStr}</div><div class="sl">Horas</div></div><div class="sc"><div class="sv">${totalQ}</div><div class="sl">Questões</div></div><div class="sc"><div class="sv">${pctAcertos}%</div><div class="sl">Acertos</div></div></div></section>
+<section><h2>Projeção de prontidão</h2><div class="pcard"><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:12px;color:#64748B;margin-bottom:3px">Índice estimado</div><div style="font-family:'Poppins',sans-serif;font-size:1.8rem;font-weight:800;color:${corPront}">${prontidao}%</div></div><div style="font-size:11px;color:#94A3B8;max-width:180px;line-height:1.5;text-align:right">${textoPront}</div></div><div class="pbar"><div class="pbfill" style="width:${prontidao}%;background:${corPront}"></div></div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px"><div style="text-align:center"><div style="font-size:12px;font-weight:700;color:#6D28D9">${pctAcertos}%</div><div style="font-size:9px;color:#94A3B8">Acertos</div></div><div style="text-align:center"><div style="font-size:12px;font-weight:700;color:#6D28D9">${pctPlano}%</div><div style="font-size:9px;color:#94A3B8">Plano</div></div><div style="text-align:center"><div style="font-size:12px;font-weight:700;color:#6D28D9">${Math.round(Math.min(100,sessPorSemana/5*100))}%</div><div style="font-size:9px;color:#94A3B8">Consistência</div></div><div style="text-align:center"><div style="font-size:12px;font-weight:700;color:#6D28D9">${revScore}%</div><div style="font-size:9px;color:#94A3B8">Revisões</div></div></div></div></section>
+<section><h2>Desempenho por matéria</h2>${Object.entries(porMat).sort((a,b)=>{const pa=a[1].acertos/(a[1].acertos+a[1].erros||1);const pb=b[1].acertos/(b[1].acertos+b[1].erros||1);return pb-pa;}).map(([mat,d])=>{const t=d.acertos+d.erros;const p=t>0?Math.round(d.acertos/t*100):0;const c=p>=80?'#4ADE80':p>=60?'#FBBF24':'#F87171';return `<div class="mrow"><div class="mnome">${mat}</div><div class="mbar"><div class="mbfill" style="width:${p}%;background:${c}"></div></div><div class="mpct" style="color:${c}">${p}%</div><div class="mq">${t}q</div></div>`;}).join('')}${Object.keys(porMat).length===0?'<p style="font-size:12px;color:#94A3B8">Nenhuma sessão no período.</p>':''}</section>
+${simFilt.length>0?`<section><h2>Simulados</h2><table><thead><tr><th>Data</th><th>Matéria</th><th>Tópico</th><th>Nível</th><th>Resultado</th></tr></thead><tbody>${simFilt.map(s=>{const c=s.pct>=80?'bg':s.pct>=60?'by':'br';return `<tr><td>${fmtDate(s.data)}</td><td>${s.materia}</td><td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.topico}</td><td>${s.nivel}</td><td><span class="badge ${c}">${s.pct}% (${s.acertos}/${s.total})</span></td></tr>`;}).join('')}</tbody></table></section>`:''}
+<section><h2>Revisões &amp; Alertas</h2>${revAtrasadas>0?`<div class="alerta">${revAtrasadas} revisão(ões) atrasada(s).</div>`:'<div class="ok">Revisões em dia!</div>'}${streak>=5?`<div class="ok">Sequência de ${streak} dias estudando!</div>`:streak>0?`<div class="alerta">Streak: ${streak} dia(s). Meta: 5 dias seguidos.</div>`:''}${negligenciadas.length>0?`<div class="alerta">Sem estudo no período: ${negligenciadas.join(', ')}.</div>`:''}${pctPlano<50?`<div class="alerta">Plano cumprido: ${pctPlano}%.</div>`:pctPlano>=80?`<div class="ok">Plano: ${pctPlano}% cumprido!</div>`:''}</section>
+<div class="footer"><span>Luia — Plataforma de estudos</span><span>Gerado em ${dataGer}</span></div>
+</div><script>window.onload=()=>setTimeout(()=>window.print(),500)</script></body></html>`;
+  win.document.write(html);
+  win.document.close();
+}
 </script>
 </body>
 </html>
