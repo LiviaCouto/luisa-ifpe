@@ -664,6 +664,8 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
 .sim-alt.selecionada{border-color:var(--accent);background:rgba(139,92,246,.12)}
 .sim-alt.correta{border-color:#4ADE80;background:rgba(74,222,128,.1);pointer-events:none}
 .sim-alt.errada{border-color:#F87171;background:rgba(248,113,113,.1);pointer-events:none}
+.sim-alt.eliminada{opacity:.4;text-decoration:line-through;border-color:rgba(255,255,255,.1);background:transparent}
+.sim-alt.eliminada .sim-alt-letra{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);color:var(--text-dim)}
 .sim-alt-letra{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text-secondary);flex-shrink:0;transition:all .2s}
 .sim-alt.selecionada .sim-alt-letra{background:var(--accent);border-color:var(--accent);color:#fff}
 .sim-alt.correta .sim-alt-letra{background:#4ADE80;border-color:#4ADE80;color:#0A0714}
@@ -1883,10 +1885,17 @@ async function loadFromSupabase() {
     // Carrega plano do banco — não perde em aba anônima
     if(goalRows && goalRows[0] && goalRows[0].plano_feitos){
       const planoDB = goalRows[0].plano_feitos;
-      // Merge: une local + banco (sem duplicatas)
-      const merged = [...new Set([...planoFeitos, ...planoDB])];
-      planoFeitos = merged;
+      // Banco sempre vence — mais confiável que local
+      planoFeitos = [...new Set([...planoDB, ...planoFeitos])];
       localStorage.setItem('luia_plano', JSON.stringify(planoFeitos));
+    }
+
+    // Carrega conquistas do Supabase — banco sempre vence
+    if(goalRows && goalRows[0] && goalRows[0].conquistas_json && goalRows[0].conquistas_json.length){
+      const conquDB = goalRows[0].conquistas_json;
+      // Merge: une banco + local sem duplicatas
+      conquistasDesbloqueadas = [...new Set([...conquDB, ...conquistasDesbloqueadas])];
+      localStorage.setItem('luisa_conquistas', JSON.stringify(conquistasDesbloqueadas));
     }
 
     // Carrega favoritas de simulados do banco
@@ -2556,7 +2565,14 @@ const CONQUISTAS = [
 
 let conquistasDesbloqueadas = JSON.parse(localStorage.getItem('luisa_conquistas')||'[]');
 
-function saveConquistas(){localStorage.setItem('luisa_conquistas',JSON.stringify(conquistasDesbloqueadas));}
+function saveConquistas(){
+  localStorage.setItem('luisa_conquistas',JSON.stringify(conquistasDesbloqueadas));
+  fetch(`${SUPA_URL}/rest/v1/study_goals?id=eq.1`,{
+    method:'PATCH',
+    headers:{...H,'Prefer':'return=minimal'},
+    body:JSON.stringify({conquistas_json:conquistasDesbloqueadas})
+  }).catch(()=>{});
+}
 
 function calcStatsConquistas(){
   const ativas=sessions.filter(s=>!s.archived);
@@ -3765,6 +3781,13 @@ async function bvEntrar(){
     setTimeout(()=>{authDesbloqueado=false;localStorage.removeItem('luia_auth_exp');},24*60*60*1000);
     bvFechar();
     await loadFromSupabase();
+    // Atualiza avatar e sidebar com dados do banco
+    if(typeof atualizarSidebar==='function') atualizarSidebar();
+    if(typeof renderDashboard==='function') renderDashboard();
+    // Restaura aba anterior após login
+    const _abaLogin=sessionStorage.getItem('luia_aba')||'dashboard';
+    const _abasAuthLogin=['sobre','perfil'];
+    setTimeout(()=>showLuia(_abasAuthLogin.includes(_abaLogin)?'dashboard':_abaLogin,null),200);
     showToast('Bem-vinda de volta' + (perfilData.nome?' , '+perfilData.nome.split(' ')[0]:'')+'! ✦','success');
   } catch(e){
     err.textContent='Erro de conexão. Tente novamente.';
@@ -3789,6 +3812,13 @@ async function init(){
   // Mostra modal de boas-vindas — só pula se já estava autenticado nessa sessão
   if(!authDesbloqueado){
     bvMostrar();
+  } else {
+    // Auth válida — restaura aba e atualiza avatar
+    if(typeof atualizarSidebar==='function') atualizarSidebar();
+    if(typeof renderDashboard==='function') renderDashboard();
+    const _aba=sessionStorage.getItem('luia_aba')||'dashboard';
+    const _abasAuth=['sobre','perfil'];
+    setTimeout(()=>showLuia(_abasAuth.includes(_aba)?'dashboard':_aba,null),100);
   }
 }
 // ═══════════════════════════════════════
@@ -4667,6 +4697,7 @@ let simAtual=0;
 let simRespostas=[];
 let simFavoritas=[];
 let simComentarios={};
+let simEliminadas={};
 let simTimerSeg=0;
 let simTimerInterval=null;
 let simPausado=false;
@@ -4845,6 +4876,7 @@ RETORNE APENAS um JSON válido, sem markdown, sem texto antes ou depois, apenas 
   simRespostas=new Array(simQuestoes.length).fill(null);
   simFavoritas=new Array(simQuestoes.length).fill(false);
   simComentarios={};
+  simEliminadas={}; // {questaoIdx: [letras eliminadas]}
   simTimerSeg=0;
   simPausado=false;
 
@@ -4936,7 +4968,10 @@ function renderQuestao(){
       if(l===gab) cls+=' correta';
       else if(l===resp) cls+=' errada';
     } else if(l===resp) cls+=' selecionada';
-    return`<div class="${cls}" onclick="${respondida?'':'responderQuestao(\''+l+'\')'}" style="${respondida?'cursor:default':''}">
+    const eliminadas=simEliminadas[simAtual]||[];
+    if(!respondida && eliminadas.includes(l)) cls+=' eliminada';
+    const onclickAttr = respondida?'':`onclick="simAltClick(event,'${l}')"`;
+    return`<div class="${cls}" ${onclickAttr} style="${respondida?'cursor:default':'cursor:pointer'}">
       <div class="sim-alt-letra">${l}</div>
       <div class="sim-alt-texto">${alt}</div>
     </div>`;
@@ -4954,6 +4989,44 @@ function renderQuestao(){
   renderMapa();
   document.getElementById('sim-modal-com').style.display='none';
   if(com) document.getElementById('sim-comentario-txt').value=com;
+}
+
+let _simClickTimer=null;
+function simAltClick(e,letra){
+  // Detecta duplo clique pelo detalhe do evento
+  if(e.detail===2){
+    // Duplo clique — eliminar/restaurar
+    clearTimeout(_simClickTimer);
+    if(!simEliminadas[simAtual]) simEliminadas[simAtual]=[];
+    const idx=simEliminadas[simAtual].indexOf(letra);
+    if(idx>=0){
+      simEliminadas[simAtual].splice(idx,1);
+    } else {
+      if(simRespostas[simAtual]===letra) simRespostas[simAtual]=null;
+      simEliminadas[simAtual].push(letra);
+    }
+    renderQuestao();
+  } else {
+    // Clique simples — marcar (com pequeno delay para não conflitar com duplo)
+    clearTimeout(_simClickTimer);
+    _simClickTimer=setTimeout(()=>{
+      const eliminadas=simEliminadas[simAtual]||[];
+      if(!eliminadas.includes(letra)) responderQuestao(letra);
+    },180);
+  }
+}
+
+function eliminarAlternativa(letra, el){
+  if(!simEliminadas[simAtual]) simEliminadas[simAtual]=[];
+  const idx=simEliminadas[simAtual].indexOf(letra);
+  if(idx>=0){
+    simEliminadas[simAtual].splice(idx,1); // remove eliminação
+  } else {
+    // Se está selecionada, desseleciona antes de eliminar
+    if(simRespostas[simAtual]===letra) simRespostas[simAtual]=null;
+    simEliminadas[simAtual].push(letra);
+  }
+  renderQuestao();
 }
 
 function responderQuestao(letra){
