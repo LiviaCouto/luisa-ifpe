@@ -1184,9 +1184,9 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
 
         <div class="form-label" style="margin-bottom:8px">Nível de dificuldade</div>
         <div class="sim-nivel-grid" style="margin-bottom:16px">
-          <button class="sim-nivel-btn on" onclick="selecionarNivel(this,'facil')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Fácil</button>
-          <button class="sim-nivel-btn" onclick="selecionarNivel(this,'medio')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Médio</button>
-          <button class="sim-nivel-btn" onclick="selecionarNivel(this,'dificil')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> Difícil</button>
+          <button class="sim-nivel-btn on" onclick="selecionarNivel(this,'fácil')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Fácil</button>
+          <button class="sim-nivel-btn" onclick="selecionarNivel(this,'médio')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Médio</button>
+          <button class="sim-nivel-btn" onclick="selecionarNivel(this,'difícil')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> Difícil</button>
           <button class="sim-nivel-btn" onclick="selecionarNivel(this,'misto')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg> Misto</button>
         </div>
 
@@ -1238,7 +1238,8 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
           <button class="sim-act-btn" onclick="toggleFavorita()" id="sim-btn-fav"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Favoritar</button>
           <button class="sim-act-btn" onclick="abrirComentario()" id="sim-btn-com"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Anotação</button>
         </div>
-        <button class="btn-primary" onclick="proximaQuestao()" id="sim-btn-prox" style="padding:8px 20px;font-size:13px">Próxima →</button>
+        <button class="btn-primary" id="sim-btn-confirmar" onclick="confirmarResposta()" style="padding:8px 20px;font-size:13px;display:flex;align-items:center;gap:6px;opacity:0.5;cursor:not-allowed" disabled>Confirmar ✓</button>
+        <button class="btn-primary" onclick="proximaQuestao()" id="sim-btn-prox" style="padding:8px 20px;font-size:13px;display:none">Próxima →</button>
       </div>
 
       <!-- Modal comentário -->
@@ -1250,6 +1251,9 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
 
     <!-- TELA 3: RESULTADO -->
     <div id="sim-tela-resultado" style="display:none">
+      <div style="margin-bottom:10px">
+        <button class="sim-act-btn" onclick="showLuia('simulados',null)" style="display:flex;align-items:center;gap:6px;padding:8px 14px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg> ← Voltar ao histórico</button>
+      </div>
       <div class="sim-resultado-hero">
         <div class="sim-resultado-pct" id="sim-res-pct">—</div>
         <div style="font-size:14px;color:rgba(255,255,255,.8);margin-bottom:4px" id="sim-res-label">de acertos</div>
@@ -1263,10 +1267,10 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
         <div class="card-title">⭐ Questões favoritadas</div>
         <div id="sim-favoritas-res-list"></div>
       </div>
-      <button class="sim-act-btn" onclick="showLuia('simulados',null)" style="width:100%;padding:11px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg> Ver histórico</button>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="sim-act-btn" onclick="showLuia('simulados',null)" style="flex:1;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg> ← Voltar</button>
         <button class="btn-primary" onclick="novoSimulado()" style="flex:1">✦ Novo simulado</button>
-        <button class="sim-act-btn" onclick="_authNovoSimuladoErros()" style="flex:1;padding:11px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg> Repetir erros</button>
+        <button class="sim-act-btn" onclick="_authNovoSimuladoErros()" style="flex:1;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg> Repetir erros</button>
       </div>
     </div>
   </div>
@@ -4691,13 +4695,14 @@ async function exportarRelatorio(winPreAberta){
 // ═══════════════════════════════════════
 //  MÓDULO DE SIMULADOS
 // ═══════════════════════════════════════
-let simConfig={materia:'',topico:'',nivel:'facil',qtd:5,cronometro:true};
+let simConfig={materia:'',topico:'',nivel:'fácil',qtd:5,cronometro:true};
 let simQuestoes=[];
 let simAtual=0;
 let simRespostas=[];
 let simFavoritas=[];
 let simComentarios={};
 let simEliminadas={};
+let simConfirmadas={};
 let simTimerSeg=0;
 let simTimerInterval=null;
 let simPausado=false;
@@ -4877,6 +4882,7 @@ RETORNE APENAS um JSON válido, sem markdown, sem texto antes ou depois, apenas 
   simFavoritas=new Array(simQuestoes.length).fill(false);
   simComentarios={};
   simEliminadas={}; // {questaoIdx: [letras eliminadas]}
+  simConfirmadas={};
   simTimerSeg=0;
   simPausado=false;
 
@@ -4934,7 +4940,7 @@ function renderQuestao(){
   if(!q) return;
   const letras=['A','B','C','D','E'];
   const resp=simRespostas[simAtual];
-  const respondida=resp!==null;
+  const respondida=!!(simConfirmadas&&simConfirmadas[simAtual]);
   const fav=simFavoritas[simAtual];
   const com=simComentarios[simAtual]||'';
 
@@ -4979,7 +4985,7 @@ function renderQuestao(){
 
   document.getElementById('sim-questao-wrap').innerHTML=`
     <div class="sim-questao-card">
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px"><div class="sim-materia-tag">${q.materia||simConfig.materia} · ${q.topico||simConfig.topico}</div><div style="font-size:10px;padding:2px 8px;border-radius:99px;background:${simConfig.nivel==='facil'?'rgba(74,222,128,.15)':simConfig.nivel==='medio'?'rgba(251,191,36,.15)':'rgba(248,113,113,.15)'};color:${simConfig.nivel==='facil'?'#4ADE80':simConfig.nivel==='medio'?'#FBBF24':'#F87171'};font-weight:600;text-transform:uppercase;letter-spacing:.05em">${simConfig.nivel}</div></div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px"><div class="sim-materia-tag">${q.materia||simConfig.materia} · ${q.topico||simConfig.topico}</div><div style="font-size:10px;padding:2px 8px;border-radius:99px;background:${simConfig.nivel==='fácil'?'rgba(74,222,128,.15)':simConfig.nivel==='médio'?'rgba(251,191,36,.15)':'rgba(248,113,113,.15)'};color:${simConfig.nivel==='fácil'?'#4ADE80':simConfig.nivel==='médio'?'#FBBF24':'#F87171'};font-weight:600;text-transform:uppercase;letter-spacing:.05em">${simConfig.nivel}</div></div>
       <div class="sim-enunciado">${formatEnunciado(q.enunciado||q.pergunta||"")}</div>
       <div class="sim-alternativas">${altsHtml}</div>
       ${respondida&&q.explicacao?`<div class="sim-explicacao" id="sim-exp" style="display:block">${formatExplicacao(q.explicacao)}</div>`:''}
@@ -4989,6 +4995,7 @@ function renderQuestao(){
   renderMapa();
   document.getElementById('sim-modal-com').style.display='none';
   if(com) document.getElementById('sim-comentario-txt').value=com;
+  setTimeout(atualizarBotoesSimulado,0);
 }
 
 let _simClickTimer=null;
@@ -5030,18 +5037,59 @@ function eliminarAlternativa(letra, el){
 }
 
 function responderQuestao(letra){
-  simRespostas[simAtual]=letra;
-  const q=simQuestoes[simAtual];
-  const certa=letra===(q.gabarito||q.resposta_correta);
-  if(certa) showToast('Correto! ✓','success');
-  else showToast('Errado. A resposta é '+(q.gabarito||q.resposta_correta),'error');
+  // Só seleciona — não revela resposta ainda
+  if(simRespostas[simAtual]===letra){
+    simRespostas[simAtual]=null; // deseleciona se clicar na mesma
+  } else {
+    simRespostas[simAtual]=letra;
+  }
   renderQuestao();
   renderMapa();
+  // Atualiza estado do botão confirmar
+  const btnConf=document.getElementById('sim-btn-confirmar');
+  if(btnConf) btnConf.disabled=!simRespostas[simAtual];
+}
+
+function confirmarResposta(){
+  const resp=simRespostas[simAtual];
+  if(!resp) return;
+  const q=simQuestoes[simAtual];
+  const certa=resp===(q.gabarito||q.resposta_correta);
+  if(certa) showToast('Correto! ✓','success');
+  else showToast('Errado. A resposta é '+(q.gabarito||q.resposta_correta),'error');
+  // Marca como confirmada
+  if(!simConfirmadas) simConfirmadas={};
+  simConfirmadas[simAtual]=true;
+  renderQuestao();
+  renderMapa();
+  // Atualiza botões
+  atualizarBotoesSimulado();
+}
+
+function atualizarBotoesSimulado(){
+  const confirmada=simConfirmadas&&simConfirmadas[simAtual];
+  const resp=simRespostas[simAtual];
+  const btnConf=document.getElementById('sim-btn-confirmar');
+  const btnProx=document.getElementById('sim-btn-prox');
+  if(btnConf){
+    btnConf.style.display=confirmada?'none':'flex';
+    btnConf.disabled=!resp;
+    btnConf.style.opacity=resp?'1':'0.5';
+    btnConf.style.cursor=resp?'pointer':'not-allowed';
+  }
+  if(btnProx) btnProx.style.display=confirmada?'flex':'none';
 }
 
 function proximaQuestao(){
   const isUltima=simAtual===simQuestoes.length-1;
-  if(isUltima){encerrarSimulado();return;}
+  if(isUltima){
+    // Verificar questões não respondidas
+    const naoRespondidas=simQuestoes.reduce((acc,_,i)=>(!simConfirmadas[i]?acc+1:acc),0);
+    if(naoRespondidas>0){
+      if(!confirm(`Você tem ${naoRespondidas} questão(ões) sem resposta. Deseja finalizar mesmo assim?`)) return;
+    }
+    encerrarSimulado();return;
+  }
   irQuestao(simAtual+1);
 }
 
@@ -5098,7 +5146,7 @@ function pausarSimulado(){
 
 function encerrarSimulado(){
   clearInterval(simTimerInterval);
-  const acertos=simRespostas.filter((r,i)=>r===simQuestoes[i]?.gabarito).length;
+  const acertos=simRespostas.filter((r,i)=>r&&r===(simQuestoes[i]?.gabarito||simQuestoes[i]?.resposta_correta)).length;
   const total=simQuestoes.length;
   const pct=Math.round(acertos/total*100);
   const cor=pct>=80?'#4ADE80':pct>=60?'#FBBF24':'#F87171';
