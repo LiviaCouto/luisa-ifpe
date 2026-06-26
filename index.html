@@ -4603,302 +4603,8 @@ async function exportarRelatorio(winPreAberta){
   // Usa janela pré-aberta ou abre nova
   const win = winPreAberta || window.open('','_blank');
   if(!win){ showToast('Permita popups para gerar o relatório.','error'); return; }
-  if(!winPreAberta) win.document.write('<html><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#0F172A;color:#fff;font-size:18px"><div style="text-align:center"><div style="font-size:3rem;margin-bottom:16px">✦</div><div>Gerando diagnóstico com IA...</div><div style="font-size:13px;color:#94A3B8;margin-top:8px">Isso pode levar alguns segundos</div></div>
-<!-- SEÇÃO FEEDBACK -->
-<div id="sec-feedback" class="section">
-  <div class="card" style="margin-bottom:12px">
-    <div class="card-title" style="display:flex;align-items:center;gap:8px">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Feedbacks &amp; Ideias
-    </div>
-    <p style="font-size:13px;color:var(--text-dim);margin-bottom:16px;line-height:1.6">Encontrou um bug ou teve uma ideia? Registra aqui! Sua mãe vai ver e resolver.</p>
-    <div class="fb-form">
-      <div>
-        <div class="form-label" style="margin-bottom:8px">Tipo</div>
-        <div class="fb-tipo-grid">
-          <button class="fb-tipo-btn on" onclick="fbSetTipo(this,'bug')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2l1.5 1.5M15.5 2 14 3.5M12 8c-2.2 0-4 1.8-4 4v3h8v-3c0-2.2-1.8-4-4-4z"/><path d="M8 15H4M20 15h-4M8 11H5M19 11h-3M10 19v2M14 19v2"/></svg>Bug</button>
-          <button class="fb-tipo-btn" onclick="fbSetTipo(this,'ideia')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>Ideia</button>
-          <button class="fb-tipo-btn" onclick="fbSetTipo(this,'melhoria')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Melhoria</button>
-        </div>
-      </div>
-      <div>
-        <div class="form-label" style="margin-bottom:8px">Prioridade</div>
-        <div class="fb-prior-grid">
-          <button class="fb-prior-btn urgente" onclick="fbSetPrior(this,'urgente')">Urgente</button>
-          <button class="fb-prior-btn normal on" onclick="fbSetPrior(this,'normal')">Normal</button>
-          <button class="fb-prior-btn calma" onclick="fbSetPrior(this,'calma')">Com calma</button>
-        </div>
-      </div>
-      <div>
-        <div class="form-label" style="margin-bottom:8px">Descreva</div>
-        <textarea class="fb-textarea" id="fb-texto" placeholder="O que aconteceu? Qual é a ideia?"></textarea>
-      </div>
-      <button class="btn-primary" onclick="fbEnviar()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        Enviar feedback
-      </button>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title" style="display:flex;align-items:center;gap:8px">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-      Enviados
-    </div>
-    <div id="fb-lista" style="margin-top:8px"><p style="font-size:13px;color:var(--text-dim)">Nenhum feedback ainda.</p></div>
-  </div>
-</div>
-
-<!-- MODAL RELATÓRIO -->
-<div id="modal-relatorio" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9990;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
-  <div style="background:linear-gradient(135deg,#0F172A,#1E1B4B);border:1px solid rgba(124,58,237,.3);border-radius:16px;padding:28px;width:90%;max-width:380px">
-    <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:6px;display:flex;align-items:center;gap:8px">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/></svg>
-      Gerar relatório
-    </div>
-    <p style="font-size:13px;color:rgba(167,139,250,.7);margin-bottom:20px">Escolha o período dos dados.</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">
-      <button class="rel-per-btn on" onclick="relSetPeriodo(this,7)" style="padding:12px;border:1.5px solid #7C3AED;background:rgba(124,58,237,.2);border-radius:10px;color:#A78BFA;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Últimos 7 dias</button>
-      <button class="rel-per-btn" onclick="relSetPeriodo(this,15)" style="padding:12px;border:1.5px solid rgba(255,255,255,.1);background:transparent;border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Últimos 15 dias</button>
-      <button class="rel-per-btn" onclick="relSetPeriodo(this,30)" style="padding:12px;border:1.5px solid rgba(255,255,255,.1);background:transparent;border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Últimos 30 dias</button>
-      <button class="rel-per-btn" onclick="relSetPeriodo(this,0)" style="padding:12px;border:1.5px solid rgba(255,255,255,.1);background:transparent;border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Tudo</button>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button onclick="document.getElementById('modal-relatorio').style.display='none'" style="flex:1;padding:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Cancelar</button>
-      <button onclick="gerarRelatorio()" style="flex:2;padding:11px;background:linear-gradient(135deg,#7C3AED,#6D28D9);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/></svg>
-        Gerar PDF
-      </button>
-    </div>
-  </div>
-</div>
-</body></html>');
-
-  // Gera diagnóstico com Claude
-  // Diagnóstico automático baseado nos dados (sem IA)
-  const melhorMat=Object.entries(porMat).filter(([,d])=>d.acertos+d.erros>0).sort((a,b)=>{const pa=a[1].acertos/(a[1].acertos+a[1].erros);const pb=b[1].acertos/(b[1].acertos+b[1].erros);return pb-pa;})[0];
-  const piorMat=Object.entries(porMat).filter(([,d])=>d.acertos+d.erros>0).sort((a,b)=>{const pa=a[1].acertos/(a[1].acertos+a[1].erros);const pb=b[1].acertos/(b[1].acertos+b[1].erros);return pa-pb;})[0];
-  const nome=perfilData.apelido||perfilData.nome?.split(' ')[0]||'Luísa';
-  let diagnostico=`${nome} acumulou ${ativas.length} sessão(ões) de estudo no período analisado, com ${totalQ} questões respondidas e taxa de acertos de ${pctGeral}%. O tempo total de dedicação foi de ${Math.round(totalMin/60*10)/10} horas.`;
-  if(melhorMat) diagnostico+=`
-
-Melhor desempenho em ${melhorMat[0]}, com ${Math.round(melhorMat[1].acertos/(melhorMat[1].acertos+melhorMat[1].erros)*100)}% de acertos.`;
-  if(piorMat&&piorMat[0]!==melhorMat?.[0]) diagnostico+=` Atenção especial para ${piorMat[0]}, onde o aproveitamento foi de ${Math.round(piorMat[1].acertos/(piorMat[1].acertos+piorMat[1].erros)*100)}%.`;
-  diagnostico+=`
-
-O plano panorâmico está ${pctPlano}% concluído (${diasFeitos} de ${totalDiasPlano} dias). Revisões: ${revFeitas} concluídas${revPend>0?', '+revPend+' atrasada(s)':', nenhuma atrasada'}.`;
-  if(simPeriodo.length>0) diagnostico+=`
-
-Nos simulados, foram realizados ${simPeriodo.length} teste(s) com média de ${simMedia}% de acertos.`;
-  diagnostico+=`
-
-Streak atual: ${streak} dia(s) seguidos estudando. Continue assim — cada sessão conta!`;
-
-  // Monta HTML do relatório
-  const nomeCompleto=perfilData.nome||'Luísa Couto Mota';
-  const apelido=perfilData.apelido||nomeCompleto.split(' ')[0];
-  const dataGer=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
-
-  const matHtml=Object.entries(porMat).map(([mat,d])=>{
-    const t=d.acertos+d.erros;const p=t>0?Math.round(d.acertos/t*100):0;
-    const cor=MATS_CORES[mat]||'#A78BFA';
-    return`<tr>
-      <td style="padding:10px 12px;color:#1E293B;font-weight:500">${mat}</td>
-      <td style="padding:10px 12px;text-align:center;color:#1E293B">${d.sessoes}</td>
-      <td style="padding:10px 12px;text-align:center;color:#22C55E;font-weight:600">${d.acertos}</td>
-      <td style="padding:10px 12px;text-align:center;color:#EF4444;font-weight:600">${d.erros}</td>
-      <td style="padding:10px 12px;text-align:center"><span style="background:${cor}22;color:${cor};font-weight:700;padding:3px 10px;border-radius:99px;font-size:13px">${p}%</span></td>
-      <td style="padding:10px 12px"><div style="background:#E2E8F0;border-radius:99px;height:8px;overflow:hidden"><div style="background:${cor};width:${p}%;height:100%;border-radius:99px"></div></div></td>
-    </tr>`;
-  }).join('');
-
-  const html=`<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Relatório Luia — ${nomeCompleto}</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Inter',sans-serif;background:#fff;color:#1E293B;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  @page{margin:0;size:A4}
-  @media print{.no-print{display:none!important}.page-break{page-break-before:always}}
-
-  /* CAPA */
-  .capa{background:linear-gradient(135deg,#0F172A 0%,#1E1B4B 50%,#0F172A 100%);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px;position:relative;overflow:hidden}
-  .capa::before{content:'';position:absolute;top:-100px;left:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(139,92,246,.2),transparent 70%)}
-  .capa::after{content:'';position:absolute;bottom:-100px;right:-100px;width:350px;height:350px;background:radial-gradient(circle,rgba(245,158,11,.1),transparent 70%)}
-  .capa-logo{font-family:'Poppins',sans-serif;font-size:56px;font-weight:800;color:#fff;position:relative;z-index:1;margin-bottom:8px}
-  .capa-tag{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:rgba(167,139,250,.7);margin-bottom:48px;position:relative;z-index:1}
-  .capa-nome{font-family:'Poppins',sans-serif;font-size:32px;font-weight:700;color:#fff;margin-bottom:8px;position:relative;z-index:1}
-  .capa-sub{font-size:16px;color:rgba(255,255,255,.6);margin-bottom:6px;position:relative;z-index:1}
-  .capa-periodo{display:inline-block;background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.4);border-radius:99px;padding:8px 24px;color:#A78BFA;font-size:14px;font-weight:600;margin-top:24px;position:relative;z-index:1}
-  .capa-data{font-size:12px;color:rgba(255,255,255,.3);margin-top:16px;position:relative;z-index:1}
-
-  /* CONTEÚDO */
-  .pagina{padding:48px;max-width:800px;margin:0 auto}
-  .secao{margin-bottom:40px}
-  .secao-titulo{font-family:'Poppins',sans-serif;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#7C3AED;border-bottom:2px solid #EDE9FE;padding-bottom:8px;margin-bottom:20px}
-  
-  /* CARDS DE STATS */
-  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:8px}
-  .stat-card{background:linear-gradient(135deg,#F5F3FF,#EDE9FE);border:1px solid #DDD6FE;border-radius:12px;padding:16px;text-align:center}
-  .stat-val{font-family:'Poppins',sans-serif;font-size:28px;font-weight:700;color:#7C3AED;line-height:1;margin-bottom:4px}
-  .stat-lab{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#94A3B8}
-
-  /* TABELA */
-  table{width:100%;border-collapse:collapse;font-size:13px}
-  thead tr{background:#F8F7FF}
-  th{text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#94A3B8;padding:10px 12px;border-bottom:2px solid #EDE9FE}
-  tr:nth-child(even){background:#FAFAFA}
-
-  /* REVISÕES */
-  .ciclos-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-  .ciclo-card{border-radius:10px;padding:14px;text-align:center}
-  .ciclo-val{font-size:22px;font-weight:700;font-family:'Poppins',sans-serif}
-  .ciclo-lab{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:4px;opacity:.7}
-  .ciclo-sub{font-size:11px;margin-top:6px}
-
-  /* DIAGNÓSTICO */
-  .diagnostico{background:linear-gradient(135deg,#F5F3FF,#FAF5FF);border:1px solid #DDD6FE;border-left:4px solid #7C3AED;border-radius:12px;padding:24px 28px;line-height:1.9;font-size:14px;color:#374151}
-  .diagnostico p{margin-bottom:14px}
-  .diagnostico p:last-child{margin-bottom:0}
-
-  /* PLANO */
-  .plano-bar{height:16px;background:#E2E8F0;border-radius:99px;overflow:hidden;margin:10px 0}
-  .plano-fill{height:100%;background:linear-gradient(90deg,#7C3AED,#A78BFA);border-radius:99px}
-
-  /* BTN IMPRIMIR */
-  .btn-print{position:fixed;top:20px;right:20px;background:#7C3AED;color:#fff;border:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 4px 20px rgba(124,58,237,.4);z-index:999}
-  .btn-print:hover{background:#6D28D9}
-  
-  /* RODAPÉ */
-  .rodape{text-align:center;padding:24px;font-size:11px;color:#CBD5E1;border-top:1px solid #EDE9FE;margin-top:40px}
-
-</head>
-<body>
-
-<button class="btn-print no-print" onclick="window.print()">🖨️ Salvar como PDF</button>
-
-<!-- HEADER COMPACTO -->
-<div style="background:linear-gradient(135deg,#0F172A,#1E1B4B);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #7C3AED">
-  <div style="display:flex;align-items:center;gap:16px">
-    <div style="font-family:'Poppins',sans-serif;font-size:36px;font-weight:800;color:#fff;line-height:1">Luia<span style="color:#A78BFA">✦</span></div>
-    <div>
-      <div style="font-size:18px;font-weight:700;color:#fff">${nomeCompleto}</div>
-      <div style="font-size:12px;color:rgba(167,139,250,.8);margin-top:2px">${goals.objetivo||'IFPE 2027'} · Relatório de Progresso</div>
-    </div>
-  </div>
-  <div style="text-align:right">
-    <div style="font-size:13px;color:#A78BFA;font-weight:600">📅 ${periodo}</div>
-    <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:4px">Gerado em ${dataGer}</div>
-  </div>
-</div>
-
-<!-- CONTEÚDO -->
-<div class="pagina">
-
-  <!-- VISÃO GERAL -->
-  <div class="secao">
-    <div class="secao-titulo">✦ Visão geral</div>
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-val">${ativas.length}</div><div class="stat-lab">Sessões</div></div>
-      <div class="stat-card"><div class="stat-val">${totalQ}</div><div class="stat-lab">Questões</div></div>
-      <div class="stat-card"><div class="stat-val">${pctGeral}%</div><div class="stat-lab">Acertos</div></div>
-      <div class="stat-card"><div class="stat-val">${Math.round(totalMin/60*10)/10}h</div><div class="stat-lab">Estudado</div></div>
-      <div class="stat-card"><div class="stat-val">${streak}</div><div class="stat-lab">Streak atual</div></div>
-      <div class="stat-card"><div class="stat-val">${record}</div><div class="stat-lab">Recorde</div></div>
-    </div>
-  </div>
-
-  <!-- PLANO -->
-  <div class="secao">
-    <div class="secao-titulo">📋 Plano panorâmico</div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-      <span style="font-size:13px;font-weight:500">${diasFeitos} de ${totalDiasPlano} dias cumpridos</span>
-      <span style="font-size:20px;font-weight:700;color:#7C3AED;font-family:'Poppins',sans-serif">${pctPlano}%</span>
-    </div>
-    <div class="plano-bar"><div class="plano-fill" style="width:${pctPlano}%"></div></div>
-    <div style="font-size:12px;color:#64748B;margin-top:6px">${totalDiasPlano-diasFeitos} dias restantes no plano</div>
-  </div>
-
-  <!-- DESEMPENHO POR MATÉRIA -->
-  <div class="secao">
-    <div class="secao-titulo">📚 Desempenho por matéria</div>
-    ${ativas.length>0?`<table>
-      <thead><tr><th>Matéria</th><th style="text-align:center">Sessões</th><th style="text-align:center">Acertos</th><th style="text-align:center">Erros</th><th style="text-align:center">%</th><th style="min-width:120px">Aproveitamento</th></tr></thead>
-      <tbody>${matHtml}</tbody>
-    </table>`:'<p style="color:#94A3B8;font-size:13px">Nenhuma sessão no período selecionado.</p>'}
-  </div>
-
-  <!-- REVISÕES -->
-  <div class="secao">
-    <div class="secao-titulo">🔁 Revisões espaçadas</div>
-    <div class="ciclos-grid">
-      <div class="ciclo-card" style="background:#EFF6FF;border:1px solid #BFDBFE">
-        <div class="ciclo-val" style="color:#3B82F6">${porCiclo['1d'].f}</div>
-        <div class="ciclo-lab" style="color:#3B82F6">24 horas</div>
-        <div class="ciclo-sub" style="color:#64748B">${porCiclo['1d'].p} pendentes</div>
-      </div>
-      <div class="ciclo-card" style="background:#F5F3FF;border:1px solid #DDD6FE">
-        <div class="ciclo-val" style="color:#7C3AED">${porCiclo['7d'].f}</div>
-        <div class="ciclo-lab" style="color:#7C3AED">7 dias</div>
-        <div class="ciclo-sub" style="color:#64748B">${porCiclo['7d'].p} pendentes</div>
-      </div>
-      <div class="ciclo-card" style="background:#FFFBEB;border:1px solid #FDE68A">
-        <div class="ciclo-val" style="color:#D97706">${porCiclo['15d'].f}</div>
-        <div class="ciclo-lab" style="color:#D97706">15 dias</div>
-        <div class="ciclo-sub" style="color:#64748B">${porCiclo['15d'].p} pendentes</div>
-      </div>
-      <div class="ciclo-card" style="background:#F0FDF4;border:1px solid #BBF7D0">
-        <div class="ciclo-val" style="color:#16A34A">${porCiclo['30d'].f}</div>
-        <div class="ciclo-lab" style="color:#16A34A">30 dias</div>
-        <div class="ciclo-sub" style="color:#64748B">${porCiclo['30d'].p} pendentes</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CONQUISTAS -->
-  <div class="secao">
-    <div class="secao-titulo">🏆 Conquistas desbloqueadas</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      ${conquFeitas.length>0?conquFeitas.map(id=>{
-        const c=CONQUISTAS.find(x=>x.id===id);
-        return c?`<span style="background:#F5F3FF;border:1px solid #DDD6FE;border-radius:99px;padding:5px 14px;font-size:12px;font-weight:500;color:#7C3AED">${c.icon} ${c.nome}</span>`:'';
-      }).join(''):'<p style="color:#94A3B8;font-size:13px">Nenhuma conquista ainda.</p>'}
-    </div>
-  </div>
-
-  <!-- SIMULADOS -->
-  ${simPeriodo.length>0?`
-  <div class="secao">
-    <div class="secao-titulo">🎯 Simulados</div>
-    <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
-      <div class="stat-card"><div class="stat-val">${simPeriodo.length}</div><div class="stat-lab">Simulados</div></div>
-      <div class="stat-card"><div class="stat-val">${simMedia}%</div><div class="stat-lab">Média</div></div>
-      <div class="stat-card"><div class="stat-val">${simMelhor}%</div><div class="stat-lab">Melhor</div></div>
-    </div>
-    ${simPeriodo.slice(0,5).map(s=>{
-      const cor=s.pct>=80?'#22C55E':s.pct>=60?'#D97706':'#DC2626';
-      return`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F1F5F9;font-size:12px">
-        <span style="color:#475569">${s.materia} · ${s.topico} · ${s.nivel}</span>
-        <span style="font-weight:700;color:${cor}">${s.pct}%</span>
-      </div>`;
-    }).join('')}
-  </div>`:''}
-
-  <!-- DIAGNÓSTICO IA -->
-  <div class="secao">
-    <div class="secao-titulo">🤖 Diagnóstico — gerado por IA</div>
-    <div class="diagnostico">
-      ${diagnostico.split('\n\n').map(p=>`<p>${p}</p>`).join('')}
-    </div>
-  </div>
-
-  <div class="rodape">
-    Luia · Relatório gerado em ${dataGer} · Desenvolvido por Lívia Couto
-  </div>
-
-</div>
+  if(!winPreAberta) win.document.write('<html><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#0F172A;color:#fff;font-size:18px"><div style="text-align:center"><div style="font-size:3rem;margin-bottom:16px">✦</div><div>Gerando diagnóstico com IA...</div><div style="font-size:13px;color:#94A3B8;margin-top:8px">Isso pode levar alguns segundos</div></div></body></html>');
+  // linha corrigida
 </body>
 </html>`;
 
@@ -5855,5 +5561,73 @@ ${simFilt.length>0?`<section><h2>Simulados</h2><table><thead><tr><th>Data</th><t
   win.document.close();
 }
 </script>
+
+<!-- SEÇÃO FEEDBACK -->
+<div id="sec-feedback" class="section">
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title" style="display:flex;align-items:center;gap:8px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Feedbacks &amp; Ideias
+    </div>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:16px;line-height:1.6">Encontrou um bug ou teve uma ideia? Registra aqui! Sua mãe vai ver e resolver.</p>
+    <div class="fb-form">
+      <div>
+        <div class="form-label" style="margin-bottom:8px">Tipo</div>
+        <div class="fb-tipo-grid">
+          <button class="fb-tipo-btn on" onclick="fbSetTipo(this,'bug')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2l1.5 1.5M15.5 2 14 3.5M12 8c-2.2 0-4 1.8-4 4v3h8v-3c0-2.2-1.8-4-4-4z"/><path d="M8 15H4M20 15h-4M8 11H5M19 11h-3M10 19v2M14 19v2"/></svg>Bug</button>
+          <button class="fb-tipo-btn" onclick="fbSetTipo(this,'ideia')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>Ideia</button>
+          <button class="fb-tipo-btn" onclick="fbSetTipo(this,'melhoria')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Melhoria</button>
+        </div>
+      </div>
+      <div>
+        <div class="form-label" style="margin-bottom:8px">Prioridade</div>
+        <div class="fb-prior-grid">
+          <button class="fb-prior-btn urgente" onclick="fbSetPrior(this,'urgente')">Urgente</button>
+          <button class="fb-prior-btn normal on" onclick="fbSetPrior(this,'normal')">Normal</button>
+          <button class="fb-prior-btn calma" onclick="fbSetPrior(this,'calma')">Com calma</button>
+        </div>
+      </div>
+      <div>
+        <div class="form-label" style="margin-bottom:8px">Descreva</div>
+        <textarea class="fb-textarea" id="fb-texto" placeholder="O que aconteceu? Qual é a ideia?"></textarea>
+      </div>
+      <button class="btn-primary" onclick="fbEnviar()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Enviar feedback
+      </button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="display:flex;align-items:center;gap:8px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Enviados
+    </div>
+    <div id="fb-lista" style="margin-top:8px"><p style="font-size:13px;color:var(--text-dim)">Nenhum feedback ainda.</p></div>
+  </div>
+</div>
+
+<!-- MODAL RELATÓRIO -->
+<div id="modal-relatorio" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9990;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+  <div style="background:linear-gradient(135deg,#0F172A,#1E1B4B);border:1px solid rgba(124,58,237,.3);border-radius:16px;padding:28px;width:90%;max-width:380px">
+    <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:6px;display:flex;align-items:center;gap:8px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/></svg>
+      Gerar relatório
+    </div>
+    <p style="font-size:13px;color:rgba(167,139,250,.7);margin-bottom:20px">Escolha o período dos dados.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">
+      <button class="rel-per-btn on" onclick="relSetPeriodo(this,7)" style="padding:12px;border:1.5px solid #7C3AED;background:rgba(124,58,237,.2);border-radius:10px;color:#A78BFA;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Últimos 7 dias</button>
+      <button class="rel-per-btn" onclick="relSetPeriodo(this,15)" style="padding:12px;border:1.5px solid rgba(255,255,255,.1);background:transparent;border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Últimos 15 dias</button>
+      <button class="rel-per-btn" onclick="relSetPeriodo(this,30)" style="padding:12px;border:1.5px solid rgba(255,255,255,.1);background:transparent;border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Últimos 30 dias</button>
+      <button class="rel-per-btn" onclick="relSetPeriodo(this,0)" style="padding:12px;border:1.5px solid rgba(255,255,255,.1);background:transparent;border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Tudo</button>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="document.getElementById('modal-relatorio').style.display='none'" style="flex:1;padding:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Cancelar</button>
+      <button onclick="gerarRelatorio()" style="flex:2;padding:11px;background:linear-gradient(135deg,#7C3AED,#6D28D9);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/></svg>
+        Gerar PDF
+      </button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
