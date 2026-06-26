@@ -682,7 +682,7 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
 .sim-loading-icon{font-size:3rem;margin-bottom:14px;animation:pulse-icon 1.5s infinite}
 @keyframes pulse-icon{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 /* ═══════ MODAL BOAS-VINDAS ═══════ */
-#bv-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+#bv-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
 #bv-modal{background:linear-gradient(135deg,#0F172A,#1E1B4B);border:1px solid rgba(124,58,237,.3);border-radius:20px;padding:36px 32px;width:90%;max-width:420px;text-align:center;position:relative;overflow:hidden}
 #bv-modal::before{content:'';position:absolute;top:-60px;left:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(124,58,237,.25),transparent 70%);pointer-events:none}
 #bv-modal::after{content:'';position:absolute;bottom:-60px;right:-60px;width:180px;height:180px;background:radial-gradient(circle,rgba(245,158,11,.12),transparent 70%);pointer-events:none}
@@ -728,7 +728,10 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
     </div>
     <div class="bv-title" id="bv-title">Bem-vinda ao Luia! ✨</div>
     <div class="bv-sub" id="bv-sub">Sua plataforma de estudos para o IFPE 2027.<br>Digite sua palavra-chave para entrar.</div>
-    <input class="bv-input" id="bv-input" type="password" placeholder="Digite sua palavra-chave..." autocomplete="off" onkeydown="if(event.key==='Enter')bvEntrar()">
+    <div style="position:relative">
+      <input class="bv-input" id="bv-input" type="password" placeholder="Digite sua palavra-chave..." autocomplete="off" onkeydown="if(event.key==='Enter')bvEntrar()" style="padding-right:44px">
+      <button onclick="const i=document.getElementById('bv-input');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':'🙈'" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:rgba(255,255,255,.5);padding:4px">👁</button>
+    </div>
     <div class="bv-error" id="bv-error">Palavra-chave incorreta. Tente novamente.</div>
     <button class="bv-btn" onclick="bvEntrar()">✦ Entrar</button>
     <button class="bv-btn-visit" onclick="bvVisitante()">Explorar sem palavra-chave →</button>
@@ -885,7 +888,7 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
       <div class="stat-card" data-tip="Total de registros de estudo lançados no app"><div class="stat-value" id="st-sess">0</div><div class="stat-label">Registros</div></div>
       <div class="stat-card" data-tip="Total de questões resolvidas (certas + erradas)"><div class="stat-value" id="st-q">0</div><div class="stat-label">Questões</div></div>
       <div class="stat-card" data-tip="Percentual de questões certas sobre o total resolvido"><div class="stat-value" id="st-pct">—</div><div class="stat-label">% Acertos</div></div>
-      <div class="stat-card" data-tip="Soma de todos os minutos registrados nas sessões"><div class="stat-value" id="st-min">0</div><div class="stat-label">Min estudados</div></div>
+      <div class="stat-card" data-tip="Soma de todas as horas registradas nas sessões"><div class="stat-value" id="st-min">0</div><div class="stat-label">Horas estudadas</div></div>
       <div style="display:none" id="st-sem-hidden"></div>
     </div>
 
@@ -996,7 +999,7 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
       <div class="timer-label">CRONÔMETRO DA SESSÃO</div>
       <div class="timer-display" id="timer-display">00:00:00</div>
       <div class="timer-btns">
-        <button class="timer-btn" id="btn-start" onclick="timerStart()">▶ Iniciar</button>
+        <button class="timer-btn" id="btn-start" onclick="_authTimerStart()">▶ Iniciar</button>
         <button class="timer-btn stop-btn" id="btn-stop" onclick="timerStop()" style="display:none">■ Parar</button>
         <button class="timer-btn" id="btn-reset" onclick="timerReset()">↺ Zerar</button>
       </div>
@@ -1166,7 +1169,7 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
           <label for="sim-cronometro" style="font-size:13px;color:var(--text-secondary);cursor:pointer">Usar cronômetro</label>
         </div>
 
-        <button class="btn-primary" onclick="iniciarSimulado()">✦ Gerar questões com IA</button>
+        <button class="btn-primary" onclick="_authIniciarSimulado()">✦ Gerar questões com IA</button>
       </div>
 
       <!-- Histórico de simulados -->
@@ -1270,7 +1273,7 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
         <button class="filter-tab" onclick="setProgPeriodo(30,this)">30 dias</button>
         <button class="filter-tab" onclick="setProgPeriodo(0,this)">Total</button>
       </div>
-      <button onclick="exportarRelatorio()" style="display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,#7C3AED,#6D28D9);border:none;border-radius:10px;padding:9px 16px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
+      <button onclick="_authExportarRelatorio()" style="display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,#7C3AED,#6D28D9);border:none;border-radius:10px;padding:9px 16px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/></svg>
         Exportar relatório
       </button>
@@ -1431,7 +1434,7 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
       </div>
     </div>
 
-    <button class="perfil-save-btn" onclick="perfilData.chave?comAuth(()=>salvarPerfil()):salvarPerfil()">✦ Salvar perfil</button>
+    <button class="perfil-save-btn" onclick="comAuth(()=>salvarPerfil())">✦ Salvar perfil</button>
   </div><!-- /sec-perfil -->
 
   <!-- METAS -->
@@ -1448,7 +1451,7 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
           <input type="date" class="form-control" id="g-data-prova">
         </div>
       </div>
-      <button class="btn-primary" onclick="salvarMetas()" style="margin-top:4px">✦ Salvar</button>
+      <button class="btn-primary" onclick="_authSalvarMetas()" style="margin-top:4px">✦ Salvar</button>
     </div>
     <div class="card">
       <div class="card-title">✦ Metas semanais</div>
@@ -1466,18 +1469,18 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
         <label class="form-label">Questões por semana</label>
         <input type="number" class="form-control" id="g-questions" placeholder="Ex: 50" min="0">
       </div>
-      <button class="btn-primary" onclick="salvarMetas()">✦ Salvar metas</button>
+      <button class="btn-primary" onclick="_authSalvarMetas()">✦ Salvar metas</button>
     </div>
     <div id="metas-progress"></div>
     <div class="card" style="margin-top:1rem">
       <div class="card-title">⚠️ Zerar dados por matéria</div>
       <p style="font-size:11px;color:var(--text-secondary);margin-bottom:.5rem;line-height:1.6">Remove todas as sessões de uma matéria permanentemente. Use com cuidado.</p>
       <div class="zerar-grid">
-        <button class="zerar-btn" onclick="zerarMateria('Português')">🗑 Português</button>
-        <button class="zerar-btn" onclick="zerarMateria('Matemática')">🗑 Matemática</button>
-        <button class="zerar-btn" onclick="zerarMateria('Ciências da Natureza')">🗑 Ciências</button>
-        <button class="zerar-btn" onclick="zerarMateria('História')">🗑 História</button>
-        <button class="zerar-btn" onclick="zerarMateria('Geografia')">🗑 Geografia</button>
+        <button class="zerar-btn" onclick="_authZerar('Português')">🗑 Português</button>
+        <button class="zerar-btn" onclick="_authZerar('Matemática')">🗑 Matemática</button>
+        <button class="zerar-btn" onclick="_authZerar('Ciências da Natureza')">🗑 Ciências</button>
+        <button class="zerar-btn" onclick="_authZerar('História')">🗑 História</button>
+        <button class="zerar-btn" onclick="_authZerar('Geografia')">🗑 Geografia</button>
       </div>
     </div>
   </div>
@@ -2193,7 +2196,7 @@ function renderHistorico(){
       '</div>'+
       '<div class="log-actions">'+
         (!isArq?'<button class="action-btn" onclick="openEdit(\''+id+'\')" title="Editar">✏️</button>':'')+
-        '<button class="action-btn archive" onclick="arquivar(\''+id+'\')" title="'+(isArq?'Restaurar':'Arquivar')+'">'+(isArq?'↩':'📦')+'</button>'+
+        '<button class="action-btn archive" onclick="_authArquivar(\''+id+'\')" title="'+(isArq?'Restaurar':'Arquivar')+'">'+(isArq?'↩':'📦')+'</button>'+
       '</div>'+
     '</div>';
   }).join('');
@@ -2351,7 +2354,7 @@ async function concluirRevisao(id){
   const idx=reviews.findIndex(r=>r.id===id);
   if(idx<0) return;
   reviews[idx].status='concluida';
-  saveLocal();renderRevisoes();atualizarRevDash();showToast('Revisão concluída! ✦','success');
+  saveLocal();renderRevisoes();atualizarRevDash();atualizarRevBadge();showToast('Revisão concluída! ✦','success');
   try{await sbPatch('reviews',id,{status:'concluida'});}catch(e){}
 }
 async function reabrirRevisao(id){
@@ -3282,7 +3285,9 @@ function renderDashboard(){
   document.getElementById('st-sess').textContent=total;
   document.getElementById('st-q').textContent=totalQ;
   document.getElementById('st-pct').textContent=pct;
-  document.getElementById('st-min').textContent=totalMin;
+  const horas=Math.floor(totalMin/60);
+  const mins=totalMin%60;
+  document.getElementById('st-min').textContent=horas>0?(horas+'h'+(mins>0?mins+'m':'')):(totalMin+'min');
   // st-sem removido
   renderStreak();
   renderDashMetas();
@@ -3613,6 +3618,8 @@ async function bvEntrar(){
     }
     localStorage.setItem('luia_perfil', JSON.stringify(perfilData));
     authDesbloqueado = true;
+    const _exp=Date.now()+24*60*60*1000;localStorage.setItem('luia_auth_exp',_exp);
+    setTimeout(()=>{authDesbloqueado=false;localStorage.removeItem('luia_auth_exp');},24*60*60*1000);
     bvFechar();
     await loadFromSupabase();
     showToast('Bem-vinda de volta' + (perfilData.nome?' , '+perfilData.nome.split(' ')[0]:'')+'! ✦','success');
@@ -3646,17 +3653,12 @@ async function init(){
 // ═══════════════════════════════════════
 function showLuia(id, btn){
   // Abas protegidas — qualquer aba exceto dashboard requer chave definida
-  const ABAS_PUBLICAS = ['dashboard'];
-  if(!ABAS_PUBLICAS.includes(id)){
-    if(!perfilData.chave){
-      // Sem chave criada: redireciona para perfil criar
-      comAuth(()=>showLuia(id, btn));
-      return;
-    }
-    // Abas que exigem confirmação ativa de identidade
-    const ABAS_AUTH = ['sobre','perfil'];
-    if(ABAS_AUTH.includes(id) && !authDesbloqueado){
-      comAuth(()=>showLuia(id, btn));
+  // Abas totalmente bloqueadas para visitante
+  const ABAS_BLOQUEADAS = ['sobre','perfil'];
+  if(ABAS_BLOQUEADAS.includes(id)){
+    if(!authDesbloqueado){
+      if(!perfilData.chave){ bvMostrar(); }
+      else { comAuth(()=>showLuia(id,btn)); }
       return;
     }
   }
@@ -3745,6 +3747,14 @@ function fecharSidebar(){
 // ═══════════════════════════════════════
 let perfilData=JSON.parse(localStorage.getItem('luia_perfil')||'{}');
 let authDesbloqueado=false;
+// Restaura auth se ainda válida (24h)
+(function(){
+  const exp=parseInt(localStorage.getItem('luia_auth_exp')||'0');
+  if(exp>Date.now()){
+    authDesbloqueado=true;
+    setTimeout(()=>{authDesbloqueado=false;localStorage.removeItem('luia_auth_exp');},exp-Date.now());
+  }
+})();
 let authCallback=null;
 
 function atualizarBanner(){
@@ -4021,7 +4031,7 @@ function tentarAuth(){
     document.getElementById('auth-overlay').style.display='none';
     showToast('Acesso confirmado! ✦','success');
     if(authCallback){authCallback();authCallback=null;}
-    setTimeout(()=>{authDesbloqueado=false;},30*60*1000);
+    const _authExp=Date.now()+24*60*60*1000;localStorage.setItem('luia_auth_exp',_authExp);setTimeout(()=>{authDesbloqueado=false;localStorage.removeItem('luia_auth_exp');},24*60*60*1000);
   } else {
     inp.classList.add('shake');
     if(err) err.style.display='block';
@@ -4490,15 +4500,10 @@ async function exportarRelatorio(){
   const simMedia=simPeriodo.length?Math.round(simPeriodo.reduce((a,s)=>a+s.pct,0)/simPeriodo.length):0;
   const simMelhor=simPeriodo.length?Math.max(...simPeriodo.map(s=>s.pct)):0;
 
-  // Abre janela de loading
-  const win=window.open('','_blank','width=900,height=700');
-  win.document.write(`<html><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#0F172A;color:#fff;font-size:18px">
-    <div style="text-align:center">
-      <div style="font-size:3rem;margin-bottom:16px">✦</div>
-      <div>Gerando diagnóstico com IA...</div>
-      <div style="font-size:13px;color:#94A3B8;margin-top:8px">Isso pode levar alguns segundos</div>
-    </div>
-  </body></html>`);
+  // Abre janela de loading — deve ser chamado direto do click (sem await antes)
+  const win=window.open('','_blank');
+  if(!win){ showToast('Permita popups para gerar o relatório.','error'); return; }
+  win.document.write('<html><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#0F172A;color:#fff;font-size:18px"><div style="text-align:center"><div style="font-size:3rem;margin-bottom:16px">✦</div><div>Gerando diagnóstico com IA...</div><div style="font-size:13px;color:#94A3B8;margin-top:8px">Isso pode levar alguns segundos</div></div></body></html>');
 
   // Gera diagnóstico com Claude
   let diagnostico='';
@@ -4638,17 +4643,20 @@ SIMULADOS (${periodo}):
 
 <button class="btn-print no-print" onclick="window.print()">🖨️ Salvar como PDF</button>
 
-<!-- CAPA -->
-<div class="capa">
-  <div class="capa-logo">Luia</div>
-  <div class="capa-tag">Relatório de Progresso</div>
-  <div class="capa-nome">${nomeCompleto}</div>
-  <div class="capa-sub">${goals.objetivo||'IFPE 2027'}</div>
-  <div class="capa-periodo">📅 ${periodo}</div>
-  <div class="capa-data">Gerado em ${dataGer}</div>
+<!-- HEADER COMPACTO -->
+<div style="background:linear-gradient(135deg,#0F172A,#1E1B4B);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #7C3AED">
+  <div style="display:flex;align-items:center;gap:16px">
+    <div style="font-family:'Poppins',sans-serif;font-size:36px;font-weight:800;color:#fff;line-height:1">Luia<span style="color:#A78BFA">✦</span></div>
+    <div>
+      <div style="font-size:18px;font-weight:700;color:#fff">${nomeCompleto}</div>
+      <div style="font-size:12px;color:rgba(167,139,250,.8);margin-top:2px">${goals.objetivo||'IFPE 2027'} · Relatório de Progresso</div>
+    </div>
+  </div>
+  <div style="text-align:right">
+    <div style="font-size:13px;color:#A78BFA;font-weight:600">📅 ${periodo}</div>
+    <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:4px">Gerado em ${dataGer}</div>
+  </div>
 </div>
-
-<div class="page-break"></div>
 
 <!-- CONTEÚDO -->
 <div class="pagina">
@@ -5258,10 +5266,24 @@ function renderSimDash(){
 }
 
 // ── WRAPPERS PROTEGIDOS (sem recursão) ──
-function _authLancar(){comAuth(()=>lancarSessao());}
-function _authTogglePlano(data,el){comAuth(()=>togglePlano(data,el));}
-function _authConcluir(id){comAuth(()=>concluirRevisao(id));}
-function _authReabrir(id){comAuth(()=>reabrirRevisao(id));}
+function _visitanteBlocked(msg){
+  if(!perfilData.chave){
+    showToast('Entre com sua palavra-chave para ' + (msg||'realizar esta ação') + '.','info');
+    bvMostrar();
+    return true;
+  }
+  return false;
+}
+function _authLancar(){if(_visitanteBlocked('registrar sessão'))return;comAuth(()=>lancarSessao());}
+function _authTogglePlano(data,el){if(_visitanteBlocked('marcar o plano'))return;comAuth(()=>togglePlano(data,el));}
+function _authConcluir(id){if(_visitanteBlocked('concluir revisão'))return;comAuth(()=>concluirRevisao(id));}
+function _authReabrir(id){if(_visitanteBlocked('reabrir revisão'))return;comAuth(()=>reabrirRevisao(id));}
+function _authArquivar(uid){if(_visitanteBlocked('arquivar sessão'))return;comAuth(()=>arquivar(uid));}
+function _authZerar(mat){if(_visitanteBlocked('zerar matéria'))return;comAuth(()=>zerarMateria(mat));}
+function _authSalvarMetas(){if(_visitanteBlocked('salvar metas'))return;comAuth(()=>salvarMetas());}
+function _authIniciarSimulado(){if(_visitanteBlocked('gerar simulado'))return;comAuth(()=>iniciarSimulado());}
+function _authExportarRelatorio(){if(_visitanteBlocked('gerar relatório'))return;comAuth(()=>exportarRelatorio());}
+function _authTimerStart(){if(_visitanteBlocked('iniciar cronômetro'))return;comAuth(()=>timerStart());}
 
 // ── BANCO DE FRASES MOTIVACIONAIS ──
 const FRASES=[
