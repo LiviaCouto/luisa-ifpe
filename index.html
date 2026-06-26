@@ -5316,78 +5316,48 @@ function arquivarSimulado(idx){
 function verSimulado(idx){
   const s=simHistorico[idx];
   if(!s||!s.questoes||!s.questoes.length){showToast('Questões não disponíveis para este simulado.','info');return;}
-  // Remove overlay anterior se existir
-  const existing=document.getElementById('ver-sim-overlay');
-  if(existing) existing.remove();
-
   const letras=['A','B','C','D','E'];
   const cor=s.pct>=80?'#4ADE80':s.pct>=60?'#FBBF24':'#F87171';
-
-  const overlay=document.createElement('div');
-  overlay.id='ver-sim-overlay';
-  overlay.style.cssText='position:fixed;inset:0;background:#0F172A;z-index:9999;display:flex;flex-direction:column;font-family:Inter,sans-serif';
-
-  // Header fixo
-  const header=document.createElement('div');
-  header.style.cssText='background:linear-gradient(135deg,#0F172A,#1E1B4B);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid rgba(124,58,237,.3)';
-  header.innerHTML=`
-    <div style="display:flex;align-items:center;gap:12px">
-      <button onclick="document.getElementById('ver-sim-overlay').remove()" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:#fff;font-size:12px;cursor:pointer;padding:7px 14px;font-weight:600">← Voltar</button>
-      <div>
-        <div style="font-size:14px;font-weight:700;color:#fff">${s.materia}</div>
-        <div style="font-size:11px;color:rgba(167,139,250,.8)">${s.topico} · ${fmtDate(s.data)}${s.hora?' '+s.hora:''} · ${s.nivel}</div>
+  let html=`<div id="ver-sim-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9998;display:flex;flex-direction:column" onclick="if(event.target.id==='ver-sim-overlay')this.remove()">
+    <div style="background:linear-gradient(135deg,#0F172A,#1E1B4B);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid rgba(124,58,237,.3)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button onclick="document.getElementById('ver-sim-overlay').remove()" style="background:rgba(255,255,255,.08);border:none;border-radius:8px;color:#fff;font-size:13px;cursor:pointer;padding:6px 12px;font-weight:600">← Voltar</button>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:#fff">${s.materia} · ${s.topico}</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5)">${fmtDate(s.data)}${s.hora?' · '+s.hora:''} · ${s.nivel}</div>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:800;color:${cor}">${s.pct}%</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.4)">${s.acertos}/${s.total} certas</div>
       </div>
     </div>
-    <div style="text-align:right;flex-shrink:0">
-      <div style="font-family:Poppins,sans-serif;font-size:1.5rem;font-weight:800;color:${cor}">${s.pct}%</div>
-      <div style="font-size:11px;color:rgba(255,255,255,.4)">${s.acertos}/${s.total} certas</div>
-    </div>`;
-  overlay.appendChild(header);
-
-  // Área de scroll
-  const scroll=document.createElement('div');
-  scroll.style.cssText='flex:1;overflow-y:auto;padding:20px;max-width:720px;width:100%;margin:0 auto;box-sizing:border-box';
-
-  const questoesHtml=s.questoes.map((q,qi)=>{
-    const resp=s.respostas?s.respostas[qi]:null;
-    const certa=resp===q.gabarito;
-    const altsHtml=letras.slice(0,5).map(l=>{
-      let txt='';
-      if(q.alternativas&&typeof q.alternativas==='object'&&!Array.isArray(q.alternativas)) txt=q.alternativas[l]||'';
-      else if(Array.isArray(q.alternativas)) txt=q.alternativas[letras.indexOf(l)]||'';
-      if(!txt) return '';
-      const isCorreta=l===q.gabarito;
-      const isResp=l===resp;
-      const bg=isCorreta?'rgba(74,222,128,.12)':isResp?'rgba(248,113,113,.1)':'rgba(255,255,255,.02)';
-      const border=isCorreta?'1px solid rgba(74,222,128,.4)':isResp?'1px solid rgba(248,113,113,.4)':'1px solid rgba(255,255,255,.06)';
-      const labelColor=isCorreta?'#4ADE80':isResp?'#F87171':'rgba(255,255,255,.6)';
-      return `<div style="padding:10px 14px;margin:5px 0;border-radius:8px;background:${bg};border:${border};font-size:13px;color:${labelColor};display:flex;gap:10px;align-items:flex-start">
-        <span style="font-weight:700;flex-shrink:0">${l})</span>
-        <span>${txt}</span>
-        ${isCorreta?'<span style="margin-left:auto;flex-shrink:0">✓</span>':isResp?'<span style="margin-left:auto;flex-shrink:0">✗</span>':''}
-      </div>`;
-    }).join('');
-    const enunciadoFmt=q.enunciado
-      .replace(/---+/g,'<div style="border-top:1px solid rgba(255,255,255,.1);margin:12px 0"></div>')
-      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-      .replace(/
-/g,'<br>');
-    return `<div style="margin-bottom:24px;padding:18px;background:rgba(255,255,255,.03);border-radius:12px;border-left:3px solid ${certa?'#4ADE80':'#F87171'}">
-      <div style="font-size:11px;font-weight:700;color:${certa?'#4ADE80':'#F87171'};margin-bottom:10px;display:flex;align-items:center;gap:6px">
-        <span>${certa?'✓ Correto':'✗ Errado'}</span>
-        <span style="font-size:10px;color:rgba(255,255,255,.3);font-weight:400">Questão ${qi+1}</span>
-        ${s.favoritas&&s.favoritas[qi]?'<span>⭐</span>':''}
-      </div>
-      <div style="font-size:13px;color:#E2E8F0;line-height:1.7;margin-bottom:12px">${enunciadoFmt}</div>
-      ${altsHtml}
-      ${q.explicacao?`<div style="margin-top:12px;padding:12px;background:rgba(74,222,128,.06);border-radius:8px;font-size:12px;color:#94A3B8;line-height:1.7;border-left:2px solid rgba(74,222,128,.3)">💡 <strong style="color:#4ADE80">Explicação:</strong> ${q.explicacao}</div>`:''}
-      ${s.comentarios&&s.comentarios[qi]?`<div style="margin-top:8px;font-size:12px;color:#38BDF8">💬 ${s.comentarios[qi]}</div>`:''}
-    </div>`;
-  }).join('');
-
-  scroll.innerHTML=questoesHtml;
-  overlay.appendChild(scroll);
-  document.body.appendChild(overlay);
+    <div style="flex:1;overflow-y:auto;padding:20px;max-width:760px;width:100%;margin:0 auto">
+      ${s.questoes.map((q,qi)=>{
+        const resp=s.respostas?s.respostas[qi]:null;
+        const certa=resp===q.gabarito;
+        return`<div style="margin-bottom:20px;padding:16px;background:rgba(255,255,255,.03);border-radius:10px;border-left:3px solid ${certa?'#4ADE80':'#F87171'}">
+          <div style="font-size:11px;font-weight:700;color:${certa?'#4ADE80':'#F87171'};margin-bottom:8px">${qi+1}. ${certa?'✓ Correto':'✗ Errado'}${s.favoritas&&s.favoritas[qi]?' ⭐':''}</div>
+          <div style="font-size:13px;color:var(--text-primary);margin-bottom:10px;line-height:1.6">${q.enunciado.replace(/---+/g,'<hr style="border-color:rgba(255,255,255,.1);margin:8px 0">').replace(/\n/g,'<br>')}</div>
+          ${letras.slice(0,5).map(l=>{
+            const alt=q.alternativas&&q.alternativas[l]?l+') '+q.alternativas[l]:(q.alternativas&&Array.isArray(q.alternativas)?q.alternativas[letras.indexOf(l)]||'':'');
+            const isCorreta=l===q.gabarito;
+            const isResp=l===resp;
+            const bg=isCorreta?'rgba(74,222,128,.12)':isResp?'rgba(248,113,113,.12)':'transparent';
+            const border=isCorreta?'rgba(74,222,128,.4)':isResp?'rgba(248,113,113,.4)':'rgba(255,255,255,.06)';
+            return`<div style="padding:8px 12px;margin:4px 0;border-radius:8px;background:${bg};border:1px solid ${border};font-size:12px;color:var(--text-secondary)">${alt}</div>`;
+          }).join('')}
+          ${q.explicacao?`<div style="margin-top:10px;padding:10px;background:rgba(74,222,128,.06);border-radius:8px;font-size:12px;color:var(--text-secondary);line-height:1.6">💡 ${q.explicacao}</div>`:''}
+          ${s.comentarios&&s.comentarios[qi]?`<div style="margin-top:6px;font-size:11px;color:var(--info)">💬 ${s.comentarios[qi]}</div>`:''}
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+  // Fecha os divs do scroll e do overlay
+  html += '</div></div>';
+  const div=document.createElement('div');
+  div.innerHTML=html;
+  document.body.appendChild(div.firstElementChild);
 }
 
 function renderSimFavoritas(){
