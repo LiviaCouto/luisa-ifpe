@@ -647,6 +647,7 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
 .sim-nivel-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
 .sim-nivel-btn{padding:10px 8px;border:1.5px solid var(--border);border-radius:10px;background:transparent;color:var(--text-secondary);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;text-align:center;transition:all .2s}
 .sim-nivel-btn:hover,.sim-nivel-btn.on{border-color:var(--accent);background:rgba(139,92,246,.15);color:var(--accent-light);font-weight:600}
+.sim-nivel-btn.on{box-shadow:0 0 0 1px var(--accent)}
 .sim-qtd-btn{padding:8px 16px;border:1.5px solid var(--border);border-radius:99px;background:transparent;color:var(--text-secondary);font-family:'Inter',sans-serif;font-size:13px;cursor:pointer;transition:all .2s}
 .sim-qtd-btn:hover,.sim-qtd-btn.on{border-color:var(--accent);background:rgba(139,92,246,.15);color:var(--accent-light);font-weight:600}
 .sim-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;margin-bottom:16px;flex-wrap:wrap;gap:10px}
@@ -712,6 +713,25 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
 @keyframes heroStarPulse{0%,100%{opacity:.2;scale:.7}50%{opacity:1;scale:1.3}}
 .hero-star:nth-child(1){animation-timing-function:ease-in-out}
 .hero-star:nth-child(3){animation-timing-function:ease-in-out}
+
+@keyframes simSatelite{0%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-8px) rotate(10deg)}75%{transform:translateY(8px) rotate(-10deg)}100%{transform:translateY(0) rotate(0deg)}}
+
+/* ═══════ FEEDBACK ═══════ */
+.fb-form{display:flex;flex-direction:column;gap:12px}
+.fb-tipo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fb-tipo-btn{padding:10px 8px;border:1.5px solid var(--border);border-radius:10px;background:transparent;color:var(--text-secondary);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;text-align:center;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px}
+.fb-tipo-btn:hover,.fb-tipo-btn.on{border-color:var(--accent);background:rgba(139,92,246,.15);color:var(--accent-light)}
+.fb-prior-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fb-prior-btn{padding:8px;border:1.5px solid var(--border);border-radius:8px;background:transparent;color:var(--text-secondary);font-family:'Inter',sans-serif;font-size:11px;cursor:pointer;text-align:center;transition:all .2s}
+.fb-prior-btn.on{font-weight:600}
+.fb-prior-btn.urgente.on{border-color:#F87171;background:rgba(248,113,113,.12);color:#F87171}
+.fb-prior-btn.normal.on{border-color:#FBBF24;background:rgba(251,191,36,.1);color:#FBBF24}
+.fb-prior-btn.calma.on{border-color:#4ADE80;background:rgba(74,222,128,.1);color:#4ADE80}
+.fb-textarea{width:100%;min-height:100px;padding:12px;background:rgba(255,255,255,.04);border:1.5px solid var(--border);border-radius:10px;color:var(--text-primary);font-family:'Inter',sans-serif;font-size:13px;line-height:1.6;resize:vertical;outline:none;box-sizing:border-box;transition:border-color .2s}
+.fb-textarea:focus{border-color:var(--accent)}
+.fb-item{padding:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;display:flex;gap:12px;align-items:flex-start}
+.fb-item.resolvido{opacity:.45}
+.fb-item-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -744,7 +764,7 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
     </div>
     <div class="bv-error" id="bv-error">Palavra-chave incorreta. Tente novamente.</div>
     <button class="bv-btn" onclick="bvEntrar()">✦ Entrar</button>
-    <button class="bv-btn-visit" onclick="bvVisitante()">Explorar sem palavra-chave →</button>
+    <button class="bv-btn-visit" onclick="bvVisitante()">Ainda não tenho palavra-chave e quero conhecer o Luia!</button>
   </div>
 </div>
 <aside class="luia-sidebar" id="luia-sidebar">
@@ -791,11 +811,11 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
       <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Revisões
       <span id="rev-badge" style="display:none;margin-left:auto;background:#EF4444;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:99px;min-width:18px;text-align:center">0</span>
     </button>
-    <div class="luia-nav-section">Análise</div>
     <button class="luia-nav-item" onclick="showLuia('simulados',this)">
-      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Simulados
+      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Questões
       <span id="sim-badge" style="display:none;margin-left:auto;background:#A78BFA;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:99px">★</span>
     </button>
+    <div class="luia-nav-section">Análise</div>
     <button class="luia-nav-item" onclick="showLuia('progresso',this)">
       <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Progresso
     </button>
@@ -808,6 +828,9 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
     </button>
     <button class="luia-nav-item" onclick="showLuia('metas',this)">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>Metas
+    </button>
+    <button class="luia-nav-item" onclick="showLuia('feedback',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Feedback
     </button>
   </nav>
   <div class="luia-sidebar-footer">
@@ -1159,18 +1182,15 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
 
         <div class="form-label" style="margin-bottom:8px">Nível de dificuldade</div>
         <div class="sim-nivel-grid" style="margin-bottom:16px">
-          <button class="sim-nivel-btn on" onclick="selecionarNivel(this,'facil')">😊 Fácil</button>
-          <button class="sim-nivel-btn" onclick="selecionarNivel(this,'medio')">🤔 Médio</button>
-          <button class="sim-nivel-btn" onclick="selecionarNivel(this,'dificil')">🔥 Difícil</button>
-          <button class="sim-nivel-btn" onclick="selecionarNivel(this,'misto')">⚡ Misto</button>
+          <button class="sim-nivel-btn on" onclick="selecionarNivel(this,'facil')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Fácil</button>
+          <button class="sim-nivel-btn" onclick="selecionarNivel(this,'medio')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Médio</button>
+          <button class="sim-nivel-btn" onclick="selecionarNivel(this,'dificil')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> Difícil</button>
+          <button class="sim-nivel-btn" onclick="selecionarNivel(this,'misto')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg> Misto</button>
         </div>
 
         <div class="form-label" style="margin-bottom:8px">Quantidade de questões</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
           <button class="sim-qtd-btn on" onclick="selecionarQtd(this,5)">5</button>
-          <button class="sim-qtd-btn" onclick="selecionarQtd(this,10)">10</button>
-          <button class="sim-qtd-btn" onclick="selecionarQtd(this,15)">15</button>
-          <button class="sim-qtd-btn" onclick="selecionarQtd(this,20)">20</button>
         </div>
 
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
@@ -1198,13 +1218,13 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
     <div id="sim-tela-prova" style="display:none">
       <div class="sim-header">
         <div style="display:flex;align-items:center;gap:12px">
-          <span class="sim-num" id="sim-q-num">1/10</span>
+          <span class="sim-num" id="sim-q-num">1/5</span>
           <div class="sim-mapa" id="sim-mapa"></div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
           <span class="sim-timer" id="sim-timer">00:00</span>
-          <button class="sim-act-btn" onclick="pausarSimulado()" id="sim-pause-btn">⏸ Pausar</button>
-          <button class="sim-act-btn" onclick="encerrarSimulado()" style="color:var(--danger);border-color:var(--danger)">✕ Encerrar</button>
+          <button class="sim-act-btn" onclick="pausarSimulado()" id="sim-pause-btn"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pausar</button>
+          <button class="sim-act-btn" onclick="encerrarSimulado()" style="color:var(--danger);border-color:var(--danger)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Encerrar</button>
         </div>
       </div>
 
@@ -1213,8 +1233,8 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
       <div style="display:flex;justify-content:space-between;gap:10px;margin-top:12px">
         <button class="sim-act-btn" onclick="irQuestao(simAtual-1)" id="sim-btn-ant">← Anterior</button>
         <div style="display:flex;gap:8px">
-          <button class="sim-act-btn" onclick="toggleFavorita()" id="sim-btn-fav">☆ Favoritar</button>
-          <button class="sim-act-btn" onclick="abrirComentario()" id="sim-btn-com">💬 Comentário</button>
+          <button class="sim-act-btn" onclick="toggleFavorita()" id="sim-btn-fav"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Favoritar</button>
+          <button class="sim-act-btn" onclick="abrirComentario()" id="sim-btn-com"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Anotação</button>
         </div>
         <button class="btn-primary" onclick="proximaQuestao()" id="sim-btn-prox" style="padding:8px 20px;font-size:13px">Próxima →</button>
       </div>
@@ -1244,12 +1264,64 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button class="sim-act-btn" onclick="showLuia('simulados',null)" style="flex:1;padding:11px">← Ver histórico</button>
         <button class="btn-primary" onclick="novoSimulado()" style="flex:1">✦ Novo simulado</button>
-        <button class="sim-act-btn" onclick="novoSimulado(true)" style="flex:1;padding:11px">🔁 Repetir erros</button>
+        <button class="sim-act-btn" onclick="novoSimulado(true)" style="flex:1;padding:11px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg> Repetir erros</button>
       </div>
     </div>
   </div>
 
   <!-- SOBRE MIM -->
+  <div id="sec-feedback" class="section">
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-title" style="display:flex;align-items:center;gap:8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Feedbacks & Ideias
+      </div>
+      <p style="font-size:13px;color:var(--text-dim);margin-bottom:16px;line-height:1.6">Encontrou um bug ou teve uma ideia? Registra aqui! Sua mãe vai ver e resolver.</p>
+      <div class="fb-form">
+        <div>
+          <div class="form-label" style="margin-bottom:8px">Tipo</div>
+          <div class="fb-tipo-grid">
+            <button class="fb-tipo-btn on" onclick="fbSetTipo(this,'bug')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2l1.5 1.5M15.5 2 14 3.5M12 8c-2.2 0-4 1.8-4 4v3h8v-3c0-2.2-1.8-4-4-4z"/><path d="M8 15H4M20 15h-4M8 11H5M19 11h-3M10 19v2M14 19v2"/></svg>
+              Bug
+            </button>
+            <button class="fb-tipo-btn" onclick="fbSetTipo(this,'ideia')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+              Ideia
+            </button>
+            <button class="fb-tipo-btn" onclick="fbSetTipo(this,'melhoria')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              Melhoria
+            </button>
+          </div>
+        </div>
+        <div>
+          <div class="form-label" style="margin-bottom:8px">Prioridade</div>
+          <div class="fb-prior-grid">
+            <button class="fb-prior-btn urgente" onclick="fbSetPrior(this,'urgente')">Urgente</button>
+            <button class="fb-prior-btn normal on" onclick="fbSetPrior(this,'normal')">Normal</button>
+            <button class="fb-prior-btn calma" onclick="fbSetPrior(this,'calma')">Com calma</button>
+          </div>
+        </div>
+        <div>
+          <div class="form-label" style="margin-bottom:8px">Descreva</div>
+          <textarea class="fb-textarea" id="fb-texto" placeholder="O que aconteceu? Qual é a ideia?"></textarea>
+        </div>
+        <button class="btn-primary" onclick="fbEnviar()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Enviar feedback
+        </button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="display:flex;align-items:center;gap:8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Enviados
+      </div>
+      <div id="fb-lista" style="margin-top:8px"><p style="font-size:13px;color:var(--text-dim)">Nenhum feedback ainda.</p></div>
+    </div>
+  </div>
+
   <div id="sec-sobre" class="section">
     <!-- Conteúdo bloqueado (aparece quando não tem auth) -->
     <div id="sobre-locked-wrap" style="display:none">
@@ -1283,7 +1355,10 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
         <button class="filter-tab" onclick="setProgPeriodo(30,this)">30 dias</button>
         <button class="filter-tab" onclick="setProgPeriodo(0,this)">Total</button>
       </div>
-
+      <button onclick="abrirModalRelatorio()" style="display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,#7C3AED,#6D28D9);border:none;border-radius:10px;padding:9px 16px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/></svg>
+        Gerar relatório
+      </button>
     </div>
 
     <!-- 1. Alerta da semana -->
@@ -2015,6 +2090,14 @@ function showSection(id, btn, isMobile=false) {
   if (id==='metas') renderMetas();
   if (id==='plano') renderPlano();
   if (id==='perfil') carregarPerfil();
+  if (id==='lancar' && timerSec>0){
+    const th=Math.floor(timerSec/3600);
+    const tm=Math.round((timerSec%3600)/60);
+    const elH=document.getElementById('f-horas');
+    const elM=document.getElementById('f-mins');
+    if(elH&&!elH.value) elH.value=th||'';
+    if(elM&&!elM.value) elM.value=tm||'';
+  }
 }
 
 // ═══════════════════════════════════════
@@ -2105,7 +2188,9 @@ async function lancarSessao(){
   const erros=parseInt(document.getElementById('f-erros').value)||0;
   const horas=parseInt(document.getElementById('f-horas').value)||0;
   const mins=parseInt(document.getElementById('f-mins').value)||0;
-  const minutos=horas*60+mins || Math.round(timerSec/60);
+  // Se campos vazios e cronômetro tem tempo, usa o cronômetro
+  const tempoForm=horas*60+mins;
+  const minutos=tempoForm>0?tempoForm:(timerSec>0?Math.round(timerSec/60):0);
   const obs=document.getElementById('f-obs').value.trim();
   const tags=getTagsFixasSelecionadas();
 
@@ -3745,6 +3830,7 @@ function showLuia(id, btn){
     if(id==='sobre') renderSobreMim();
     if(id==='perfil') setTimeout(carregarPerfil,100);
     if(id==='simulados'){renderSimHistorico();renderSimFavoritas();}
+    if(id==='feedback'){renderFeedbacks();}
     return;
   }
   showSection(id, null, false);
@@ -4569,7 +4655,31 @@ async function exportarRelatorio(winPreAberta){
   // Usa janela pré-aberta ou abre nova
   const win = winPreAberta || window.open('','_blank');
   if(!win){ showToast('Permita popups para gerar o relatório.','error'); return; }
-  if(!winPreAberta) win.document.write('<html><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#0F172A;color:#fff;font-size:18px"><div style="text-align:center"><div style="font-size:3rem;margin-bottom:16px">✦</div><div>Gerando diagnóstico com IA...</div><div style="font-size:13px;color:#94A3B8;margin-top:8px">Isso pode levar alguns segundos</div></div></body></html>');
+  if(!winPreAberta) win.document.write('<html><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#0F172A;color:#fff;font-size:18px"><div style="text-align:center"><div style="font-size:3rem;margin-bottom:16px">✦</div><div>Gerando diagnóstico com IA...</div><div style="font-size:13px;color:#94A3B8;margin-top:8px">Isso pode levar alguns segundos</div></div>
+<!-- MODAL RELATÓRIO -->
+<div id="modal-relatorio" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9990;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+  <div style="background:linear-gradient(135deg,#0F172A,#1E1B4B);border:1px solid rgba(124,58,237,.3);border-radius:16px;padding:28px;width:90%;max-width:380px">
+    <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:6px;display:flex;align-items:center;gap:8px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/></svg>
+      Gerar relatório
+    </div>
+    <p style="font-size:13px;color:rgba(167,139,250,.7);margin-bottom:20px">Escolha o período dos dados que deseja incluir no relatório.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">
+      <button class="rel-per-btn on" onclick="relSetPeriodo(this,7)" style="padding:12px;border:1.5px solid #7C3AED;background:rgba(124,58,237,.2);border-radius:10px;color:#A78BFA;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Últimos 7 dias</button>
+      <button class="rel-per-btn" onclick="relSetPeriodo(this,15)" style="padding:12px;border:1.5px solid rgba(255,255,255,.1);background:transparent;border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Últimos 15 dias</button>
+      <button class="rel-per-btn" onclick="relSetPeriodo(this,30)" style="padding:12px;border:1.5px solid rgba(255,255,255,.1);background:transparent;border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Últimos 30 dias</button>
+      <button class="rel-per-btn" onclick="relSetPeriodo(this,0)" style="padding:12px;border:1.5px solid rgba(255,255,255,.1);background:transparent;border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Tudo</button>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="document.getElementById('modal-relatorio').style.display='none'" style="flex:1;padding:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif">Cancelar</button>
+      <button onclick="gerarRelatorio()" style="flex:2;padding:11px;background:linear-gradient(135deg,#7C3AED,#6D28D9);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-right:6px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15l3 3 3-3"/></svg>
+        Gerar PDF
+      </button>
+    </div>
+  </div>
+</div>
+</body></html>');
 
   // Gera diagnóstico com Claude
   // Diagnóstico automático baseado nos dados (sem IA)
@@ -4839,9 +4949,25 @@ function atualizarTopicosSimulado(){
 }
 
 function selecionarNivel(btn,nivel){
-  document.querySelectorAll('.sim-nivel-btn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  simConfig.nivel=nivel;
+  if(nivel==='misto'){
+    document.querySelectorAll('.sim-nivel-btn').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    simConfig.nivel='misto';
+    return;
+  }
+  // Desativa misto
+  document.querySelectorAll('.sim-nivel-btn').forEach(b=>{
+    if(b.getAttribute('onclick') && b.getAttribute('onclick').includes("'misto'")) b.classList.remove('on');
+  });
+  btn.classList.toggle('on');
+  const ativos=[];
+  document.querySelectorAll('.sim-nivel-btn.on').forEach(b=>{
+    const txt=b.getAttribute('onclick')||'';
+    const m=txt.match(/'(facil|medio|dificil|misto)'/);
+    if(m) ativos.push(m[1]);
+  });
+  if(!ativos.length){btn.classList.add('on');ativos.push(nivel);}
+  simConfig.nivel=ativos.join(',');
 }
 
 function selecionarQtd(btn,qtd){
@@ -4864,8 +4990,16 @@ async function iniciarSimulado(){
   document.getElementById('sim-tela-prova').style.display='block';
   document.getElementById('sim-questao-wrap').innerHTML=`
     <div class="sim-loading">
-      <div class="sim-loading-icon">🤖</div>
-      <div class="sim-loading-txt">A IA está gerando suas questões...</div>
+      <div class="sim-loading-icon" style="animation:simSatelite 2.5s ease-in-out infinite">
+        <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="26" cy="26" r="10" fill="#7C3AED" opacity=".9"/>
+          <ellipse cx="26" cy="26" rx="22" ry="8" stroke="#A78BFA" stroke-width="2" fill="none" opacity=".5"/>
+          <circle cx="26" cy="18" r="3" fill="#F59E0B"/>
+          <line x1="10" y1="10" x2="16" y2="16" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="42" y1="10" x2="36" y2="16" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="sim-loading-txt">Gerando suas questões...</div>
       <div class="sim-loading-sub">${simConfig.qtd} questões · ${simConfig.materia} · ${simConfig.nivel}</div>
     </div>`;
 
@@ -4952,7 +5086,7 @@ RETORNE APENAS um JSON válido, sem markdown, sem texto antes ou depois, apenas 
     const resp=await fetch(`${SUPA_URL}/functions/v1/gerar-questoes`,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
-      body:JSON.stringify({materia:simConfig.materia,topico:simConfig.topico||'',quantidade:simConfig.quantidade,dificuldade:simConfig.dificuldade,prompt})
+      body:JSON.stringify({materia:simConfig.materia,topico:simConfig.topico||'',quantidade:simConfig.qtd,dificuldade:simConfig.nivel,prompt})
     });
     const txt=await resp.text();
     const json=JSON.parse(txt.replace(/```json|```/g,'').trim());
@@ -5030,7 +5164,7 @@ function renderQuestao(){
   const com=simComentarios[simAtual]||'';
 
   document.getElementById('sim-q-num').textContent=(simAtual+1)+'/'+simQuestoes.length;
-  document.getElementById('sim-btn-fav').textContent=fav?'⭐ Favoritada':'☆ Favoritar';
+  document.getElementById('sim-btn-fav').innerHTML=fav?'<svg width="13" height="13" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Favoritada':'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Favoritar';
   document.getElementById('sim-btn-fav').style.color=fav?'var(--warning)':'';
   document.getElementById('sim-btn-ant').style.opacity=simAtual===0?'0.3':'1';
   document.getElementById('sim-btn-ant').disabled=simAtual===0;
@@ -5067,7 +5201,7 @@ function renderQuestao(){
 
   document.getElementById('sim-questao-wrap').innerHTML=`
     <div class="sim-questao-card">
-      <div class="sim-materia-tag">${q.materia||simConfig.materia} · ${q.topico||simConfig.topico}</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px"><div class="sim-materia-tag">${q.materia||simConfig.materia} · ${q.topico||simConfig.topico}</div><div style="font-size:10px;padding:2px 8px;border-radius:99px;background:${simConfig.nivel==='facil'?'rgba(74,222,128,.15)':simConfig.nivel==='medio'?'rgba(251,191,36,.15)':'rgba(248,113,113,.15)'};color:${simConfig.nivel==='facil'?'#4ADE80':simConfig.nivel==='medio'?'#FBBF24':'#F87171'};font-weight:600;text-transform:uppercase;letter-spacing:.05em">${simConfig.nivel}</div></div>
       <div class="sim-enunciado">${formatEnunciado(q.enunciado||q.pergunta||"")}</div>
       <div class="sim-alternativas">${altsHtml}</div>
       ${respondida&&q.explicacao?`<div class="sim-explicacao" id="sim-exp" style="display:block">${formatExplicacao(q.explicacao)}</div>`:''}
@@ -5290,11 +5424,11 @@ function renderSimHistorico(mostrarArquivados=false){
         </div>
       </div>
       <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
-        ${temQuestoes?`<button onclick="verSimulado(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);border-radius:8px;color:#A78BFA;cursor:pointer;font-weight:600">📖 Ver questões</button>`:''}
-        ${s.pct<100&&temQuestoes&&!s.arquivado?`<button onclick="_authRefazerErros(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:8px;color:#A78BFA;cursor:pointer">🔁 Refazer erros</button>`:''}
+        ${temQuestoes?`<button onclick="verSimulado(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);border-radius:8px;color:#A78BFA;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Ver questões</button>`:''}
+        ${s.pct<100&&temQuestoes&&!s.arquivado?`<button onclick="_authRefazerErros(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:8px;color:#A78BFA;cursor:pointer;display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg> Refazer erros</button>`:''}
         ${!s.arquivado
-          ?`<button onclick="_authArquivarSim(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--text-dim);cursor:pointer">📦 Arquivar</button>`
-          :`<button onclick="_authDesarquivarSim(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:8px;color:#4ADE80;cursor:pointer">↩ Restaurar</button>`
+          ?`<button onclick="_authArquivarSim(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--text-dim);cursor:pointer;display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg> Arquivar</button>`
+          :`<button onclick="_authDesarquivarSim(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:8px;color:#4ADE80;cursor:pointer;display:inline-flex;align-items:center;gap:5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg> Restaurar</button>`
         }
       </div>
     </div>`;
@@ -5316,7 +5450,7 @@ function refazerErros(idx){
   simConfig.materia=s.materia;
   simConfig.topico=s.topico+' (revisão de erros)';
   simConfig.nivel=s.nivel;
-  simConfig.quantidade=erradas.length;
+  simConfig.qtd=erradas.length;
   simAtual=0;
   simRespostas=new Array(erradas.length).fill(null);
   simFavoritas=new Array(erradas.length).fill(false);
@@ -5425,12 +5559,47 @@ function renderSimFavoritas(){
   el.innerHTML=Object.entries(porMat).map(([mat,qs])=>`
     <div style="margin-bottom:14px">
       <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:6px">${mat} (${qs.length})</div>
-      ${qs.slice(0,5).map(q=>`<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)">
-        <div style="font-size:12px;color:var(--text-secondary)">${q.enunciado.slice(0,100)}...</div>
-        ${q.comentario?`<div style="font-size:11px;color:var(--info);margin-top:3px">💬 ${q.comentario}</div>`:''}
-      </div>`).join('')}
+      ${qs.map((q,qi)=>{
+        const idxGlobal=simFavSalvas.indexOf(q);
+        return `<div onclick="verQuestaoFavorita(${idxGlobal})" style="padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;border-radius:8px;transition:background .15s" onmouseover="this.style.background='rgba(139,92,246,.08)'" onmouseout="this.style.background='transparent'">
+          <div style="font-size:12px;color:var(--text-secondary);line-height:1.5">${q.enunciado.slice(0,120)}...</div>
+          ${q.comentario?`<div style="font-size:11px;color:var(--info);margin-top:4px;display:flex;align-items:center;gap:4px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${q.comentario}</div>`:''}
+          <div style="font-size:10px;color:var(--accent);margin-top:4px">Toque para ver questão completa</div>
+        </div>`;
+      }).join('')}
     </div>`
   ).join('');
+}
+
+function verQuestaoFavorita(idx){
+  const q=simFavSalvas[idx];
+  if(!q) return;
+  const letras=['A','B','C','D','E'];
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:#0F172A;z-index:9999;display:flex;flex-direction:column;font-family:Inter,sans-serif';
+  const header=document.createElement('div');
+  header.style.cssText='background:linear-gradient(135deg,#0F172A,#1E1B4B);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid rgba(124,58,237,.3)';
+  header.innerHTML=`<div style="display:flex;align-items:center;gap:12px"><button onclick="this.closest('[style*=fixed]').remove()" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:#fff;font-size:12px;cursor:pointer;padding:7px 14px;font-weight:600">← Voltar</button><div><div style="font-size:14px;font-weight:700;color:#fff">${q.materia||'Questão favorita'}</div><div style="font-size:11px;color:rgba(167,139,250,.8)">${q.topico||''}</div></div></div><svg width="18" height="18" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+  overlay.appendChild(header);
+  const scroll=document.createElement('div');
+  scroll.style.cssText='flex:1;overflow-y:auto;padding:20px;max-width:720px;width:100%;margin:0 auto;box-sizing:border-box';
+  const enuncFmt=(q.enunciado||'').replace(/---+/g,'<div style="border-top:1px solid rgba(255,255,255,.1);margin:12px 0"></div>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/
+/g,'<br>');
+  const altsHtml=letras.slice(0,5).map(l=>{
+    let txt='';
+    if(q.alternativas&&typeof q.alternativas==='object'&&!Array.isArray(q.alternativas)) txt=q.alternativas[l]||'';
+    else if(Array.isArray(q.alternativas)) txt=q.alternativas[letras.indexOf(l)]||'';
+    if(!txt) return '';
+    const isCorreta=l===(q.gabarito||q.resposta_correta);
+    const isResp=l===q.resposta_dada;
+    const bg=isCorreta?'rgba(74,222,128,.12)':isResp?'rgba(248,113,113,.1)':'rgba(255,255,255,.02)';
+    const border=isCorreta?'1px solid rgba(74,222,128,.4)':isResp?'1px solid rgba(248,113,113,.4)':'1px solid rgba(255,255,255,.06)';
+    const color=isCorreta?'#4ADE80':isResp?'#F87171':'rgba(255,255,255,.6)';
+    return `<div style="padding:10px 14px;margin:5px 0;border-radius:8px;background:${bg};border:${border};font-size:13px;color:${color};display:flex;gap:10px"><span style="font-weight:700;flex-shrink:0">${l})</span><span>${txt}</span>${isCorreta?'<span style="margin-left:auto">✓</span>':isResp?'<span style="margin-left:auto">✗</span>':''}</div>`;
+  }).join('');
+  scroll.innerHTML=`<div style="padding:16px;background:rgba(255,255,255,.03);border-radius:12px;border-left:3px solid #F59E0B;margin-bottom:20px"><div style="font-size:13px;color:#E2E8F0;line-height:1.7;margin-bottom:12px">${enuncFmt}</div>${altsHtml}${q.explicacao?`<div style="margin-top:12px;padding:12px;background:rgba(74,222,128,.06);border-radius:8px;font-size:12px;color:#94A3B8;line-height:1.7;border-left:2px solid rgba(74,222,128,.3)"><strong style="color:#4ADE80">Explicação:</strong> ${q.explicacao}</div>`:''}${q.comentario?`<div style="margin-top:10px;padding:10px;background:rgba(56,189,248,.06);border-radius:8px;font-size:12px;color:#38BDF8;border-left:2px solid rgba(56,189,248,.3);display:flex;gap:8px;align-items:flex-start"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${q.comentario}</div>`:''}</div>`;
+  overlay.appendChild(scroll);
+  document.body.appendChild(overlay);
 }
 
 // ── INTEGRAÇÃO COM DASHBOARD ──
@@ -5560,6 +5729,312 @@ function atualizarContador(){
     ? '🎉 Dia da prova chegou! Vai com tudo!'
     : getFraseHoje();
   if(pctEl) pctEl.textContent = pct+'% do tempo percorrido · '+diasPassados+' dias estudando';
+}
+
+
+// ═══════════════════════════════════════
+//  RELATÓRIO PDF
+// ═══════════════════════════════════════
+let relPeriodoDias = 7;
+
+function abrirModalRelatorio(){
+  document.getElementById('modal-relatorio').style.display='flex';
+}
+
+function relSetPeriodo(btn, dias){
+  relPeriodoDias = dias;
+  document.querySelectorAll('.rel-per-btn').forEach(b=>{
+    b.style.border='1.5px solid rgba(255,255,255,.1)';
+    b.style.background='transparent';
+    b.style.color='rgba(255,255,255,.5)';
+  });
+  btn.style.border='1.5px solid #7C3AED';
+  btn.style.background='rgba(124,58,237,.2)';
+  btn.style.color='#A78BFA';
+}
+
+function gerarRelatorio(){
+  document.getElementById('modal-relatorio').style.display='none';
+  const win = window.open('','_blank');
+  if(!win){ showToast('Permita popups para gerar o relatório.','error'); return; }
+
+  const dias = relPeriodoDias;
+  const hoje = new Date();
+  const corte = dias > 0 ? new Date(hoje.getTime() - dias*24*60*60*1000) : null;
+  const periodoLabel = dias===7?'Últimos 7 dias':dias===15?'Últimos 15 dias':dias===30?'Últimos 30 dias':'Todo o período';
+  const dataGer = hoje.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}) + ' às ' + hoje.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+
+  // Filtra dados pelo período
+  const ativas = sessions.filter(s=>!s.archived && (!corte || new Date(s.data)>=corte));
+  const simFilt = simHistorico.filter(s=>!s.arquivado && (!corte || new Date(s.data)>=corte));
+  const revFilt = reviews.filter(r=> !corte || new Date(r.review_date)>=corte);
+
+  // Stats gerais
+  const totalSess = ativas.length;
+  const totalQ = ativas.reduce((a,s)=>a+s.acertos+s.erros,0) + simFilt.reduce((a,s)=>a+(s.total||0),0);
+  const totalA = ativas.reduce((a,s)=>a+s.acertos,0) + simFilt.reduce((a,s)=>a+(s.acertos||0),0);
+  const totalMin = ativas.reduce((a,s)=>a+(s.minutos||0),0);
+  const pctAcertos = totalQ>0?Math.round(totalA/totalQ*100):0;
+  const horas = Math.floor(totalMin/60);
+  const mins = totalMin%60;
+  const horasStr = horas>0?`${horas}h${mins>0?mins+'m':''}`:`${totalMin}min`;
+  const {streak} = calcStreak();
+
+  // Por matéria
+  const porMat = {};
+  ativas.forEach(s=>{
+    if(!porMat[s.materia]) porMat[s.materia]={acertos:0,erros:0,sessoes:0,minutos:0};
+    porMat[s.materia].acertos+=s.acertos; porMat[s.materia].erros+=s.erros;
+    porMat[s.materia].sessoes++; porMat[s.materia].minutos+=(s.minutos||0);
+  });
+  simFilt.forEach(s=>{
+    if(!porMat[s.materia]) porMat[s.materia]={acertos:0,erros:0,sessoes:0,minutos:0};
+    porMat[s.materia].acertos+=s.acertos||0; porMat[s.materia].erros+=(s.total||0)-(s.acertos||0);
+  });
+
+  // Revisões
+  const today = todayLocal();
+  const revConcluidas = revFilt.filter(r=>r.status==='concluida').length;
+  const revAtrasadas = revFilt.filter(r=>r.status==='pendente'&&r.review_date<=today).length;
+
+  // Plano
+  const diasPlano = planoFeitos.filter(d=>!corte||new Date(d)>=corte).length;
+  const totalDiasPlano = dias>0?dias:planoFeitos.length||1;
+  const pctPlano = Math.min(100,Math.round(diasPlano/totalDiasPlano*100));
+
+  // Projeção de prontidão
+  const scoreAcertos = pctAcertos * 0.40;
+  const scorePlano = pctPlano * 0.30;
+  const sessPorSemana = dias>0?(totalSess/(dias/7)):totalSess/4;
+  const scoreConsist = Math.min(100, sessPorSemana/5*100) * 0.20;
+  const revScore = revConcluidas+revAtrasadas>0?Math.round(revConcluidas/(revConcluidas+revAtrasadas)*100):100;
+  const scoreRev = revScore * 0.10;
+  const prontidao = Math.round(scoreAcertos+scorePlano+scoreConsist+scoreRev);
+  const corPront = prontidao>=70?'#4ADE80':prontidao>=50?'#FBBF24':'#F87171';
+  const textoPront = prontidao>=70
+    ? 'Excelente ritmo! Luísa está mantendo consistência e bom aproveitamento.'
+    : prontidao>=50
+    ? 'Progresso satisfatório. Há espaço para melhorar a consistência e revisões.'
+    : 'Atenção necessária. Recomenda-se aumentar a frequência de estudos e revisões.';
+
+  // Matérias negligenciadas (sem sessão no período)
+  const todasMaterias = ['Português','Matemática','Ciências da Natureza','História','Geografia'];
+  const negligenciadas = todasMaterias.filter(m=>!porMat[m]);
+
+  const nome = perfilData.nome || 'Luísa';
+  const objetivo = goals.objetivo || 'IFPE 2027';
+  const prova = new Date((goals.data_prova||'2027-01-01')+'T00:00:00');
+  const diasProva = Math.ceil((prova-hoje)/(1000*60*60*24));
+
+  const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Relatório — ${nome}</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#F8F9FF;color:#1E1B4B;padding:0}
+.page{max-width:720px;margin:0 auto;padding:32px 24px}
+.header{background:linear-gradient(135deg,#0F172A,#1E1B4B);padding:28px 32px;display:flex;align-items:center;justify-content:space-between;border-radius:0 0 0 0}
+.header-logo{font-family:'Poppins',sans-serif;font-size:32px;font-weight:800;color:#fff}
+.header-logo span{color:#A78BFA}
+.header-info{text-align:right}
+.header-nome{font-size:16px;font-weight:700;color:#fff}
+.header-sub{font-size:11px;color:rgba(167,139,250,.7);margin-top:2px}
+.header-data{font-size:11px;color:rgba(255,255,255,.4);margin-top:6px}
+.periodo-badge{display:inline-block;background:rgba(124,58,237,.3);color:#A78BFA;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;margin-top:4px}
+section{margin:24px 0}
+h2{font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;color:#6D28D9;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+h2::after{content:'';flex:1;height:1px;background:rgba(109,40,217,.15)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat-card{background:#fff;border-radius:12px;padding:16px;text-align:center;border:1px solid rgba(109,40,217,.1)}
+.stat-val{font-family:'Poppins',sans-serif;font-size:1.6rem;font-weight:800;color:#6D28D9}
+.stat-lbl{font-size:10px;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+.pront-card{background:#fff;border-radius:12px;padding:20px;border:1px solid rgba(109,40,217,.1)}
+.pront-bar-bg{height:12px;background:#F1F5F9;border-radius:99px;overflow:hidden;margin:12px 0}
+.pront-bar-fill{height:100%;border-radius:99px;transition:width .6s}
+.mat-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.mat-nome{width:140px;font-size:12px;font-weight:600;color:#1E1B4B;flex-shrink:0}
+.mat-bar-bg{flex:1;height:8px;background:#F1F5F9;border-radius:99px;overflow:hidden}
+.mat-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#7C3AED,#A78BFA)}
+.mat-pct{width:36px;text-align:right;font-size:12px;font-weight:600;color:#6D28D9}
+.mat-q{width:50px;text-align:right;font-size:11px;color:#94A3B8}
+.sim-table{width:100%;border-collapse:collapse;font-size:12px}
+.sim-table th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#94A3B8;padding:6px 10px;border-bottom:2px solid #E2E8F0}
+.sim-table td{padding:8px 10px;border-bottom:1px solid #F1F5F9;color:#374151}
+.sim-table tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600}
+.badge-green{background:#DCFCE7;color:#16A34A}
+.badge-yellow{background:#FEF9C3;color:#CA8A04}
+.badge-red{background:#FEE2E2;color:#DC2626}
+.alerta{background:#FEF9C3;border-left:3px solid #F59E0B;padding:10px 14px;border-radius:0 8px 8px 0;font-size:12px;color:#92400E;margin-bottom:8px}
+.ok{background:#DCFCE7;border-left:3px solid #4ADE80;padding:10px 14px;border-radius:0 8px 8px 0;font-size:12px;color:#166534}
+.footer{margin-top:32px;padding-top:16px;border-top:1px solid #E2E8F0;display:flex;justify-content:space-between;font-size:11px;color:#94A3B8}
+@media print{body{background:#fff}.page{padding:20px 16px}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-logo">Luia<span>✦</span></div>
+  <div class="header-info">
+    <div class="header-nome">${nome}</div>
+    <div class="header-sub">${objetivo} · ${diasProva} dias para a prova</div>
+    <div class="header-data">Gerado em ${dataGer}</div>
+    <div class="periodo-badge">${periodoLabel}</div>
+  </div>
+</div>
+<div class="page">
+
+<section>
+  <h2>Resumo geral</h2>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-val">${totalSess}</div><div class="stat-lbl">Sessões</div></div>
+    <div class="stat-card"><div class="stat-val">${horasStr}</div><div class="stat-lbl">Horas</div></div>
+    <div class="stat-card"><div class="stat-val">${totalQ}</div><div class="stat-lbl">Questões</div></div>
+    <div class="stat-card"><div class="stat-val">${pctAcertos}%</div><div class="stat-lbl">Acertos</div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Projeção de prontidão</h2>
+  <div class="pront-card">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:13px;color:#64748B;margin-bottom:4px">Índice de prontidão estimado</div>
+        <div style="font-family:'Poppins',sans-serif;font-size:2rem;font-weight:800;color:${corPront}">${prontidao}%</div>
+      </div>
+      <div style="text-align:right;font-size:11px;color:#94A3B8;max-width:200px;line-height:1.5">${textoPront}</div>
+    </div>
+    <div class="pront-bar-bg"><div class="pront-bar-fill" style="width:${prontidao}%;background:${corPront}"></div></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px">
+      <div style="text-align:center"><div style="font-size:13px;font-weight:700;color:#6D28D9">${pctAcertos}%</div><div style="font-size:10px;color:#94A3B8">Acertos (40%)</div></div>
+      <div style="text-align:center"><div style="font-size:13px;font-weight:700;color:#6D28D9">${pctPlano}%</div><div style="font-size:10px;color:#94A3B8">Plano (30%)</div></div>
+      <div style="text-align:center"><div style="font-size:13px;font-weight:700;color:#6D28D9">${Math.round(Math.min(100,sessPorSemana/5*100))}%</div><div style="font-size:10px;color:#94A3B8">Consist. (20%)</div></div>
+      <div style="text-align:center"><div style="font-size:13px;font-weight:700;color:#6D28D9">${revScore}%</div><div style="font-size:10px;color:#94A3B8">Revisões (10%)</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Desempenho por matéria</h2>
+  ${Object.entries(porMat).sort((a,b)=>{const pa=a[1].acertos/(a[1].acertos+a[1].erros||1);const pb=b[1].acertos/(b[1].acertos+b[1].erros||1);return pb-pa;}).map(([mat,d])=>{
+    const t=d.acertos+d.erros;
+    const p=t>0?Math.round(d.acertos/t*100):0;
+    const cor=p>=80?'#4ADE80':p>=60?'#FBBF24':'#F87171';
+    return `<div class="mat-row">
+      <div class="mat-nome">${mat}</div>
+      <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:${p}%;background:${cor}"></div></div>
+      <div class="mat-pct" style="color:${cor}">${p}%</div>
+      <div class="mat-q">${t}q</div>
+    </div>`;
+  }).join('')}
+  ${Object.keys(porMat).length===0?'<p style="font-size:13px;color:#94A3B8">Nenhuma sessão no período.</p>':''}
+</section>
+
+${simFilt.length>0?`<section>
+  <h2>Simulados</h2>
+  <table class="sim-table">
+    <thead><tr><th>Data</th><th>Matéria</th><th>Tópico</th><th>Nível</th><th>Resultado</th></tr></thead>
+    <tbody>${simFilt.map(s=>{
+      const cor=s.pct>=80?'badge-green':s.pct>=60?'badge-yellow':'badge-red';
+      return `<tr><td>${fmtDate(s.data)}</td><td>${s.materia}</td><td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.topico}</td><td>${s.nivel}</td><td><span class="badge ${cor}">${s.pct}% (${s.acertos}/${s.total})</span></td></tr>`;
+    }).join('')}</tbody>
+  </table>
+</section>`:''}
+
+<section>
+  <h2>Revisões & Alertas</h2>
+  ${revAtrasadas>0?`<div class="alerta">${revAtrasadas} revisão(ões) atrasada(s) — verificar o módulo de Revisões.</div>`:'<div class="ok">Revisões em dia!</div>'}
+  ${streak>=5?`<div class="ok">Sequência de ${streak} dias estudando consecutivos!</div>`:streak>0?`<div class="alerta">Streak atual: ${streak} dia(s). Meta sugerida: 5 dias seguidos.</div>`:''}
+  ${negligenciadas.length>0?`<div class="alerta">Matérias sem estudo no período: ${negligenciadas.join(', ')}.</div>`:''}
+  ${pctPlano<50?`<div class="alerta">Plano cumprido: ${pctPlano}%. Tente marcar mais dias para manter o ritmo.</div>`:pctPlano>=80?`<div class="ok">Plano cumprido: ${pctPlano}% — ótima consistência!</div>`:''}
+</section>
+
+<div class="footer">
+  <span>Luia — Plataforma de estudos</span>
+  <span>Gerado em ${dataGer}</span>
+</div>
+</div>
+<script>window.onload=()=>setTimeout(()=>window.print(),400)</script>
+</body></html>`;
+
+  win.document.write(html);
+  win.document.close();
+}
+
+// ═══════════════════════════════════════
+//  FEEDBACK
+// ═══════════════════════════════════════
+let fbTipo='bug', fbPrior='normal';
+
+function fbSetTipo(btn,tipo){
+  document.querySelectorAll('.fb-tipo-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  fbTipo=tipo;
+}
+
+function fbSetPrior(btn,prior){
+  document.querySelectorAll('.fb-prior-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  fbPrior=prior;
+}
+
+async function fbEnviar(){
+  const texto=document.getElementById('fb-texto').value.trim();
+  if(!texto){showToast('Descreve o feedback antes de enviar!','error');return;}
+  const btn=document.querySelector('#sec-feedback .btn-primary');
+  if(btn){btn.disabled=true;btn.textContent='Enviando...';}
+  try{
+    await sbPost('feedbacks',{
+      access_key:perfilData.chave||'visitante',
+      texto,
+      tipo:fbTipo,
+      prioridade:fbPrior,
+      resolvido:false
+    });
+    document.getElementById('fb-texto').value='';
+    showToast('Feedback enviado! Sua mãe vai ver em breve.','success');
+    renderFeedbacks();
+  }catch(e){
+    showToast('Erro ao enviar. Tente novamente.','error');
+  }finally{
+    if(btn){btn.disabled=false;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Enviar feedback';}
+  }
+}
+
+async function renderFeedbacks(){
+  const el=document.getElementById('fb-lista');
+  if(!el) return;
+  try{
+    const rows=await sbGet('feedbacks','order=created_at.desc&limit=20');
+    if(!rows||!rows.length){
+      el.innerHTML='<p style="font-size:13px;color:var(--text-dim)">Nenhum feedback ainda.</p>';
+      return;
+    }
+    const tipoIcon={
+      bug:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2l1.5 1.5M15.5 2 14 3.5M12 8c-2.2 0-4 1.8-4 4v3h8v-3c0-2.2-1.8-4-4-4z"/><path d="M8 15H4M20 15h-4M8 11H5M19 11h-3M10 19v2M14 19v2"/></svg>',
+      ideia:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>',
+      melhoria:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>'
+    };
+    const priorCor={urgente:'#F87171',normal:'#FBBF24',calma:'#4ADE80'};
+    el.innerHTML=rows.map(r=>`
+      <div class="fb-item ${r.resolvido?'resolvido':''}" style="margin-bottom:8px">
+        <div class="fb-item-icon" style="background:rgba(139,92,246,.12);color:#A78BFA">${tipoIcon[r.tipo]||tipoIcon.bug}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
+            <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#A78BFA">${r.tipo}</span>
+            <span style="font-size:10px;padding:1px 7px;border-radius:99px;background:rgba(0,0,0,.2);color:${priorCor[r.prioridade]||'#94A3B8'};font-weight:600">${r.prioridade}</span>
+            ${r.resolvido?'<span style="font-size:10px;color:#4ADE80;display:flex;align-items:center;gap:3px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Resolvido</span>':''}
+            <span style="font-size:10px;color:var(--text-dim);margin-left:auto">${(r.created_at||'').substring(0,10)}</span>
+          </div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.5">${r.texto}</div>
+        </div>
+      </div>`).join('');
+  }catch(e){
+    el.innerHTML='<p style="font-size:13px;color:var(--text-dim)">Erro ao carregar feedbacks.</p>';
+  }
 }
 
 // ── BADGE DE REVISÕES PENDENTES ──
