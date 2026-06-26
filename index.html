@@ -1757,15 +1757,42 @@ function setSyncStatus(status, msg) {
 async function loadFromSupabase() {
   setSyncStatus('loading','Carregando dados...');
   try {
-    const [sess, revs, cics, goalRows] = await Promise.all([
+    const [sess, revs, cics, goalRows, simRows] = await Promise.all([
       sbGet('sessions','order=created_at.desc'),
       sbGet('reviews','order=review_date.asc'),
       sbGet('ciclos_feitos','select=ciclo_key'),
-      sbGet('study_goals','id=eq.1').catch(()=>[])
+      sbGet('study_goals','id=eq.1').catch(()=>[]),
+      sbGet('simulados','order=created_at.desc&limit=50').catch(()=>[])
     ]);
     sessions = sess.map(s => ({...s, tags: s.tags || []}));
     reviews = revs;
     semanasFeitas = cics.map(c => c.ciclo_key);
+
+    // Carrega histórico de simulados do Supabase
+    if(simRows && simRows.length){
+      simHistorico = simRows.map(s=>({
+        data: (s.created_at||'').substring(0,10),
+        materia: s.materia||'',
+        topico: s.topico||'',
+        nivel: s.nivel||'',
+        total: s.total||0,
+        acertos: s.acertos||0,
+        pct: s.total>0?Math.round(s.acertos/s.total*100):0,
+        tempo: s.tempo_seg||0
+      }));
+      localStorage.setItem('luia_sim_hist', JSON.stringify(simHistorico));
+    }
+
+    // Carrega goals (metas semanais, data prova) do banco
+    if(goalRows && goalRows[0]){
+      const gr = goalRows[0];
+      if(gr.weekly_hours) goals.weekly_hours = gr.weekly_hours;
+      if(gr.weekly_sessions) goals.weekly_sessions = gr.weekly_sessions;
+      if(gr.weekly_questions) goals.weekly_questions = gr.weekly_questions;
+      if(gr.data_prova) goals.data_prova = gr.data_prova;
+      if(gr.objetivo) goals.objetivo = gr.objetivo;
+      localStorage.setItem('luisa_goals', JSON.stringify(goals));
+    }
 
     // Carrega plano do banco — não perde em aba anônima
     if(goalRows && goalRows[0] && goalRows[0].plano_feitos){
@@ -2950,7 +2977,7 @@ async function salvarMetas(){
   const objetivo=document.getElementById('g-objetivo')?.value.trim()||goals.objetivo||'IFPE 2027';
   goals={...goals,weekly_hours:h,weekly_sessions:s,weekly_questions:q,data_prova:dataProva,objetivo};
   saveLocal();renderMetas();renderDashMetas();atualizarContador();showToast('Metas salvas! ✦','success');
-  try{await sbUpsert('study_goals',{id:1,...goals},'id');}catch(e){}
+  try{await sbUpsert('study_goals',{id:1,weekly_hours:goals.weekly_hours,weekly_sessions:goals.weekly_sessions,weekly_questions:goals.weekly_questions,data_prova:goals.data_prova||'',objetivo:goals.objetivo||''},'id');}catch(e){}
 }
 function renderMetas(){
   document.getElementById('g-hours').value=goals.weekly_hours||'';
@@ -3622,7 +3649,11 @@ async function bvEntrar(){
     setTimeout(()=>{authDesbloqueado=false;localStorage.removeItem('luia_auth_exp');},24*60*60*1000);
     bvFechar();
     await loadFromSupabase();
-    showToast('Bem-vinda de volta' + (perfilData.nome?' , '+perfilData.nome.split(' ')[0]:'')+'! ✦','success');
+    // Re-renderiza sidebar com dados do perfil
+    if(typeof atualizarSidebar==='function') atualizarSidebar();
+    if(typeof atualizarBanner==='function') atualizarBanner();
+    if(typeof renderDashboard==='function') renderDashboard();
+    showToast('Bem-vinda de volta' + (perfilData.nome?', '+perfilData.nome.split(' ')[0]:'')+'! ✦','success');
   } catch(e){
     err.textContent='Erro de conexão. Tente novamente.';
     err.style.display='block';
@@ -3643,9 +3674,13 @@ async function init(){
   document.getElementById('f-data').value=todayLocal();
   // Carrega dados do Supabase primeiro (pega chave e perfil se existirem)
   await loadFromSupabase();
-  // Mostra modal de boas-vindas — só pula se já estava autenticado nessa sessão
+  // Mostra modal de boas-vindas — pula se auth 24h ainda válida
   if(!authDesbloqueado){
     bvMostrar();
+  } else {
+    // Auth ainda válida — só re-renderiza com dados atuais
+    if(typeof atualizarSidebar==='function') atualizarSidebar();
+    if(typeof atualizarBanner==='function') atualizarBanner();
   }
 }
 // ═══════════════════════════════════════
@@ -5120,6 +5155,8 @@ function encerrarSimulado(){
   simHistorico.unshift(registro);
   if(simHistorico.length>50) simHistorico=simHistorico.slice(0,50);
   localStorage.setItem('luia_sim_hist',JSON.stringify(simHistorico));
+  // Salva favoritas no Supabase junto com histrico resumido
+  sbUpsert('study_goals',{id:1,sim_favoritas:simFavSalvas},'id').catch(()=>{});
 
   // Salva favoritas
   const favs=simQuestoes.filter((_,i)=>simFavoritas[i]).map((q,i)=>({
