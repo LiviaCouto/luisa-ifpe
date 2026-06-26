@@ -2871,7 +2871,12 @@ let planoFeitos = JSON.parse(localStorage.getItem('luisa_plano')||'[]');
 
 function savePlano(){
   localStorage.setItem('luia_plano',JSON.stringify(planoFeitos));
-  sbUpsert('study_goals',{id:1,plano_feitos:planoFeitos},'id').catch(()=>{});
+  // PATCH direto — mais confiável que upsert para linha existente
+  fetch(`${SUPA_URL}/rest/v1/study_goals?id=eq.1`,{
+    method:'PATCH',
+    headers:{...H,'Prefer':'return=minimal'},
+    body:JSON.stringify({plano_feitos:planoFeitos})
+  }).catch(()=>{});
 }
 
 function renderPlano(){
@@ -3001,7 +3006,13 @@ async function salvarMetas(){
   const objetivo=document.getElementById('g-objetivo')?.value.trim()||goals.objetivo||'IFPE 2027';
   goals={...goals,weekly_hours:h,weekly_sessions:s,weekly_questions:q,data_prova:dataProva,objetivo};
   saveLocal();renderMetas();renderDashMetas();atualizarContador();showToast('Metas salvas! ✦','success');
-  try{await sbUpsert('study_goals',{id:1,...goals},'id');}catch(e){}
+  try{
+    await fetch(`${SUPA_URL}/rest/v1/study_goals?id=eq.1`,{
+      method:'PATCH',
+      headers:{...H,'Prefer':'return=minimal'},
+      body:JSON.stringify({weekly_hours:goals.weekly_hours,weekly_sessions:goals.weekly_sessions,weekly_questions:goals.weekly_questions,data_prova:goals.data_prova||'',objetivo:goals.objetivo||''})
+    });
+  }catch(e){}
 }
 function renderMetas(){
   document.getElementById('g-hours').value=goals.weekly_hours||'';
@@ -3949,24 +3960,28 @@ async function salvarPerfil(){
   // Salva chave no Supabase para funcionar em qualquer navegador
   if(perfilData.chave){
     try{
-      await sbUpsert('study_goals',{
-        id:1,
-        access_key:perfilData.chave,
-        access_pergunta:perfilData.pergunta||'',
-        access_resposta:perfilData.resposta||'',
-        perfil_json:{
-          nome:perfilData.nome||'',
-          apelido:perfilData.apelido||'',
-          idade:perfilData.idade||'',
-          signo:perfilData.signo||'',
-          musica:perfilData.musica||'',
-          cor:perfilData.cor||'',
-          sonho:perfilData.sonho||'',
-          motivacao:perfilData.motivacao||'',
-          avatarId:perfilData.avatarId||'',
-          avatarSvg:perfilData.avatarSvg||''
-        }
-      },'id');
+      const _patchResp = await fetch(`${SUPA_URL}/rest/v1/study_goals?id=eq.1`,{
+        method:'PATCH',
+        headers:{...H,'Prefer':'return=minimal'},
+        body:JSON.stringify({
+          access_key:perfilData.chave,
+          access_pergunta:perfilData.pergunta||'',
+          access_resposta:perfilData.resposta||'',
+          perfil_json:{
+            nome:perfilData.nome||'',
+            apelido:perfilData.apelido||'',
+            idade:perfilData.idade||'',
+            signo:perfilData.signo||'',
+            musica:perfilData.musica||'',
+            cor:perfilData.cor||'',
+            sonho:perfilData.sonho||'',
+            motivacao:perfilData.motivacao||'',
+            avatarId:perfilData.avatarId||'',
+            avatarSvg:perfilData.avatarSvg||''
+          }
+        })
+      });
+      if(!_patchResp.ok) console.error('Erro salvarPerfil:', await _patchResp.text());
     }catch(e){console.log('chave salva só local');}
   }
   atualizarSidebar();
@@ -5166,7 +5181,7 @@ function encerrarSimulado(){
   localStorage.setItem('luia_sim_favs',JSON.stringify(simFavSalvas));
 
   // Salva favoritas no Supabase
-  sbUpsert('study_goals',{id:1,sim_favoritas:simFavSalvas},'id').catch(()=>{});
+  fetch(`${SUPA_URL}/rest/v1/study_goals?id=eq.1`,{method:'PATCH',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify({sim_favoritas:simFavSalvas})}).catch(()=>{});
 
   // Salva no Supabase
   try{
