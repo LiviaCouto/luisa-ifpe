@@ -1750,15 +1750,50 @@ function setSyncStatus(status, msg) {
 async function loadFromSupabase() {
   setSyncStatus('loading','Carregando dados...');
   try {
-    const [sess, revs, cics, goalRows] = await Promise.all([
+    const [sess, revs, cics, goalRows, simRows] = await Promise.all([
       sbGet('sessions','order=created_at.desc'),
       sbGet('reviews','order=review_date.asc'),
       sbGet('ciclos_feitos','select=ciclo_key'),
-      sbGet('study_goals','id=eq.1').catch(()=>[])
+      sbGet('study_goals','id=eq.1').catch(()=>[]),
+      sbGet('simulados','order=created_at.desc&limit=50').catch(()=>[])
     ]);
     sessions = sess.map(s => ({...s, tags: s.tags || []}));
     reviews = revs;
     semanasFeitas = cics.map(c => c.ciclo_key);
+
+    // Carrega simulados do Supabase com questões respondidas
+    if(simRows && simRows.length){
+      try{
+        const simIds=simRows.map(s=>s.id).join(',');
+        let questoesPorSim={};
+        const qRows=await sbGet('questoes_respondidas',`simulado_id=in.(${simIds})&order=simulado_id.asc`).catch(()=>[]);
+        qRows.forEach(q=>{
+          if(!questoesPorSim[q.simulado_id]) questoesPorSim[q.simulado_id]=[];
+          questoesPorSim[q.simulado_id].push(q);
+        });
+        simHistorico = simRows.map(s=>{
+          const qs=questoesPorSim[s.id]||[];
+          const questoes=qs.map(q=>({
+            enunciado:q.enunciado||'',
+            alternativas:q.alternativas||{},
+            gabarito:q.resposta_correta||'',
+            explicacao:''
+          }));
+          const respostas=qs.map(q=>q.resposta_dada||null);
+          const favoritas=qs.map(q=>q.favorita||false);
+          return{
+            supabase_id:s.id,
+            data:(s.created_at||'').substring(0,10),
+            materia:s.materia||'',topico:s.topico||'',nivel:s.nivel||'',
+            total:s.total||0,acertos:s.acertos||0,
+            pct:s.total>0?Math.round(s.acertos/s.total*100):0,
+            tempo:s.tempo_seg||0,arquivado:s.arquivado||false,
+            questoes,respostas,favoritas
+          };
+        });
+        localStorage.setItem('luia_sim_hist',JSON.stringify(simHistorico));
+      }catch(e){ console.log('sim load error',e); }
+    }
 
     // Carrega plano do banco — não perde em aba anônima
     if(goalRows && goalRows[0] && goalRows[0].plano_feitos){
@@ -5217,10 +5252,42 @@ function renderSimHistorico(){
       <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
         <div style="font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:${cor}">${s.pct}%</div>
         <div style="font-size:10px;color:var(--text-dim)">${s.acertos}/${s.total}</div>
+        ${s.pct<100&&temQuestoes?`<button onclick="refazerErros(${idx})" style="font-size:9px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);border-radius:4px;color:#A78BFA;cursor:pointer;padding:2px 6px">🔁 Refazer erros</button>`:''}
         <button onclick="arquivarSimulado(${idx})" style="font-size:9px;background:rgba(255,255,255,.06);border:none;border-radius:4px;color:var(--text-dim);cursor:pointer;padding:2px 6px">📦 Arquivar</button>
       </div>
     </div>`;
   }).join('');
+}
+
+function refazerErros(idx){
+  if(_visitanteBlocked('refazer simulado')) return;
+  const s=simHistorico[idx];
+  if(!s||!s.questoes) return;
+  // Filtra só as questões que ela errou
+  const erradas=s.questoes.filter((q,i)=>s.respostas&&s.respostas[i]!==q.gabarito);
+  if(!erradas.length){showToast('Parabéns! Não há erros para refazer! 🎉','success');return;}
+  // Configura o simulado com as questões erradas
+  simQuestoes=erradas;
+  simConfig.materia=s.materia;
+  simConfig.topico=s.topico+' (revisão de erros)';
+  simConfig.nivel=s.nivel;
+  simConfig.quantidade=erradas.length;
+  simAtual=0;
+  simRespostas=new Array(erradas.length).fill(null);
+  simFavoritas=new Array(erradas.length).fill(false);
+  simComentarios={};
+  simTimerSeg=0;
+  simPausado=false;
+  // Vai para a tela de prova
+  document.getElementById('sim-tela-config').style.display='none';
+  document.getElementById('sim-tela-resultado').style.display='none';
+  document.getElementById('sim-tela-prova').style.display='block';
+  if(simConfig.cronometro){
+    simTimerInterval=setInterval(()=>{if(!simPausado){simTimerSeg++;atualizarTimer();}},1000);
+  }
+  renderQuestao();
+  renderMapa();
+  showToast(`Refazendo ${erradas.length} questão(ões) errada(s) de ${s.materia}! 💪`,'info');
 }
 
 function arquivarSimulado(idx){
@@ -5311,22 +5378,18 @@ function renderSimDash(){
   const mediaAcertos=Math.round(simHistorico.reduce((a,s)=>a+s.pct,0)/totalSim);
   const melhor=Math.max(...simHistorico.map(s=>s.pct));
   el.innerHTML=`
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
       <div style="text-align:center;padding:10px;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.15);border-radius:10px">
         <div style="font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#A78BFA">${totalSim}</div>
         <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em">Simulados</div>
       </div>
       <div style="text-align:center;padding:10px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.15);border-radius:10px">
         <div style="font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#4ADE80">${mediaAcertos}%</div>
-        <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em">Média</div>
+        <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em">Média de acertos</div>
       </div>
-      <div style="text-align:center;padding:10px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.15);border-radius:10px">
-        <div style="font-family:'Poppins',sans-serif;font-size:.8rem;font-weight:700;color:#FBBF24;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(()=>{const mp={};simHistorico.filter(s=>!s.arquivado).forEach(s=>{if(!mp[s.materia])mp[s.materia]={t:0,a:0};mp[s.materia].t+=s.total||0;mp[s.materia].a+=s.acertos||0;});const best=Object.entries(mp).sort((a,b)=>(b[1].a/b[1].t)-(a[1].a/a[1].t))[0];return best?best[0].split(' ')[0]:'—';})()}</div>
+      <div style="text-align:center;padding:10px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.15);border-radius:10px;grid-column:span 2">
+        <div style="font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:700;color:#FBBF24">${(()=>{const mp={};simHistorico.filter(s=>!s.arquivado).forEach(s=>{if(!mp[s.materia])mp[s.materia]={t:0,a:0};mp[s.materia].t+=s.total||0;mp[s.materia].a+=s.acertos||0;});const best=Object.entries(mp).filter(e=>e[1].t>0).sort((a,b)=>(b[1].a/b[1].t)-(a[1].a/a[1].t))[0];return best?best[0]:'—';})()}</div>
         <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em">Melhor matéria</div>
-      </div>
-      <div style="text-align:center;padding:10px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.15);border-radius:10px">
-        <div style="font-family:'Poppins',sans-serif;font-size:1.3rem;font-weight:700;color:#F59E0B">${melhor}%</div>
-        <div style="font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em">Melhor</div>
       </div>
     </div>`;
 }
