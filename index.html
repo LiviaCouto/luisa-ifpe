@@ -1252,7 +1252,7 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
     <!-- TELA 3: RESULTADO -->
     <div id="sim-tela-resultado" style="display:none">
       <div style="margin-bottom:10px">
-        <button class="sim-act-btn" onclick="showLuia('simulados',null)" style="display:flex;align-items:center;gap:6px;padding:8px 14px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg> ← Voltar ao histórico</button>
+        <button class="sim-act-btn" onclick="voltarParaSimulados()" style="display:flex;align-items:center;gap:6px;padding:8px 14px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg> Voltar ao histórico</button>
       </div>
       <div class="sim-resultado-hero">
         <div class="sim-resultado-pct" id="sim-res-pct">—</div>
@@ -1267,10 +1267,9 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
         <div class="card-title">⭐ Questões favoritadas</div>
         <div id="sim-favoritas-res-list"></div>
       </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="sim-act-btn" onclick="showLuia('simulados',null)" style="flex:1;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg> ← Voltar</button>
-        <button class="btn-primary" onclick="novoSimulado()" style="flex:1">✦ Novo simulado</button>
-        <button class="sim-act-btn" onclick="_authNovoSimuladoErros()" style="flex:1;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg> Repetir erros</button>
+      <div style="display:flex;gap:10px;flex-wrap:wrap" id="sim-res-botoes">
+        <button class="btn-primary" onclick="voltarParaSimulados()" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg> ✦ Voltar / Novo simulado</button>
+        <button class="sim-act-btn" id="sim-btn-repetir" onclick="_authRepetirSimulado()" style="flex:1;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg> Repetir erros</button>
       </div>
     </div>
   </div>
@@ -5236,9 +5235,51 @@ function encerrarSimulado(){
     ).join('');
   }
 
+  // Esconde botão repetir erros se 100%
+  const btnRepetir=document.getElementById('sim-btn-repetir');
+  if(btnRepetir) btnRepetir.style.display=pct===100?'none':'flex';
+
   // Atualiza badge e dashboard
   atualizarRevBadge();
   renderSimHistorico();
+}
+
+function voltarParaSimulados(){
+  document.getElementById('sim-tela-resultado').style.display='none';
+  document.getElementById('sim-tela-prova').style.display='none';
+  document.getElementById('sim-tela-config').style.display='block';
+  clearInterval(simTimerInterval);
+  renderSimHistorico();
+  renderSimFavoritas();
+}
+
+function _authRepetirSimulado(){
+  if(_visitanteBlocked('repetir simulado')) return;
+  // Pega as questões erradas do simulado atual
+  const erradas=simQuestoes.filter((q,i)=>simRespostas[i]!==(q.gabarito||q.resposta_correta));
+  if(!erradas.length){showToast('Parabéns! Não há erros para repetir! 🎉','success');return;}
+  // Reconfigura simulado com questões erradas
+  simQuestoes=erradas;
+  simConfig.topico=(simConfig.topico||'')+' (revisão de erros)';
+  simConfig.qtd=erradas.length;
+  simAtual=0;
+  simRespostas=new Array(erradas.length).fill(null);
+  simFavoritas=new Array(erradas.length).fill(false);
+  simComentarios={};
+  simEliminadas={};
+  simConfirmadas={};
+  simTimerSeg=0;
+  simPausado=false;
+  document.getElementById('sim-tela-resultado').style.display='none';
+  document.getElementById('sim-tela-config').style.display='none';
+  document.getElementById('sim-tela-prova').style.display='block';
+  if(simConfig.cronometro){
+    clearInterval(simTimerInterval);
+    simTimerInterval=setInterval(()=>{if(!simPausado){simTimerSeg++;atualizarTimer();}},1000);
+  }
+  renderQuestao();
+  renderMapa();
+  showToast('Repetindo '+erradas.length+' questão(ões) com erro! 💪','info');
 }
 
 function novoSimulado(somenteErros=false){
@@ -5256,6 +5297,10 @@ function renderSimHistorico(mostrarArquivados=false){
   const lista=simHistorico.filter(s=>mostrarArquivados?s.arquivado:!s.arquivado);
   const arquivadosN=simHistorico.filter(s=>s.arquivado).length;
 
+  // Separar finalizados (100%) dos em andamento
+  const finalizados=lista.filter(s=>s.pct===100);
+  const emAndamento=lista.filter(s=>s.pct<100);
+
   // Tabs ativos/arquivados
   const tabsHtml=`<div style="display:flex;gap:8px;margin-bottom:12px">
     <button onclick="renderSimHistorico(false)" style="font-size:11px;padding:5px 12px;border-radius:99px;border:1px solid ${!mostrarArquivados?'#7C3AED':'rgba(255,255,255,.12)'};background:${!mostrarArquivados?'rgba(124,58,237,.2)':'transparent'};color:${!mostrarArquivados?'#A78BFA':'var(--text-dim)'};cursor:pointer">Ativos</button>
@@ -5267,7 +5312,7 @@ function renderSimHistorico(mostrarArquivados=false){
     return;
   }
 
-  el.innerHTML=tabsHtml+lista.slice(0,20).map(s=>{
+  const renderItem=(s)=>{
     const cor=s.pct>=80?'#4ADE80':s.pct>=60?'#FBBF24':'#F87171';
     const m=Math.floor((s.tempo||0)/60);
     const idx=simHistorico.indexOf(s);
@@ -5296,7 +5341,22 @@ function renderSimHistorico(mostrarArquivados=false){
         }
       </div>
     </div>`;
-  }).join('');
+  };
+
+  let html=tabsHtml;
+
+  if(!mostrarArquivados){
+    if(emAndamento.length>0){
+      html+=`<div style="margin-bottom:16px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#FBBF24;margin-bottom:8px;display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Em andamento (${emAndamento.length})</div>${emAndamento.map(renderItem).join('')}</div>`;
+    }
+    if(finalizados.length>0){
+      html+=`<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#4ADE80;margin-bottom:8px;display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Finalizados (${finalizados.length})</div>${finalizados.map(renderItem).join('')}</div>`;
+    }
+  } else {
+    html+=lista.map(renderItem).join('');
+  }
+
+  el.innerHTML=html;
 }
 
 function _authNovoSimuladoErros(){if(_visitanteBlocked("repetir erros"))return;novoSimulado(true);}
