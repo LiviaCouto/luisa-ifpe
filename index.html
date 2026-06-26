@@ -2195,7 +2195,7 @@ function renderHistorico(){
         (s.minutos?'<span class="score-time">'+s.minutos+'min</span>':'')+
       '</div>'+
       '<div class="log-actions">'+
-        (!isArq?'<button class="action-btn" onclick="openEdit(\''+id+'\')" title="Editar">✏️</button>':'')+
+        (!isArq?'<button class="action-btn" onclick="_authOpenEdit(\''+id+'\')" title="Editar">✏️</button>':'')+
         '<button class="action-btn archive" onclick="_authArquivar(\''+id+'\')" title="'+(isArq?'Restaurar':'Arquivar')+'">'+(isArq?'↩':'📦')+'</button>'+
       '</div>'+
     '</div>';
@@ -5266,6 +5266,7 @@ function renderSimDash(){
 }
 
 // ── WRAPPERS PROTEGIDOS (sem recursão) ──
+function _authOpenEdit(uid){if(_visitanteBlocked('editar sessão'))return;comAuth(()=>openEdit(uid));}
 function _visitanteBlocked(msg){
   if(!perfilData.chave){
     showToast('Entre com sua palavra-chave para ' + (msg||'realizar esta ação') + '.','info');
