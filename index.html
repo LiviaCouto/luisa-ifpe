@@ -1226,6 +1226,7 @@ select option{background:#1E293B!important;color:#F1F5F9!important}
         <div id="sim-favoritas-res-list"></div>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="sim-act-btn" onclick="showLuia('simulados',null)" style="flex:1;padding:11px">← Ver histórico</button>
         <button class="btn-primary" onclick="novoSimulado()" style="flex:1">✦ Novo simulado</button>
         <button class="sim-act-btn" onclick="novoSimulado(true)" style="flex:1;padding:11px">🔁 Repetir erros</button>
       </div>
@@ -4534,56 +4535,24 @@ async function exportarRelatorio(winPreAberta){
   if(!winPreAberta) win.document.write('<html><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#0F172A;color:#fff;font-size:18px"><div style="text-align:center"><div style="font-size:3rem;margin-bottom:16px">✦</div><div>Gerando diagnóstico com IA...</div><div style="font-size:13px;color:#94A3B8;margin-top:8px">Isso pode levar alguns segundos</div></div></body></html>');
 
   // Gera diagnóstico com Claude
-  let diagnostico='';
-  try{
-    const prompt=`Você é um tutor educacional especializado em preparação para vestibulares técnicos no Brasil. 
-Gere um diagnóstico personalizado e motivacional do progresso de estudo da estudante abaixo.
-Seja direto, empático, específico e use os dados reais fornecidos. Escreva em português brasileiro.
-O diagnóstico deve ter 3-4 parágrafos: pontos fortes, pontos de atenção, e recomendações práticas.
-Termine com uma frase de encorajamento pessoal.
+  // Diagnóstico automático baseado nos dados (sem IA)
+  const melhorMat=Object.entries(porMat).filter(([,d])=>d.acertos+d.erros>0).sort((a,b)=>{const pa=a[1].acertos/(a[1].acertos+a[1].erros);const pb=b[1].acertos/(b[1].acertos+b[1].erros);return pb-pa;})[0];
+  const piorMat=Object.entries(porMat).filter(([,d])=>d.acertos+d.erros>0).sort((a,b)=>{const pa=a[1].acertos/(a[1].acertos+a[1].erros);const pb=b[1].acertos/(b[1].acertos+b[1].erros);return pa-pb;})[0];
+  const nome=perfilData.apelido||perfilData.nome?.split(' ')[0]||'Luísa';
+  let diagnostico=`${nome} acumulou ${ativas.length} sessão(ões) de estudo no período analisado, com ${totalQ} questões respondidas e taxa de acertos de ${pctGeral}%. O tempo total de dedicação foi de ${Math.round(totalMin/60*10)/10} horas.`;
+  if(melhorMat) diagnostico+=`
 
-DADOS DA ESTUDANTE:
-- Nome: ${perfilData.apelido||perfilData.nome||'Luísa'}
-- Objetivo: ${goals.objetivo||'IFPE 2027'}
-- Período analisado: ${periodo}
-- Total de sessões: ${ativas.length}
-- Total de questões: ${totalQ}
-- Taxa de acertos geral: ${pctGeral}%
-- Horas estudadas: ${Math.round(totalMin/60*10)/10}h
-- Streak atual: ${streak} dias
-- Plano cumprido: ${diasFeitos}/${totalDiasPlano} dias (${pctPlano}%)
-- Revisões concluídas: ${revFeitas}/${revTotal}
-- Revisões atrasadas: ${revPend}
+Melhor desempenho em ${melhorMat[0]}, com ${Math.round(melhorMat[1].acertos/(melhorMat[1].acertos+melhorMat[1].erros)*100)}% de acertos.`;
+  if(piorMat&&piorMat[0]!==melhorMat?.[0]) diagnostico+=` Atenção especial para ${piorMat[0]}, onde o aproveitamento foi de ${Math.round(piorMat[1].acertos/(piorMat[1].acertos+piorMat[1].erros)*100)}%.`;
+  diagnostico+=`
 
-DESEMPENHO POR MATÉRIA:
-${Object.entries(porMat).map(([mat,d])=>{
-  const t=d.acertos+d.erros;
-  const p=t>0?Math.round(d.acertos/t*100):0;
-  return `- ${mat}: ${p}% de acertos (${d.acertos}✓ ${d.erros}✗) em ${d.sessoes} sessões`;
-}).join('\n')}
+O plano panorâmico está ${pctPlano}% concluído (${diasFeitos} de ${totalDiasPlano} dias). Revisões: ${revFeitas} concluídas${revPend>0?', '+revPend+' atrasada(s)':', nenhuma atrasada'}.`;
+  if(simPeriodo.length>0) diagnostico+=`
 
-CICLOS DE REVISÃO:
-- 24h: ${porCiclo['1d'].f} concluídas, ${porCiclo['1d'].p} pendentes
-- 7 dias: ${porCiclo['7d'].f} concluídas, ${porCiclo['7d'].p} pendentes
-- 15 dias: ${porCiclo['15d'].f} concluídas, ${porCiclo['15d'].p} pendentes
-- 30 dias: ${porCiclo['30d'].f} concluídas, ${porCiclo['30d'].p} pendentes
+Nos simulados, foram realizados ${simPeriodo.length} teste(s) com média de ${simMedia}% de acertos.`;
+  diagnostico+=`
 
-CONQUISTAS DESBLOQUEADAS: ${conquFeitas.length} conquistas
-
-SIMULADOS (${periodo}):
-- Total de simulados: ${simPeriodo.length}
-- Média de acertos: ${simMedia}%
-- Melhor resultado: ${simMelhor}%`;
-
-    const resp=await fetch(`${SUPA_URL}/functions/v1/gerar-questoes`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
-      body:JSON.stringify({prompt, modo:'texto'})
-    });
-    diagnostico=(await resp.text())||'Diagnóstico não disponível.';
-  }catch(e){
-    diagnostico='Não foi possível gerar o diagnóstico com IA. Verifique sua conexão e tente novamente.';
-  }
+Streak atual: ${streak} dia(s) seguidos estudando. Continue assim — cada sessão conta!`;
 
   // Monta HTML do relatório
   const nomeCompleto=perfilData.nome||'Luísa Couto Mota';
@@ -5137,8 +5106,10 @@ function encerrarSimulado(){
   const cor=pct>=80?'#4ADE80':pct>=60?'#FBBF24':'#F87171';
 
   // Salva no histórico com questões completas
+  const _agora=new Date();
   const registro={
     data:todayLocal(),
+    hora:_agora.getHours().toString().padStart(2,'0')+':'+_agora.getMinutes().toString().padStart(2,'0'),
     materia:simConfig.materia,
     topico:simConfig.topico,
     nivel:simConfig.nivel,
@@ -5233,27 +5204,50 @@ function novoSimulado(somenteErros=false){
   renderSimFavoritas();
 }
 
-function renderSimHistorico(){
+function renderSimHistorico(mostrarArquivados=false){
   const el=document.getElementById('sim-historico-list');
   if(!el) return;
-  const visiveis=simHistorico.filter(s=>!s.arquivado);
-  if(!visiveis.length){el.innerHTML='<p style="color:var(--text-dim);font-size:13px">Nenhum simulado ainda.</p>';return;}
-  el.innerHTML=visiveis.slice(0,20).map((s,i)=>{
+  const lista=simHistorico.filter(s=>mostrarArquivados?s.arquivado:!s.arquivado);
+  const arquivadosN=simHistorico.filter(s=>s.arquivado).length;
+
+  // Tabs ativos/arquivados
+  const tabsHtml=`<div style="display:flex;gap:8px;margin-bottom:12px">
+    <button onclick="renderSimHistorico(false)" style="font-size:11px;padding:5px 12px;border-radius:99px;border:1px solid ${!mostrarArquivados?'#7C3AED':'rgba(255,255,255,.12)'};background:${!mostrarArquivados?'rgba(124,58,237,.2)':'transparent'};color:${!mostrarArquivados?'#A78BFA':'var(--text-dim)'};cursor:pointer">Ativos</button>
+    ${arquivadosN>0?`<button onclick="renderSimHistorico(true)" style="font-size:11px;padding:5px 12px;border-radius:99px;border:1px solid ${mostrarArquivados?'#7C3AED':'rgba(255,255,255,.12)'};background:${mostrarArquivados?'rgba(124,58,237,.2)':'transparent'};color:${mostrarArquivados?'#A78BFA':'var(--text-dim)'};cursor:pointer">Arquivados (${arquivadosN})</button>`:''}
+  </div>`;
+
+  if(!lista.length){
+    el.innerHTML=tabsHtml+'<p style="color:var(--text-dim);font-size:13px">'+( mostrarArquivados?'Nenhum simulado arquivado.':'Nenhum simulado ainda.')+'</p>';
+    return;
+  }
+
+  el.innerHTML=tabsHtml+lista.slice(0,20).map(s=>{
     const cor=s.pct>=80?'#4ADE80':s.pct>=60?'#FBBF24':'#F87171';
     const m=Math.floor((s.tempo||0)/60);
     const idx=simHistorico.indexOf(s);
     const temQuestoes=s.questoes&&s.questoes.length>0;
-    return`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)">
-      <div style="flex:1;min-width:0;cursor:${temQuestoes?'pointer':'default'}" onclick="${temQuestoes?`verSimulado(${idx})`:''}">
-        <div style="font-size:12px;font-weight:600;color:var(--text-primary)">${s.materia} · ${s.topico}</div>
-        <div style="font-size:10px;color:var(--text-dim)">${fmtDate(s.data)} · ${s.nivel} · ${m}min</div>
-        ${temQuestoes?'<div style="font-size:10px;color:#A78BFA;margin-top:2px">📖 Ver questões</div>':''}
+    // Hora do simulado
+    const hora=s.hora||'';
+    const dataStr=fmtDate(s.data)+(hora?' · '+hora:'');
+    return`<div style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:2px">${s.materia}</div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-bottom:2px">${s.topico}</div>
+          <div style="font-size:10px;color:var(--text-dim)">${dataStr} · ${s.nivel} · ${m}min</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-family:'Poppins',sans-serif;font-size:1.2rem;font-weight:700;color:${cor}">${s.pct}%</div>
+          <div style="font-size:10px;color:var(--text-dim);margin-bottom:6px">${s.acertos}/${s.total} certas</div>
+        </div>
       </div>
-      <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-        <div style="font-family:'Poppins',sans-serif;font-size:1.1rem;font-weight:700;color:${cor}">${s.pct}%</div>
-        <div style="font-size:10px;color:var(--text-dim)">${s.acertos}/${s.total}</div>
-        ${s.pct<100&&temQuestoes?`<button onclick="refazerErros(${idx})" style="font-size:9px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);border-radius:4px;color:#A78BFA;cursor:pointer;padding:2px 6px">🔁 Refazer erros</button>`:''}
-        <button onclick="arquivarSimulado(${idx})" style="font-size:9px;background:rgba(255,255,255,.06);border:none;border-radius:4px;color:var(--text-dim);cursor:pointer;padding:2px 6px">📦 Arquivar</button>
+      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+        ${temQuestoes?`<button onclick="verSimulado(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);border-radius:8px;color:#A78BFA;cursor:pointer;font-weight:600">📖 Ver questões</button>`:''}
+        ${s.pct<100&&temQuestoes&&!s.arquivado?`<button onclick="refazerErros(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:8px;color:#A78BFA;cursor:pointer">🔁 Refazer erros</button>`:''}
+        ${!s.arquivado
+          ?`<button onclick="arquivarSimulado(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--text-dim);cursor:pointer">📦 Arquivar</button>`
+          :`<button onclick="desarquivarSimulado(${idx})" style="font-size:11px;padding:5px 12px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);border-radius:8px;color:#4ADE80;cursor:pointer">↩ Restaurar</button>`
+        }
       </div>
     </div>`;
   }).join('');
@@ -5290,6 +5284,19 @@ function refazerErros(idx){
   showToast(`Refazendo ${erradas.length} questão(ões) errada(s) de ${s.materia}! 💪`,'info');
 }
 
+function desarquivarSimulado(idx){
+  simHistorico[idx].arquivado=false;
+  localStorage.setItem('luia_sim_hist',JSON.stringify(simHistorico));
+  if(simHistorico[idx].supabase_id){
+    fetch(`${SUPA_URL}/rest/v1/simulados?id=eq.${simHistorico[idx].supabase_id}`,{
+      method:'PATCH',headers:{...H,'Prefer':'return=minimal'},
+      body:JSON.stringify({arquivado:false})
+    }).catch(()=>{});
+  }
+  renderSimHistorico(true);
+  showToast('Simulado restaurado!','success');
+}
+
 function arquivarSimulado(idx){
   if(!confirm('Arquivar este simulado? Ele ficará oculto mas não será apagado.')) return;
   simHistorico[idx].arquivado=true;
@@ -5309,17 +5316,23 @@ function arquivarSimulado(idx){
 function verSimulado(idx){
   const s=simHistorico[idx];
   if(!s||!s.questoes||!s.questoes.length){showToast('Questões não disponíveis para este simulado.','info');return;}
-  // Monta modal de revisão do simulado
   const letras=['A','B','C','D','E'];
-  let html=`<div style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9998;overflow-y:auto;padding:20px" onclick="if(event.target===this)this.remove()">
-    <div style="max-width:700px;margin:0 auto;background:var(--surface-1);border-radius:16px;padding:24px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+  const cor=s.pct>=80?'#4ADE80':s.pct>=60?'#FBBF24':'#F87171';
+  let html=`<div id="ver-sim-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9998;display:flex;flex-direction:column" onclick="if(event.target.id==='ver-sim-overlay')this.remove()">
+    <div style="background:linear-gradient(135deg,#0F172A,#1E1B4B);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid rgba(124,58,237,.3)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button onclick="document.getElementById('ver-sim-overlay').remove()" style="background:rgba(255,255,255,.08);border:none;border-radius:8px;color:#fff;font-size:13px;cursor:pointer;padding:6px 12px;font-weight:600">← Voltar</button>
         <div>
-          <div style="font-size:16px;font-weight:700;color:var(--text-primary)">${s.materia} · ${s.topico}</div>
-          <div style="font-size:12px;color:var(--text-dim)">${fmtDate(s.data)} · ${s.nivel} · ${s.acertos}/${s.total} (${s.pct}%)</div>
+          <div style="font-size:14px;font-weight:700;color:#fff">${s.materia} · ${s.topico}</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5)">${fmtDate(s.data)}${s.hora?' · '+s.hora:''} · ${s.nivel}</div>
         </div>
-        <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:var(--text-dim);font-size:20px;cursor:pointer">✕</button>
       </div>
+      <div style="text-align:right">
+        <div style="font-family:'Poppins',sans-serif;font-size:1.4rem;font-weight:800;color:${cor}">${s.pct}%</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.4)">${s.acertos}/${s.total} certas</div>
+      </div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:20px;max-width:760px;width:100%;margin:0 auto">
       ${s.questoes.map((q,qi)=>{
         const resp=s.respostas?s.respostas[qi]:null;
         const certa=resp===q.gabarito;
@@ -5340,6 +5353,8 @@ function verSimulado(idx){
       }).join('')}
     </div>
   </div>`;
+  // Fecha os divs do scroll e do overlay
+  html += '</div></div>';
   const div=document.createElement('div');
   div.innerHTML=html;
   document.body.appendChild(div.firstElementChild);
